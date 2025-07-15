@@ -17,9 +17,15 @@ importers:
       eslint:
         specifier: ^9.31.0
         version: 9.31.0
+      fishery:
+        specifier: ^2.3.1
+        version: 2.3.1
       vitest:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@22.16.4)(@vitest/ui@3.2.4)
+      vitest-mock-extended:
+        specifier: ^3.1.0
+        version: 3.1.0(typescript@5.8.3)(vitest@3.2.4)
 
   apps/webapp:
     dependencies:
@@ -112,7 +118,11 @@ importers:
         specifier: ^6.3.5
         version: 6.3.5(@types/node@22.16.4)
 
-  packages/behave: {}
+  packages/behave:
+    dependencies:
+      csv-parse:
+        specifier: ^6.0.0
+        version: 6.0.0
 
 packages:
 
@@ -1400,6 +1410,9 @@ packages:
     resolution: {integrity: sha512-uTqEnCvWRk042asU6JtapDTcJeeailFy4ydOQS28bj1hcLnYRiqi8SsD2jS412AY1I/4qdOwWZun774iqywf9w==}
     engines: {node: '>= 0.8'}
 
+  csv-parse@6.0.0:
+    resolution: {integrity: sha512-6aB9WrymEruVDwQOwa5AuYk4/Gb+HaJgLHGKOA9BXTqgsIFvbdHzQzZOuqNCOooTGciPDaHzTlGkU5P6kYVUYw==}
+
   data-uri-to-buffer@2.0.2:
     resolution: {integrity: sha512-ND9qDTLc6diwj+Xe5cdAgVTbLVdXbtxTJRXRhli8Mowuaan+0EJOtdqJ0QCHNSSPyoXGx9HX2/VMnKeC34AChA==}
 
@@ -1755,6 +1768,9 @@ packages:
     resolution: {integrity: sha512-v2ZsoEuVHYy8ZIlYqwPe/39Cy+cFDzp4dXPaxNvkEuouymu+2Jbz0PxpKarJHYJTmv2HWT3O382qY8l4jMWthw==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
+  fishery@2.3.1:
+    resolution: {integrity: sha512-eKgpAfx88/dFnLUGhJmq9eslN6nsHUcCR13Th1z6tLZixUtKjW/33MqKuzxGtYmhzUh2yLYZxq4jHxIQd3F04A==}
+
   flat-cache@4.0.1:
     resolution: {integrity: sha512-f7ccFPK3SXFHpx15UIGyRJ/FJQctuKZ0zVuN3frBo4HnK3cay9VEW0R6yPYFHC0AgqhukPzKjq22t5DmAyqGyw==}
     engines: {node: '>=16'}
@@ -2096,6 +2112,9 @@ packages:
 
   lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
+
+  lodash.mergewith@4.6.2:
+    resolution: {integrity: sha512-GK3g5RPZWTRSeLSpgP8Xhra+pnjBC56q9FZYe1d5RN3TJ35dbkGy3YqBSMbyCrlbi+CM9Z3Jk5yTL7RCsqboyQ==}
 
   lodash@4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
@@ -2841,6 +2860,14 @@ packages:
     peerDependencies:
       typescript: '>=4.8.4'
 
+  ts-essentials@10.1.1:
+    resolution: {integrity: sha512-4aTB7KLHKmUvkjNj8V+EdnmuVTiECzn3K+zIbRthumvHu+j44x3w63xpfs0JL3NGIzGXqoQ7AV591xHO+XrOTw==}
+    peerDependencies:
+      typescript: '>=4.5.0'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
   ts-morph@23.0.0:
     resolution: {integrity: sha512-FcvFx7a9E8TUe6T3ShihXJLiJOiqyafzFKUO4aqIHDUCIvADdGNShcbc2W5PMr3LerXRv7mafvFZ9lRENxJmug==}
 
@@ -2995,6 +3022,12 @@ packages:
         optional: true
       yaml:
         optional: true
+
+  vitest-mock-extended@3.1.0:
+    resolution: {integrity: sha512-vCM0VkuocOUBwwqwV7JB7YStw07pqeKvEIrZnR8l3PtwYi6rAAJAyJACeC1UYNfbQWi85nz7EdiXWBFI5hll2g==}
+    peerDependencies:
+      typescript: 3.x || 4.x || 5.x
+      vitest: '>=3.0.0'
 
   vitest@3.2.4:
     resolution: {integrity: sha512-LUCP5ev3GURDysTWiP47wRRUpLKMOfPh+yKTx3kVIEiu5KOMeqzpnYNsKyOoVrULivR8tLcks4+lga33Whn90A==}
@@ -4357,6 +4390,8 @@ snapshots:
       tsscmp: 1.0.6
       uid-safe: 2.1.5
 
+  csv-parse@6.0.0: {}
+
   data-uri-to-buffer@2.0.2: {}
 
   dateformat@4.6.3: {}
@@ -4718,6 +4753,10 @@ snapshots:
       locate-path: 7.2.0
       path-exists: 5.0.0
 
+  fishery@2.3.1:
+    dependencies:
+      lodash.mergewith: 4.6.2
+
   flat-cache@4.0.1:
     dependencies:
       flatted: 3.3.3
@@ -4998,6 +5037,8 @@ snapshots:
   lodash-es@4.17.21: {}
 
   lodash.merge@4.6.2: {}
+
+  lodash.mergewith@4.6.2: {}
 
   lodash@4.17.21: {}
 
@@ -5715,6 +5756,10 @@ snapshots:
     dependencies:
       typescript: 5.8.3
 
+  ts-essentials@10.1.1(typescript@5.8.3):
+    optionalDependencies:
+      typescript: 5.8.3
+
   ts-morph@23.0.0:
     dependencies:
       '@ts-morph/common': 0.24.0
@@ -5849,6 +5894,12 @@ snapshots:
     optionalDependencies:
       '@types/node': 22.16.4
       fsevents: 2.3.3
+
+  vitest-mock-extended@3.1.0(typescript@5.8.3)(vitest@3.2.4):
+    dependencies:
+      ts-essentials: 10.1.1(typescript@5.8.3)
+      typescript: 5.8.3
+      vitest: 3.2.4(@types/node@22.16.4)(@vitest/ui@3.2.4)
 
   vitest@3.2.4(@types/node@22.16.4)(@vitest/ui@3.2.4):
     dependencies:

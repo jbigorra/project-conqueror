@@ -1,7 +1,7 @@
 {
   "name": "behave",
   "version": "0.1.0",
-  "description": "A library that executes code behavioural analysis. This is a port of code-maat written in clojure.",
+  "description": "A library that executes behavioural code analysis by using code-maat together with other tools for more complex analysis.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
@@ -15,7 +15,7 @@
     "clean": "rm -rf dist"
   },
   "keywords": [],
-  "author": "",
+  "author": "Juan Bigorra <jbigorra.soft.eng@pm.me>",
   "license": "ISC",
   "packageManager": "pnpm@10.13.1"
 }
