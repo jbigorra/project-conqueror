@@ -8,7 +8,9 @@
   ],
   "main": "./dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "behave:tdd": "vitest --project behave --watch",
+    "behave:test-ui": "vitest --project behave --ui"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +18,7 @@
   "packageManager": "pnpm@10.13.1",
   "devDependencies": {
     "@adonisjs/eslint-config": "^2.1.0",
+    "@vitest/ui": "^3.2.4",
     "eslint": "^9.31.0",
     "vitest": "^3.2.4"
   }
