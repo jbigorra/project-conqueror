@@ -5,11 +5,30 @@ import { AnalysisResult, IAnalysisRunner } from "./runners/analysis_runner";
  * The date string is in the format of "YYYY-MM-DD"
  */
 type DateString = string;
+
+/**
+ * Absolute path to the log file.
+ */
 type LogFilePath = string;
+
+/**
+ * Absolute path to the layers file.
+ */
 type LayersFilePath = string;
-type InputEncoding = "utf-8" | "utf-16";
+
+/**
+ * The input encoding of the log file. Specify an encoding other than UTF-8 for the log file.
+ */
+type InputEncoding = "utf-8" | string;
+
+/**
+ * A regex to match against commit messages. Used with -messages analyses.
+ */
 type RegexExpressionToMatch = string;
 
+/**
+ * Options for the analysis.
+ */
 type Options = {
   analysis_type: AnalysisType;
   log_file: LogFilePath;
@@ -142,9 +161,29 @@ export class AnalysisOptions {
   }
 }
 
+/**
+ * The main class for running the analysis.
+ *
+ * @param analysis - The analysis runner to use.
+ *
+ * @example
+ * ```ts
+ * const behave = new Behave(new AnalysisRunner());
+ * const result = await behave.run_analysis(new AnalysisOptions({
+ *   analysis_type: "abs-churn",
+ *   log_file: "my/absolute/path/to/git.log",
+ * }));
+ * ```
+ */
 export class Behave {
   constructor(private readonly analysis: IAnalysisRunner) {}
 
+  /**
+   * Runs the selected analysis.
+   *
+   * @param options - The options for the analysis.
+   * @returns The analysis result.
+   */
   async run_analysis(options: AnalysisOptions): Promise<AnalysisResult> {
     return await this.analysis.run(options);
   }
