@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { mock } from "vitest-mock-extended";
-import { Behave } from "../src/behave";
+import { AnalysisOptions, Behave } from "../src/behave";
 import { IAnalysisRunner } from "../src/runners/analysis_runner";
 import { analysis_options_factory } from "./fixtures/factories/analysis_options_factory";
 
@@ -30,7 +30,7 @@ describe("behave", () => {
     });
   });
 
-  it("should return an error when the analysis run rails", async () => {
+  it("should return an error when the analysis run fails", async () => {
     const analysis = mock<IAnalysisRunner>();
     const expected_error = new Error("Analysis failed");
     analysis.run.mockResolvedValue({
@@ -50,21 +50,53 @@ describe("behave", () => {
 });
 
 describe("AnalysisOptions", () => {
-  it.todo("should be defined");
+  it("should be defined", () => {
+    const options = analysis_options_factory.build();
 
-  it.todo(
-    "should throw an error when required analysis_type parameter is not provided"
-  );
+    const analysis_options = new AnalysisOptions(options);
 
-  it.todo(
-    "should throw an error when required log_file parameter is not provided"
-  );
+    expect(analysis_options).toMatchObject(options);
+  });
 
-  it.todo(
-    "should throw an error when age analysis is selected but required age-time-now parameter is not provided"
-  );
+  it("should default 'verbose_results' to false", () => {
+    const { verbose_results, ...options } = analysis_options_factory.build();
 
-  it.todo(
-    "should throw an error when message analysis is selected because it is not yet supported"
-  );
+    const analysis_options = new AnalysisOptions(options);
+
+    expect(analysis_options.verbose_results).toBe(false);
+  });
+
+  it("should throw an error when required 'analysis_type' parameter is not provided", () => {
+    const options = { log_file: "some/path/to/logfile.log" } as any;
+
+    expect(() => new AnalysisOptions(options)).toThrowError(/analysis_type/);
+  });
+
+  it("should throw an error when required 'log_file' parameter is not provided", () => {
+    const options = { analysis_type: "age" as const } as any;
+
+    expect(() => new AnalysisOptions(options)).toThrowError(/log_file/);
+  });
+
+  it("should throw an error when 'age' analysis is selected but required 'age_time_now' parameter is not provided", () => {
+    const options = {
+      analysis_type: "age" as const,
+      log_file: "some/path/to/logfile.log",
+    };
+
+    expect(() => new AnalysisOptions(options as any)).toThrowError(
+      /age_time_now/
+    );
+  });
+
+  it("should throw an error when 'message' analysis is selected because it is not yet supported", () => {
+    const options = {
+      analysis_type: "message" as const,
+      log_file: "some/path/to/logfile.log",
+    };
+
+    expect(() => new AnalysisOptions(options)).toThrowError(
+      /not yet supported/
+    );
+  });
 });

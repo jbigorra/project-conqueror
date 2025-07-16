@@ -15,4 +15,5 @@ export type AnalysisType =
   | "refactoring-main-dev"
   | "revisions"
   | "soc"
-  | "summary";
+  | "summary"
+  | "message";
