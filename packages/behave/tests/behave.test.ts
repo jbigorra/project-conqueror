@@ -14,17 +14,39 @@ describe("behave", () => {
         result: "3",
       },
     ];
-    analysis.run.mockResolvedValue(expected_analysis_result);
+    analysis.run.mockResolvedValue({
+      data: expected_analysis_result,
+      error: undefined,
+    });
     const options = analysis_options_factory.build();
     const behave = new Behave(analysis);
 
     const result = await behave.run_analysis(options);
 
     expect(analysis.run).toHaveBeenCalledWith(options);
-    expect(result).toEqual(expected_analysis_result);
+    expect(result).toEqual({
+      data: expected_analysis_result,
+      error: undefined,
+    });
   });
 
-  it.todo("should return an error when the analysis run rails");
+  it("should return an error when the analysis run rails", async () => {
+    const analysis = mock<IAnalysisRunner>();
+    const expected_error = new Error("Analysis failed");
+    analysis.run.mockResolvedValue({
+      data: undefined,
+      error: expected_error,
+    });
+    const options = analysis_options_factory.build();
+    const behave = new Behave(analysis);
+
+    const result = await behave.run_analysis(options);
+
+    expect(result).toEqual({
+      data: undefined,
+      error: expected_error,
+    });
+  });
 });
 
 describe("AnalysisOptions", () => {

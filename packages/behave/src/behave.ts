@@ -1,5 +1,5 @@
 import { AnalysisType } from "./analyses/types";
-import { IAnalysisRunner } from "./runners/analysis_runner";
+import { AnalysisResult, IAnalysisRunner } from "./runners/analysis_runner";
 
 /**
  * The date string is in the format of "YYYY-MM-DD"
@@ -61,9 +61,7 @@ export class AnalysisOptions {
 export class Behave {
   constructor(private readonly analysis: IAnalysisRunner) {}
 
-  async run_analysis(
-    options: AnalysisOptions
-  ): Promise<{ [key: string]: string }[]> {
+  async run_analysis(options: AnalysisOptions): Promise<AnalysisResult> {
     return await this.analysis.run(options);
   }
 }
