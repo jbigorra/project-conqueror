@@ -32,14 +32,14 @@ type RegexExpressionToMatch = string;
 type Options = {
   analysis_type: AnalysisType;
   log_file: LogFilePath;
-  rows?: number;
-  min_revs?: number;
-  min_shared_revs?: number;
-  min_coupling?: number;
-  max_coupling?: number;
-  max_changeset_size?: number;
+  rows?: string;
+  min_revs?: string;
+  min_shared_revs?: string;
+  min_coupling?: string;
+  max_coupling?: string;
+  max_changeset_size?: string;
   expression_to_match?: RegexExpressionToMatch;
-  temporal_period?: number;
+  temporal_period?: string;
   age_time_now?: DateString;
   input_encoding?: InputEncoding;
   group?: LayersFilePath;
@@ -47,6 +47,9 @@ type Options = {
   verbose_results?: boolean;
 };
 
+/**
+ * All the options for the analysis must be set as a string.
+ */
 export class AnalysisOptions {
   /**
    * The type of analysis to run.
@@ -59,27 +62,27 @@ export class AnalysisOptions {
   /**
    * The number of rows to return.
    */
-  readonly rows?: number;
+  readonly rows?: string;
   /**
    * The minimum number of revisions per entity to consider.
    */
-  readonly min_revs?: number;
+  readonly min_revs?: string;
   /**
    * The minimum number of shared revisions per entity to consider.
    */
-  readonly min_shared_revs?: number;
+  readonly min_shared_revs?: string;
   /**
    * The minimum coupling between two entities to consider (percentage).
    */
-  readonly min_coupling?: number;
+  readonly min_coupling?: string;
   /**
    * The maximum coupling between two entities to consider (percentage).
    */
-  readonly max_coupling?: number;
+  readonly max_coupling?: string;
   /**
    * Maximum number of modules in a change set if it shall be included in a coupling analysis.
    */
-  readonly max_changeset_size?: number;
+  readonly max_changeset_size?: string;
   /**
    * A regex to match against commit messages. Used with -messages analyses.
    */
@@ -87,7 +90,7 @@ export class AnalysisOptions {
   /**
    * Considers all commits during the rolling temporal period as a single, logical commit set in number of days. Used with -coupling analyses.
    */
-  readonly temporal_period?: number;
+  readonly temporal_period?: string;
   /**
    * Specify a date as YYYY-MM-dd that counts as time zero when doing a code age analysis.
    */
@@ -124,7 +127,7 @@ export class AnalysisOptions {
   /**
    * Includes additional analysis details together with the results. Only implemented for change coupling.
    */
-  readonly verbose_results: boolean;
+  readonly verbose_results: string;
 
   constructor(options: Options) {
     this._validate(options);
@@ -142,7 +145,47 @@ export class AnalysisOptions {
     this.input_encoding = options.input_encoding;
     this.group = options.group;
     this.team_map_file = options.team_map_file;
-    this.verbose_results = options.verbose_results ?? false;
+    this.verbose_results = options.verbose_results ? "--verbose-results" : "";
+  }
+
+  to_args(): {
+    required_args: string[];
+    optional_args: string[];
+    optional_boolean_args: string[];
+  } {
+    const required_args = [
+      "--log",
+      this.log_file,
+      "--analysis",
+      this.analysis_type,
+    ];
+    const optional_args: string[] = [];
+    const optional_boolean_args: string[] = [];
+    const addIfDefined = (value: any, arg: string) => {
+      if (value !== undefined) {
+        optional_args.push(arg, value.toString());
+      }
+    };
+
+    addIfDefined(this.temporal_period, "--temporal-period");
+    addIfDefined(this.rows, "--rows");
+    addIfDefined(this.min_revs, "--min-revs");
+    addIfDefined(this.min_shared_revs, "--min-shared-revs");
+    addIfDefined(this.min_coupling, "--min-coupling");
+    addIfDefined(this.max_coupling, "--max-coupling");
+    addIfDefined(this.max_changeset_size, "--max-changeset-size");
+    addIfDefined(this.expression_to_match, "--expression-to-match");
+    addIfDefined(this.input_encoding, "--input-encoding");
+    addIfDefined(this.group, "--group");
+    addIfDefined(this.team_map_file, "--team-map-file");
+
+    if (this.verbose_results) optional_boolean_args.push("--verbose-results");
+
+    return {
+      required_args,
+      optional_args,
+      optional_boolean_args,
+    };
   }
 
   private _validate(options: Options): void {

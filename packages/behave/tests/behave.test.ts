@@ -63,7 +63,7 @@ describe("AnalysisOptions", () => {
 
     const analysis_options = new AnalysisOptions(options);
 
-    expect(analysis_options.verbose_results).toBe(false);
+    expect(analysis_options.verbose_results).toBe("");
   });
 
   it("should throw an error when required 'analysis_type' parameter is not provided", () => {
