@@ -3,8 +3,8 @@ export type CLIResult = {
   stderr: string;
   exit_code: number;
   error_message: () => string;
-  success: () => boolean;
-  failure: () => boolean;
+  is_success: () => boolean;
+  is_failure: () => boolean;
 };
 
 export type CLIExecutorArgs = {

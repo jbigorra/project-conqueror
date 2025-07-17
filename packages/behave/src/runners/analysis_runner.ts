@@ -14,8 +14,14 @@ export class AnalysisRunner implements IAnalysisRunner {
   constructor(private readonly cli_executor: ICLIExecutor) {}
 
   async run(options: AnalysisOptions): Promise<AnalysisResult> {
-    const result = await this.cli_executor.execute(options.to_args());
+    const cli_result = await this.cli_executor.execute(options.to_args());
 
+    if (cli_result.is_failure()) {
+      return {
+        data: undefined,
+        error: new Error(cli_result.error_message()),
+      };
+    }
     return {
       data: undefined,
       error: undefined,

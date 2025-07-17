@@ -1,34 +1,40 @@
 import { describe, expect, it } from "vitest";
 import { mock } from "vitest-mock-extended";
-import { ICLIExecutor } from "../../src/dependencies/interfaces";
+import { CLIResult, ICLIExecutor } from "../../src/dependencies/interfaces";
 import { AnalysisRunner } from "../../src/runners/analysis_runner";
 import { analysis_options_factory } from "../fixtures/factories/analysis_options_factory";
 
 describe("AnalysisRunner", () => {
-  it.todo(
-    "should return an error when an analysis strategy fails to execute",
-    async () => {
-      const cli_executor = mock<ICLIExecutor>();
-      const analysisRunner = new AnalysisRunner(cli_executor);
-      const options = analysis_options_factory.build();
+  it("should return an error when an cli_executor fails to execute", async () => {
+    const cli_executor = mock<ICLIExecutor>();
+    const error_message = "Failed to execute";
+    cli_executor.execute.mockResolvedValue({
+      error_message: () => error_message,
+      is_failure: () => true,
+    } as CLIResult);
 
-      const result = await analysisRunner.run(options);
+    const analysis_runner = new AnalysisRunner(cli_executor);
+    const options = analysis_options_factory.build();
 
-      expect(result).toEqual({
-        data: undefined,
-        error: expect.any(Error),
-      });
-    }
-  );
+    const { data, error } = await analysis_runner.run(options);
+
+    expect(data).toBeUndefined();
+    expect(error).toBeInstanceOf(Error);
+    expect(error!.message).toBe(error_message);
+  });
 
   it("should call the cli_executor with the correct arguments", async () => {
     const cli_executor = mock<ICLIExecutor>();
-    const analysisRunner = new AnalysisRunner(cli_executor);
+    cli_executor.execute.mockResolvedValue({
+      is_failure: () => false,
+    } as CLIResult);
+
+    const analysis_runner = new AnalysisRunner(cli_executor);
     const options = analysis_options_factory.build({
       analysis_type: "abs-churn",
     });
 
-    await analysisRunner.run(options);
+    await analysis_runner.run(options);
 
     expect(cli_executor.execute).toHaveBeenCalledWith({
       required_args: [
