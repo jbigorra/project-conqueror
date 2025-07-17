@@ -1,8 +1,8 @@
 # IDEs
 .vscode
 .idea
-.cursorrules
-
+!.cursor/rules/**/*.mdc
+.cursor
 # Node
 node_modules
 

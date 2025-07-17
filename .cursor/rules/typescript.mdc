@@ -1,0 +1,14 @@
+---
+description: Defines the rules for writing TypeScript code.
+globs:
+ - "**/*.{ts,js,mjs}"
+alwaysApply: true
+---
+
+# Formatting
+
+- Always use snake_case for variable names.
+- Always use snake_case for function and method names.
+- Always use PascalCase for class names.
+- Always use PascalCase for interface names with the "I" prefix.
+- Always use PascalCase for type names with the "T" prefix.
