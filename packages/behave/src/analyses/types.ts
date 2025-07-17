@@ -1,4 +1,4 @@
-export type AnalysisType =
+export type TAnalysisType =
   | "abs-churn"
   | "age"
   | "author-churn"

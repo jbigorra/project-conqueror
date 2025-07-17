@@ -1,19 +1,19 @@
 import { AnalysisOptions } from "../behave";
 import { ICLIExecutor } from "../dependencies/interfaces";
 
-export type AnalysisResult = {
+export type TAnalysisResult = {
   data: { [key: string]: string }[] | undefined;
   error: Error | undefined;
 };
 
 export interface IAnalysisRunner {
-  run(options: AnalysisOptions): Promise<AnalysisResult>;
+  run(options: AnalysisOptions): Promise<TAnalysisResult>;
 }
 
 export class AnalysisRunner implements IAnalysisRunner {
   constructor(private readonly cli_executor: ICLIExecutor) {}
 
-  async run(options: AnalysisOptions): Promise<AnalysisResult> {
+  async run(options: AnalysisOptions): Promise<TAnalysisResult> {
     const cli_result = await this.cli_executor.execute(options.to_args());
 
     if (cli_result.is_failure()) {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { mock } from "vitest-mock-extended";
-import { CLIResult, ICLIExecutor } from "../../src/dependencies/interfaces";
+import { ICLIExecutor, TCLIResult } from "../../src/dependencies/interfaces";
 import { AnalysisRunner } from "../../src/runners/analysis_runner";
 import { analysis_options_factory } from "../fixtures/factories/analysis_options_factory";
 
@@ -11,7 +11,7 @@ describe("AnalysisRunner", () => {
     cli_executor.execute.mockResolvedValue({
       error_message: () => error_message,
       is_failure: () => true,
-    } as CLIResult);
+    } as TCLIResult);
 
     const analysis_runner = new AnalysisRunner(cli_executor);
     const options = analysis_options_factory.build();
@@ -27,7 +27,7 @@ describe("AnalysisRunner", () => {
     const cli_executor = mock<ICLIExecutor>();
     cli_executor.execute.mockResolvedValue({
       is_failure: () => false,
-    } as CLIResult);
+    } as TCLIResult);
 
     const analysis_runner = new AnalysisRunner(cli_executor);
     const options = analysis_options_factory.build({

@@ -1,49 +1,49 @@
-import { AnalysisType } from "./analyses/types";
-import { AnalysisResult, IAnalysisRunner } from "./runners/analysis_runner";
+import { TAnalysisType } from "./analyses/types";
+import { IAnalysisRunner, TAnalysisResult } from "./runners/analysis_runner";
 
 /**
  * The date string is in the format of "YYYY-MM-DD"
  */
-type DateString = string;
+type TDateString = string;
 
 /**
  * Absolute path to the log file.
  */
-type LogFilePath = string;
+type TLogFilePath = string;
 
 /**
  * Absolute path to the layers file.
  */
-type LayersFilePath = string;
+type TLayersFilePath = string;
 
 /**
  * The input encoding of the log file. Specify an encoding other than UTF-8 for the log file.
  */
-type InputEncoding = "utf-8" | string;
+type TInputEncoding = "utf-8" | string;
 
 /**
  * A regex to match against commit messages. Used with -messages analyses.
  */
-type RegexExpressionToMatch = string;
+type TRegexExpressionToMatch = string;
 
 /**
  * Options for the analysis.
  */
-type Options = {
-  analysis_type: AnalysisType;
-  log_file: LogFilePath;
+type TOptions = {
+  analysis_type: TAnalysisType;
+  log_file: TLogFilePath;
   rows?: string;
   min_revs?: string;
   min_shared_revs?: string;
   min_coupling?: string;
   max_coupling?: string;
   max_changeset_size?: string;
-  expression_to_match?: RegexExpressionToMatch;
+  expression_to_match?: TRegexExpressionToMatch;
   temporal_period?: string;
-  age_time_now?: DateString;
-  input_encoding?: InputEncoding;
-  group?: LayersFilePath;
-  team_map_file?: LayersFilePath;
+  age_time_now?: TDateString;
+  input_encoding?: TInputEncoding;
+  group?: TLayersFilePath;
+  team_map_file?: TLayersFilePath;
   verbose_results?: boolean;
 };
 
@@ -54,11 +54,11 @@ export class AnalysisOptions {
   /**
    * The type of analysis to run.
    */
-  readonly analysis_type: AnalysisType;
+  readonly analysis_type: TAnalysisType;
   /**
    * The absolute path to the log file.
    */
-  readonly log_file: LogFilePath;
+  readonly log_file: TLogFilePath;
   /**
    * The number of rows to return.
    */
@@ -86,7 +86,7 @@ export class AnalysisOptions {
   /**
    * A regex to match against commit messages. Used with -messages analyses.
    */
-  readonly expression_to_match?: RegexExpressionToMatch;
+  readonly expression_to_match?: TRegexExpressionToMatch;
   /**
    * Considers all commits during the rolling temporal period as a single, logical commit set in number of days. Used with -coupling analyses.
    */
@@ -94,11 +94,11 @@ export class AnalysisOptions {
   /**
    * Specify a date as YYYY-MM-dd that counts as time zero when doing a code age analysis.
    */
-  readonly age_time_now?: DateString;
+  readonly age_time_now?: TDateString;
   /**
    * The input encoding of the log file.
    */
-  readonly input_encoding?: InputEncoding;
+  readonly input_encoding?: TInputEncoding;
   /**
    * A file with a pre-defined set of layers. The data will be aggregated according to the group of layers.
    * Example: layers.txt
@@ -109,7 +109,7 @@ export class AnalysisOptions {
    *   Data Layer => src/main/java/com/company/data/.*
    * ```
    */
-  readonly group?: LayersFilePath;
+  readonly group?: TLayersFilePath;
 
   /**
    * A CSV file with author,team that translates individuals into teams.
@@ -122,14 +122,14 @@ export class AnalysisOptions {
    *   Jim Beam,Team A
    * ```
    */
-  readonly team_map_file?: LayersFilePath;
+  readonly team_map_file?: TLayersFilePath;
 
   /**
    * Includes additional analysis details together with the results. Only implemented for change coupling.
    */
   readonly verbose_results: string;
 
-  constructor(options: Options) {
+  constructor(options: TOptions) {
     this._validate(options);
     this.analysis_type = options.analysis_type;
     this.log_file = options.log_file;
@@ -188,7 +188,7 @@ export class AnalysisOptions {
     };
   }
 
-  private _validate(options: Options): void {
+  private _validate(options: TOptions): void {
     if (!options.analysis_type) {
       throw new Error("analysis_type is required");
     }
@@ -227,7 +227,7 @@ export class Behave {
    * @param options - The options for the analysis.
    * @returns The analysis result.
    */
-  async run_analysis(options: AnalysisOptions): Promise<AnalysisResult> {
+  async run_analysis(options: AnalysisOptions): Promise<TAnalysisResult> {
     return await this.analysis.run(options);
   }
 }
