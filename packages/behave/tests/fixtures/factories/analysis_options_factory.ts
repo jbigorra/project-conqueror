@@ -1,20 +1,20 @@
 import { TOptions } from "@/behave/behave";
 import { Factory } from "fishery";
 
-export const analysis_options_factory = Factory.define<TOptions>(() => ({
-  analysis_type: "abs-churn" as const,
-  log_file: "git.log",
+export const analysisOptionsFactory = Factory.define<TOptions>(() => ({
+  analysisType: "abs-churn" as const,
+  logFile: "git.log",
   rows: "20",
-  min_revs: "10",
-  min_shared_revs: "10",
-  min_coupling: "2",
-  max_coupling: "10",
-  max_changeset_size: "25",
-  expression_to_match: "10",
-  temporal_period: "1",
-  age_time_now: "2025-07-12",
-  input_encoding: "utf-8",
+  minRevs: "10",
+  minSharedRevs: "10",
+  minCoupling: "2",
+  maxCoupling: "10",
+  maxChangesetSize: "25",
+  expressionToMatch: "10",
+  temporalPeriod: "1",
+  ageTimeNow: "2025-07-12",
+  inputEncoding: "utf-8",
   group: "10",
-  team_map_file: "team_map.csv",
-  verbose_results: true,
+  teamMapFile: "team_map.csv",
+  verboseResults: true,
 }));

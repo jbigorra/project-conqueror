@@ -3,87 +3,87 @@ import { IAnalysisRunner } from "@/behave/runners/analysis_runner";
 import { Result } from "@/lib/patterns";
 import { describe, expect, it } from "vitest";
 import { mock } from "vitest-mock-extended";
-import { analysis_options_factory } from "./fixtures/factories/analysis_options_factory";
+import { analysisOptionsFactory } from "./fixtures/factories/analysis_options_factory";
 
 describe("behave", () => {
   it("should return the analysis result", async () => {
     const analysis = mock<IAnalysisRunner>();
-    const expected_analysis_result = [
+    const expectedAnalysisResult = [
       {
         csv: "1",
         analysis: "2",
         result: "3",
       },
     ];
-    analysis.run.mockResolvedValue(Result.success(expected_analysis_result));
-    const options = new AnalysisOptions(analysis_options_factory.build());
+    analysis.run.mockResolvedValue(Result.success(expectedAnalysisResult));
+    const options = new AnalysisOptions(analysisOptionsFactory.build());
     const behave = new Behave(analysis);
 
-    const result = await behave.run_analysis(options);
+    const result = await behave.runAnalysis(options);
 
     expect(analysis.run).toHaveBeenCalledWith(options);
-    expect(result).toEqual(expected_analysis_result);
+    expect(result).toEqual(expectedAnalysisResult);
   });
 
   it("should return an error when the analysis run fails", async () => {
     const analysis = mock<IAnalysisRunner>();
-    const expected_error = new Error("Analysis failed");
-    analysis.run.mockResolvedValue(Result.error(expected_error));
-    const options = new AnalysisOptions(analysis_options_factory.build());
+    const expectedError = new Error("Analysis failed");
+    analysis.run.mockResolvedValue(Result.error(expectedError));
+    const options = new AnalysisOptions(analysisOptionsFactory.build());
     const behave = new Behave(analysis);
 
-    const result = await behave.run_analysis(options);
+    const result = await behave.runAnalysis(options);
 
-    expect(result).toEqual(expected_error);
+    expect(result).toEqual(expectedError);
   });
 });
 
 describe("AnalysisOptions", () => {
   it("should be defined", () => {
-    const options = analysis_options_factory.build();
+    const options = analysisOptionsFactory.build();
 
-    const analysis_options = new AnalysisOptions(options);
+    const analysisOptions = new AnalysisOptions(options);
 
-    expect(analysis_options).toBeDefined();
+    expect(analysisOptions).toBeDefined();
   });
 
-  it("should default 'verbose_results' to empty string", () => {
-    const options = analysis_options_factory.build({
-      verbose_results: undefined,
+  it("should default 'verboseResults' to empty string", () => {
+    const options = analysisOptionsFactory.build({
+      verboseResults: undefined,
     });
 
-    const analysis_options = new AnalysisOptions(options);
+    const analysisOptions = new AnalysisOptions(options);
 
-    expect(analysis_options.verbose_results).toBe("");
+    expect(analysisOptions.verboseResults).toBe("");
   });
 
-  it("should throw an error when required 'analysis_type' parameter is not provided", () => {
-    const options = { log_file: "some/path/to/logfile.log" } as any;
+  it("should throw an error when required 'analysisType' parameter is not provided", () => {
+    const options = { logFile: "some/path/to/logfile.log" } as any;
 
-    expect(() => new AnalysisOptions(options)).toThrowError(/analysis_type/);
+    expect(() => new AnalysisOptions(options)).toThrowError(/analysisType/);
   });
 
-  it("should throw an error when required 'log_file' parameter is not provided", () => {
-    const options = { analysis_type: "age" as const } as any;
+  it("should throw an error when required 'logFile' parameter is not provided", () => {
+    const options = { analysisType: "age" as const } as any;
 
-    expect(() => new AnalysisOptions(options)).toThrowError(/log_file/);
+    expect(() => new AnalysisOptions(options)).toThrowError(/logFile/);
   });
 
-  it("should throw an error when 'age' analysis is selected but required 'age_time_now' parameter is not provided", () => {
+  it("should throw an error when 'age' analysis is selected but required 'ageTimeNow' parameter is not provided", () => {
     const options = {
-      analysis_type: "age" as const,
-      log_file: "some/path/to/logfile.log",
+      analysisType: "age" as const,
+      logFile: "some/path/to/logfile.log",
     };
 
     expect(() => new AnalysisOptions(options as any)).toThrowError(
-      /age_time_now/
+      /ageTimeNow/
     );
   });
 
   it("should throw an error when 'message' analysis is selected because it is not yet supported", () => {
     const options = {
-      analysis_type: "message" as const,
-      log_file: "some/path/to/logfile.log",
+      analysisType: "message" as const,
+      logFile: "some/path/to/logfile.log",
     };
 
     expect(() => new AnalysisOptions(options)).toThrowError(

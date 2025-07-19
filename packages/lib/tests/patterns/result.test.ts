@@ -1,4 +1,3 @@
-
 import { Result } from "@/lib/patterns/result";
 import { describe, expect, it } from "vitest";
 
@@ -19,13 +18,13 @@ describe("Result", () => {
     });
 
     it("should work with different types", () => {
-      const string_result = Result.success("hello");
-      const number_result = Result.success(42);
-      const object_result = Result.success({ key: "value" });
+      const stringResult = Result.success("hello");
+      const numberResult = Result.success(42);
+      const objectResult = Result.success({ key: "value" });
 
-      expect(string_result.getValue()).toBe("hello");
-      expect(number_result.getValue()).toBe(42);
-      expect(object_result.getValue()).toEqual({ key: "value" });
+      expect(stringResult.getValue()).toBe("hello");
+      expect(numberResult.getValue()).toBe(42);
+      expect(objectResult.getValue()).toEqual({ key: "value" });
     });
   });
 
@@ -142,44 +141,44 @@ describe("Result", () => {
 
   describe("integration scenarios", () => {
     it("should handle validation workflow", () => {
-      const validate_age = (age: number): Result<number> => {
+      const validateAge = (age: number): Result<number> => {
         if (age < 0) return Result.error(new Error("Age cannot be negative"));
         if (age > 150) return Result.error(new Error("Age seems unrealistic"));
         return Result.success(age);
       };
 
-      const calculate_birth_year = (age: number): Result<number> => {
-        const current_year = new Date().getFullYear();
-        return Result.success(current_year - age);
+      const calculateBirthYear = (age: number): Result<number> => {
+        const currentYear = new Date().getFullYear();
+        return Result.success(currentYear - age);
       };
 
-      const result = validate_age(25).flatMap(calculate_birth_year);
+      const result = validateAge(25).flatMap(calculateBirthYear);
 
       expect(result.isSuccess()).toBe(true);
       expect(result.getValue()).toBe(new Date().getFullYear() - 25);
     });
 
     it("should handle validation failure", () => {
-      const validate_age = (age: number): Result<number> => {
+      const validateAge = (age: number): Result<number> => {
         if (age < 0) return Result.error(new Error("Age cannot be negative"));
         return Result.success(age);
       };
 
-      const result = validate_age(-5);
+      const result = validateAge(-5);
 
       expect(result.isError()).toBe(true);
       expect(result.getError().message).toBe("Age cannot be negative");
     });
 
     it("should handle file operation simulation", () => {
-      const read_file = (filename: string): Result<string> => {
+      const readFile = (filename: string): Result<string> => {
         if (filename === "missing.txt") {
           return Result.error(new Error("File not found"));
         }
         return Result.success('{"key": "value"}');
       };
 
-      const parse_content = (content: string): Result<object> => {
+      const parseContent = (content: string): Result<object> => {
         try {
           return Result.success(JSON.parse(content));
         } catch {
@@ -187,20 +186,20 @@ describe("Result", () => {
         }
       };
 
-      const result = read_file("data.json").flatMap(parse_content);
+      const result = readFile("data.json").flatMap(parseContent);
 
       expect(result.isSuccess()).toBe(true);
     });
 
     it("should handle file operation failure", () => {
-      const read_file = (filename: string): Result<string> => {
+      const readFile = (filename: string): Result<string> => {
         if (filename === "missing.txt") {
           return Result.error(new Error("File not found"));
         }
         return Result.success("file content");
       };
 
-      const result = read_file("missing.txt");
+      const result = readFile("missing.txt");
 
       expect(result.isError()).toBe(true);
       expect(result.getError().message).toBe("File not found");
@@ -209,32 +208,32 @@ describe("Result", () => {
 
   describe("edge cases", () => {
     it("should handle null and undefined values", () => {
-      const null_result = Result.success(null);
-      const undefined_result = Result.success(undefined);
+      const nullResult = Result.success(null);
+      const undefinedResult = Result.success(undefined);
 
-      expect(null_result.getValue()).toBe(null);
-      expect(undefined_result.getValue()).toBe(undefined);
+      expect(nullResult.getValue()).toBe(null);
+      expect(undefinedResult.getValue()).toBe(undefined);
     });
 
     it("should handle empty string and zero values", () => {
-      const empty_string = Result.success("");
+      const emptyString = Result.success("");
       const zero = Result.success(0);
 
-      expect(empty_string.getValue()).toBe("");
+      expect(emptyString.getValue()).toBe("");
       expect(zero.getValue()).toBe(0);
     });
 
     it("should handle complex objects", () => {
-      const complex_object = {
+      const complexObject = {
         nested: {
           array: [1, 2, 3],
           function: () => "test",
         },
       };
 
-      const result = Result.success(complex_object);
+      const result = Result.success(complexObject);
 
-      expect(result.getValue()).toEqual(complex_object);
+      expect(result.getValue()).toEqual(complexObject);
       expect(result.getValue().nested.array).toEqual([1, 2, 3]);
     });
   });

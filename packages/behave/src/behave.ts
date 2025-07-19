@@ -30,21 +30,21 @@ type TRegexExpressionToMatch = string;
  * Options for the analysis.
  */
 export type TOptions = {
-  analysis_type: TAnalysisType;
-  log_file: TLogFilePath;
+  analysisType: TAnalysisType;
+  logFile: TLogFilePath;
   rows?: string;
-  min_revs?: string;
-  min_shared_revs?: string;
-  min_coupling?: string;
-  max_coupling?: string;
-  max_changeset_size?: string;
-  expression_to_match?: TRegexExpressionToMatch;
-  temporal_period?: string;
-  age_time_now?: TDateString;
-  input_encoding?: TInputEncoding;
+  minRevs?: string;
+  minSharedRevs?: string;
+  minCoupling?: string;
+  maxCoupling?: string;
+  maxChangesetSize?: string;
+  expressionToMatch?: TRegexExpressionToMatch;
+  temporalPeriod?: string;
+  ageTimeNow?: TDateString;
+  inputEncoding?: TInputEncoding;
   group?: TLayersFilePath;
-  team_map_file?: TLayersFilePath;
-  verbose_results?: boolean;
+  teamMapFile?: TLayersFilePath;
+  verboseResults?: boolean;
 };
 
 /**
@@ -54,11 +54,11 @@ export class AnalysisOptions {
   /**
    * The type of analysis to run.
    */
-  readonly analysis_type: TAnalysisType;
+  readonly analysisType: TAnalysisType;
   /**
    * The absolute path to the log file.
    */
-  readonly log_file: TLogFilePath;
+  readonly logFile: TLogFilePath;
   /**
    * The number of rows to return.
    */
@@ -66,39 +66,39 @@ export class AnalysisOptions {
   /**
    * The minimum number of revisions per entity to consider.
    */
-  readonly min_revs?: string;
+  readonly minRevs?: string;
   /**
    * The minimum number of shared revisions per entity to consider.
    */
-  readonly min_shared_revs?: string;
+  readonly minSharedRevs?: string;
   /**
    * The minimum coupling between two entities to consider (percentage).
    */
-  readonly min_coupling?: string;
+  readonly minCoupling?: string;
   /**
    * The maximum coupling between two entities to consider (percentage).
    */
-  readonly max_coupling?: string;
+  readonly maxCoupling?: string;
   /**
    * Maximum number of modules in a change set if it shall be included in a coupling analysis.
    */
-  readonly max_changeset_size?: string;
+  readonly maxChangesetSize?: string;
   /**
    * A regex to match against commit messages. Used with -messages analyses.
    */
-  readonly expression_to_match?: TRegexExpressionToMatch;
+  readonly expressionToMatch?: TRegexExpressionToMatch;
   /**
    * Considers all commits during the rolling temporal period as a single, logical commit set in number of days. Used with -coupling analyses.
    */
-  readonly temporal_period?: string;
+  readonly temporalPeriod?: string;
   /**
    * Specify a date as YYYY-MM-dd that counts as time zero when doing a code age analysis.
    */
-  readonly age_time_now?: TDateString;
+  readonly ageTimeNow?: TDateString;
   /**
    * The input encoding of the log file.
    */
-  readonly input_encoding?: TInputEncoding;
+  readonly inputEncoding?: TInputEncoding;
   /**
    * A file with a pre-defined set of layers. The data will be aggregated according to the group of layers.
    * Example: layers.txt
@@ -122,42 +122,42 @@ export class AnalysisOptions {
    *   Jim Beam,Team A
    * ```
    */
-  readonly team_map_file?: TLayersFilePath;
+  readonly teamMapFile?: TLayersFilePath;
 
   /**
    * Includes additional analysis details together with the results. Only implemented for change coupling.
    */
-  readonly verbose_results: string;
+  readonly verboseResults: string;
 
   constructor(options: TOptions) {
     this._validate(options);
-    this.analysis_type = options.analysis_type;
-    this.log_file = options.log_file;
+    this.analysisType = options.analysisType;
+    this.logFile = options.logFile;
     this.rows = options.rows;
-    this.min_revs = options.min_revs;
-    this.min_shared_revs = options.min_shared_revs;
-    this.min_coupling = options.min_coupling;
-    this.max_coupling = options.max_coupling;
-    this.max_changeset_size = options.max_changeset_size;
-    this.expression_to_match = options.expression_to_match;
-    this.temporal_period = options.temporal_period;
-    this.age_time_now = options.age_time_now;
-    this.input_encoding = options.input_encoding;
+    this.minRevs = options.minRevs;
+    this.minSharedRevs = options.minSharedRevs;
+    this.minCoupling = options.minCoupling;
+    this.maxCoupling = options.maxCoupling;
+    this.maxChangesetSize = options.maxChangesetSize;
+    this.expressionToMatch = options.expressionToMatch;
+    this.temporalPeriod = options.temporalPeriod;
+    this.ageTimeNow = options.ageTimeNow;
+    this.inputEncoding = options.inputEncoding;
     this.group = options.group;
-    this.team_map_file = options.team_map_file;
-    this.verbose_results = options.verbose_results ? "--verbose-results" : "";
+    this.teamMapFile = options.teamMapFile;
+    this.verboseResults = options.verboseResults ? "--verbose-results" : "";
   }
 
-  to_args(): {
+  toArgs(): {
     requiredArgs: string[];
     optionalArgs: string[];
     optionalBooleanArgs: string[];
   } {
     const requiredArgs = [
       "--log",
-      this.log_file,
+      this.logFile,
       "--analysis",
-      this.analysis_type,
+      this.analysisType,
     ];
     const optionalArgs: string[] = [];
     const optionalBooleanArgs: string[] = [];
@@ -167,19 +167,19 @@ export class AnalysisOptions {
       }
     };
 
-    addIfDefined(this.temporal_period, "--temporal-period");
+    addIfDefined(this.temporalPeriod, "--temporal-period");
     addIfDefined(this.rows, "--rows");
-    addIfDefined(this.min_revs, "--min-revs");
-    addIfDefined(this.min_shared_revs, "--min-shared-revs");
-    addIfDefined(this.min_coupling, "--min-coupling");
-    addIfDefined(this.max_coupling, "--max-coupling");
-    addIfDefined(this.max_changeset_size, "--max-changeset-size");
-    addIfDefined(this.expression_to_match, "--expression-to-match");
-    addIfDefined(this.input_encoding, "--input-encoding");
+    addIfDefined(this.minRevs, "--min-revs");
+    addIfDefined(this.minSharedRevs, "--min-shared-revs");
+    addIfDefined(this.minCoupling, "--min-coupling");
+    addIfDefined(this.maxCoupling, "--max-coupling");
+    addIfDefined(this.maxChangesetSize, "--max-changeset-size");
+    addIfDefined(this.expressionToMatch, "--expression-to-match");
+    addIfDefined(this.inputEncoding, "--input-encoding");
     addIfDefined(this.group, "--group");
-    addIfDefined(this.team_map_file, "--team-map-file");
+    addIfDefined(this.teamMapFile, "--team-map-file");
 
-    if (this.verbose_results) optionalBooleanArgs.push("--verbose-results");
+    if (this.verboseResults) optionalBooleanArgs.push("--verbose-results");
 
     return {
       requiredArgs,
@@ -189,17 +189,17 @@ export class AnalysisOptions {
   }
 
   private _validate(options: TOptions): void {
-    if (!options.analysis_type) {
-      throw new Error("analysis_type is required");
+    if (!options.analysisType) {
+      throw new Error("analysisType is required");
     }
-    if (!options.log_file) {
-      throw new Error("log_file is required");
+    if (!options.logFile) {
+      throw new Error("logFile is required");
     }
-    if (options.analysis_type === "age" && !options.age_time_now) {
-      throw new Error("age_time_now is required when analysis_type is 'age'");
+    if (options.analysisType === "age" && !options.ageTimeNow) {
+      throw new Error("ageTimeNow is required when analysisType is 'age'");
     }
-    if (options.analysis_type === "message") {
-      throw new Error("analysis_type 'message' is not yet supported");
+    if (options.analysisType === "message") {
+      throw new Error("analysisType 'message' is not yet supported");
     }
   }
 }
@@ -212,9 +212,9 @@ export class AnalysisOptions {
  * @example
  * ```ts
  * const behave = new Behave(new AnalysisRunner());
- * const result = await behave.run_analysis(new AnalysisOptions({
- *   analysis_type: "abs-churn",
- *   log_file: "my/absolute/path/to/git.log",
+ * const result = await behave.runAnalysis(new AnalysisOptions({
+ *   analysisType: "abs-churn",
+ *   logFile: "my/absolute/path/to/git.log",
  * }));
  * ```
  */
@@ -227,7 +227,7 @@ export class Behave {
    * @param options - The options for the analysis.
    * @returns The analysis result.
    */
-  async run_analysis(
+  async runAnalysis(
     options: AnalysisOptions
   ): Promise<TAnalysisResult | Error> {
     const result = await this.analysis.run(options);
