@@ -1,21 +1,30 @@
 {
-  "name": "behave",
+  "name": "@project-conqueror/behave",
   "version": "0.1.0",
   "description": "A library that executes behavioural code analysis by using code-maat together with other tools for more complex analysis.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    }
-  },
   "scripts": {
     "build": "tsc -b",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "test": "vitest"
   },
   "keywords": [],
   "author": "Juan Bigorra <jbigorra.soft.eng@pm.me>",
   "license": "ISC",
-  "packageManager": "pnpm@10.13.1"
+  "packageManager": "pnpm@10.13.1",
+  "dependencies": {
+    "csv-parse": "^6.0.0",
+    "@project-conqueror/lib": "workspace:^"
+  },
+  "devDependencies": {
+    "@adonisjs/eslint-config": "^2.1.0",
+    "@vitest/ui": "^3.2.4",
+    "eslint": "^9.31.0",
+    "fishery": "^2.3.1",
+    "typescript": "~5.8.3",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.2.4",
+    "vitest-mock-extended": "^3.1.0"
+  }
 }

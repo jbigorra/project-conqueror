@@ -29,7 +29,7 @@ type TRegexExpressionToMatch = string;
 /**
  * Options for the analysis.
  */
-type TOptions = {
+export type TOptions = {
   analysis_type: TAnalysisType;
   log_file: TLogFilePath;
   rows?: string;
@@ -227,7 +227,15 @@ export class Behave {
    * @param options - The options for the analysis.
    * @returns The analysis result.
    */
-  async run_analysis(options: AnalysisOptions): Promise<TAnalysisResult> {
-    return await this.analysis.run(options);
+  async run_analysis(
+    options: AnalysisOptions
+  ): Promise<TAnalysisResult | Error> {
+    const result = await this.analysis.run(options);
+
+    if (result.isError()) {
+      return result.getError();
+    }
+
+    return result.getValue();
   }
 }
