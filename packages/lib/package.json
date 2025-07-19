@@ -8,9 +8,8 @@
     "./patterns": "./src/patterns/index.ts"
   },
   "scripts": {
-    "test": "vitest",
-    "test:ui": "vitest --ui",
-    "tdd": "vitest --watch",
+    "test": "vitest run",
+    "tdd": "vitest",
     "build": "tsc -b",
     "clean": "rm -rf dist"
   },

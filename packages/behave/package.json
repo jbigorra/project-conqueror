@@ -7,7 +7,8 @@
   "scripts": {
     "build": "tsc -b",
     "clean": "rm -rf dist",
-    "test": "vitest"
+    "test": "vitest run",
+    "tdd": "vitest"
   },
   "keywords": [],
   "author": "Juan Bigorra <jbigorra.soft.eng@pm.me>",

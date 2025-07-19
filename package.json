@@ -8,7 +8,7 @@
   ],
   "main": "./dist/index.js",
   "scripts": {
-    "test": "vitest"
+    "test": "pnpm run -r --parallel test"
   },
   "keywords": [],
   "author": "",
