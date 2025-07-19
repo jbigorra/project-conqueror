@@ -1,0 +1,241 @@
+
+import { Result } from "@/lib/patterns/result";
+import { describe, expect, it } from "vitest";
+
+describe("Result", () => {
+  describe("Success", () => {
+    it("should create a success result", () => {
+      const result = Result.success("test value");
+
+      expect(result.isSuccess()).toBe(true);
+      expect(result.isError()).toBe(false);
+      expect(result.getValue()).toBe("test value");
+    });
+
+    it("should throw error when getting error from success", () => {
+      const result = Result.success("test value");
+
+      expect(() => result.getError()).toThrow("Success result has no error");
+    });
+
+    it("should work with different types", () => {
+      const string_result = Result.success("hello");
+      const number_result = Result.success(42);
+      const object_result = Result.success({ key: "value" });
+
+      expect(string_result.getValue()).toBe("hello");
+      expect(number_result.getValue()).toBe(42);
+      expect(object_result.getValue()).toEqual({ key: "value" });
+    });
+  });
+
+  describe("Error", () => {
+    it("should create an error result", () => {
+      const error = new Error("test error");
+      const result = Result.error(error);
+
+      expect(result.isSuccess()).toBe(false);
+      expect(result.isError()).toBe(true);
+      expect(result.getError()).toBe(error);
+    });
+
+    it("should throw error when getting value from error", () => {
+      const error = new Error("test error");
+      const result = Result.error(error);
+
+      expect(() => result.getValue()).toThrow("Failure result has no value");
+    });
+
+    it("should preserve error message", () => {
+      const error = new Error("custom error message");
+      const result = Result.error(error);
+
+      expect(result.getError().message).toBe("custom error message");
+    });
+  });
+
+  describe("map", () => {
+    it("should transform success value", () => {
+      const result = Result.success(5);
+      const mapped = result.map((x) => x * 2);
+
+      expect(mapped.isSuccess()).toBe(true);
+      expect(mapped.getValue()).toBe(10);
+    });
+
+    it("should preserve error when mapping over error", () => {
+      const error = new Error("original error");
+      const result = Result.error<number>(error);
+      const mapped = result.map((x: number) => x * 2);
+
+      expect(mapped.isError()).toBe(true);
+      expect(mapped.getError()).toBe(error);
+    });
+
+    it("should work with type transformations", () => {
+      const result = Result.success("hello");
+      const mapped = result.map((str) => str.length);
+
+      expect(mapped.getValue()).toBe(5);
+    });
+
+    it("should handle async-like transformations", () => {
+      const result = Result.success({ name: "John", age: 30 });
+      const mapped = result.map(
+        (user) => `${user.name} is ${user.age} years old`
+      );
+
+      expect(mapped.getValue()).toBe("John is 30 years old");
+    });
+  });
+
+  describe("flatMap", () => {
+    it("should chain success results", () => {
+      const result = Result.success(5);
+      const chained = result.flatMap((x) => Result.success(x * 2));
+
+      expect(chained.isSuccess()).toBe(true);
+      expect(chained.getValue()).toBe(10);
+    });
+
+    it("should preserve error when flatMapping over error", () => {
+      const error = new Error("original error");
+      const result = Result.error<number>(error);
+      const chained = result.flatMap((x: number) => Result.success(x * 2));
+
+      expect(chained.isError()).toBe(true);
+      expect(chained.getError()).toBe(error);
+    });
+
+    it("should propagate error from chained operation", () => {
+      const result = Result.success(5);
+      const error = new Error("chained error");
+      const chained = result.flatMap(() => Result.error(error));
+
+      expect(chained.isError()).toBe(true);
+      expect(chained.getError()).toBe(error);
+    });
+
+    it("should handle complex chaining", () => {
+      const result = Result.success("hello");
+      const chained = result
+        .flatMap((str) => Result.success(str.length))
+        .flatMap((len) => Result.success(len * 2))
+        .flatMap((num) => Result.success(`Result: ${num}`));
+
+      expect(chained.getValue()).toBe("Result: 10");
+    });
+
+    it("should short-circuit on first error in chain", () => {
+      const error1 = new Error("first error");
+      const error2 = new Error("second error");
+
+      const result = Result.success(5);
+      const chained = result
+        .flatMap(() => Result.error(error1))
+        .flatMap(() => Result.error(error2)); // This should not execute
+
+      expect(chained.isError()).toBe(true);
+      expect(chained.getError()).toBe(error1);
+    });
+  });
+
+  describe("integration scenarios", () => {
+    it("should handle validation workflow", () => {
+      const validate_age = (age: number): Result<number> => {
+        if (age < 0) return Result.error(new Error("Age cannot be negative"));
+        if (age > 150) return Result.error(new Error("Age seems unrealistic"));
+        return Result.success(age);
+      };
+
+      const calculate_birth_year = (age: number): Result<number> => {
+        const current_year = new Date().getFullYear();
+        return Result.success(current_year - age);
+      };
+
+      const result = validate_age(25).flatMap(calculate_birth_year);
+
+      expect(result.isSuccess()).toBe(true);
+      expect(result.getValue()).toBe(new Date().getFullYear() - 25);
+    });
+
+    it("should handle validation failure", () => {
+      const validate_age = (age: number): Result<number> => {
+        if (age < 0) return Result.error(new Error("Age cannot be negative"));
+        return Result.success(age);
+      };
+
+      const result = validate_age(-5);
+
+      expect(result.isError()).toBe(true);
+      expect(result.getError().message).toBe("Age cannot be negative");
+    });
+
+    it("should handle file operation simulation", () => {
+      const read_file = (filename: string): Result<string> => {
+        if (filename === "missing.txt") {
+          return Result.error(new Error("File not found"));
+        }
+        return Result.success('{"key": "value"}');
+      };
+
+      const parse_content = (content: string): Result<object> => {
+        try {
+          return Result.success(JSON.parse(content));
+        } catch {
+          return Result.error(new Error("Invalid JSON"));
+        }
+      };
+
+      const result = read_file("data.json").flatMap(parse_content);
+
+      expect(result.isSuccess()).toBe(true);
+    });
+
+    it("should handle file operation failure", () => {
+      const read_file = (filename: string): Result<string> => {
+        if (filename === "missing.txt") {
+          return Result.error(new Error("File not found"));
+        }
+        return Result.success("file content");
+      };
+
+      const result = read_file("missing.txt");
+
+      expect(result.isError()).toBe(true);
+      expect(result.getError().message).toBe("File not found");
+    });
+  });
+
+  describe("edge cases", () => {
+    it("should handle null and undefined values", () => {
+      const null_result = Result.success(null);
+      const undefined_result = Result.success(undefined);
+
+      expect(null_result.getValue()).toBe(null);
+      expect(undefined_result.getValue()).toBe(undefined);
+    });
+
+    it("should handle empty string and zero values", () => {
+      const empty_string = Result.success("");
+      const zero = Result.success(0);
+
+      expect(empty_string.getValue()).toBe("");
+      expect(zero.getValue()).toBe(0);
+    });
+
+    it("should handle complex objects", () => {
+      const complex_object = {
+        nested: {
+          array: [1, 2, 3],
+          function: () => "test",
+        },
+      };
+
+      const result = Result.success(complex_object);
+
+      expect(result.getValue()).toEqual(complex_object);
+      expect(result.getValue().nested.array).toEqual([1, 2, 3]);
+    });
+  });
+});
