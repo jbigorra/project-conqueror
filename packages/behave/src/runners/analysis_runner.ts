@@ -1,30 +1,40 @@
+import { Result } from "@project-conqueror/lib/patterns";
 import { AnalysisOptions } from "../behave";
-import { ICLIExecutor } from "../dependencies/interfaces";
+import { CodeMaat } from "../dependencies/code_maat/code_maat";
+import { CSVParser } from "../dependencies/csv_parser/csv_parser";
+import { ICLIExecutor, ICSVParser } from "../dependencies/interfaces";
 
-export type TAnalysisResult = {
-  data: { [key: string]: string }[] | undefined;
-  error: Error | undefined;
-};
+export type TAnalysisResult = Record<string, string>[];
 
 export interface IAnalysisRunner {
-  run(options: AnalysisOptions): Promise<TAnalysisResult>;
+  run(options: AnalysisOptions): Promise<Result<TAnalysisResult>>;
 }
 
 export class AnalysisRunner implements IAnalysisRunner {
-  constructor(private readonly cli_executor: ICLIExecutor) {}
+  constructor(
+    private readonly cliExecutor: ICLIExecutor,
+    private readonly csvParser: ICSVParser
+  ) {}
 
-  async run(options: AnalysisOptions): Promise<TAnalysisResult> {
-    const cli_result = await this.cli_executor.execute(options.to_args());
+  static create(dependencies: {
+    cliExecutor?: ICLIExecutor;
+    csvParser?: ICSVParser;
+  }): IAnalysisRunner {
+    const { cliExecutor = new CodeMaat(), csvParser = new CSVParser() } =
+      dependencies;
 
-    if (cli_result.is_failure()) {
-      return {
-        data: undefined,
-        error: new Error(cli_result.error_message()),
-      };
+    return new AnalysisRunner(cliExecutor, csvParser);
+  }
+
+  async run(options: AnalysisOptions): Promise<Result<TAnalysisResult>> {
+    const cliResult = await this.cliExecutor.execute(options.to_args());
+
+    if (cliResult.isFailure()) {
+      return Result.error(new Error(cliResult.errorMessage()));
     }
-    return {
-      data: undefined,
-      error: undefined,
-    };
+
+    const csvResult = await this.csvParser.parse(cliResult.stdout);
+
+    return csvResult;
   }
 }

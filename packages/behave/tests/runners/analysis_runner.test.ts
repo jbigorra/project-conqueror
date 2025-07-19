@@ -1,49 +1,52 @@
+import { AnalysisOptions } from "@/behave/behave";
+import { ICLIExecutor, TCLIResult } from "@/behave/dependencies/interfaces";
+import { AnalysisRunner } from "@/behave/runners/analysis_runner";
 import { describe, expect, it } from "vitest";
 import { mock } from "vitest-mock-extended";
-import { ICLIExecutor, TCLIResult } from "../../src/dependencies/interfaces";
-import { AnalysisRunner } from "../../src/runners/analysis_runner";
 import { analysis_options_factory } from "../fixtures/factories/analysis_options_factory";
 
 describe("AnalysisRunner", () => {
   it("should return an error when an cli_executor fails to execute", async () => {
-    const cli_executor = mock<ICLIExecutor>();
+    const cliExecutor = mock<ICLIExecutor>();
     const error_message = "Failed to execute";
-    cli_executor.execute.mockResolvedValue({
-      error_message: () => error_message,
-      is_failure: () => true,
+    cliExecutor.execute.mockResolvedValue({
+      errorMessage: () => error_message,
+      isFailure: () => true,
     } as TCLIResult);
 
-    const analysis_runner = new AnalysisRunner(cli_executor);
-    const options = analysis_options_factory.build();
+    const analysis_runner = AnalysisRunner.create({ cliExecutor });
+    const options = new AnalysisOptions(analysis_options_factory.build());
 
-    const { data, error } = await analysis_runner.run(options);
+    const result = await analysis_runner.run(options);
 
-    expect(data).toBeUndefined();
-    expect(error).toBeInstanceOf(Error);
-    expect(error!.message).toBe(error_message);
+    expect(result.isError()).toBe(true);
+    expect(result.getError().message).toBe(error_message);
   });
 
   it("should call the cli_executor with the correct arguments", async () => {
-    const cli_executor = mock<ICLIExecutor>();
-    cli_executor.execute.mockResolvedValue({
-      is_failure: () => false,
+    const cliExecutor = mock<ICLIExecutor>();
+    cliExecutor.execute.mockResolvedValue({
+      stdout: "key1,key2\nvalue1,value2\n",
+      isFailure: () => false,
     } as TCLIResult);
 
-    const analysis_runner = new AnalysisRunner(cli_executor);
-    const options = analysis_options_factory.build({
-      analysis_type: "abs-churn",
-    });
+    const analysis_runner = AnalysisRunner.create({ cliExecutor });
+    const options = new AnalysisOptions(
+      analysis_options_factory.build({
+        analysis_type: "abs-churn",
+      })
+    );
 
     await analysis_runner.run(options);
 
-    expect(cli_executor.execute).toHaveBeenCalledWith({
-      required_args: [
+    expect(cliExecutor.execute).toHaveBeenCalledWith({
+      requiredArgs: [
         "--log",
         options.log_file,
         "--analysis",
         options.analysis_type,
       ],
-      optional_args: [
+      optionalArgs: [
         "--temporal-period",
         options.temporal_period,
         "--rows",
@@ -67,7 +70,31 @@ describe("AnalysisRunner", () => {
         "--team-map-file",
         options.team_map_file,
       ],
-      optional_boolean_args: [options.verbose_results],
+      optionalBooleanArgs: [options.verbose_results],
     });
+  });
+
+  it("should return the data as a csv object with key:value pairs when the cli_executor succeeds", async () => {
+    const cliExecutor = mock<ICLIExecutor>();
+    cliExecutor.execute.mockResolvedValue({
+      stdout: "key1,key2\nvalue1,value2\n",
+      isFailure: () => false,
+    } as TCLIResult);
+    const analysis_runner = AnalysisRunner.create({ cliExecutor });
+    const options = new AnalysisOptions(
+      analysis_options_factory.build({
+        analysis_type: "abs-churn",
+      })
+    );
+
+    const result = await analysis_runner.run(options);
+
+    expect(result.isSuccess()).toBe(true);
+    expect(result.getValue()).deep.equal([
+      {
+        key1: "value1",
+        key2: "value2",
+      },
+    ]);
   });
 });

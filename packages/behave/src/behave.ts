@@ -149,21 +149,21 @@ export class AnalysisOptions {
   }
 
   to_args(): {
-    required_args: string[];
-    optional_args: string[];
-    optional_boolean_args: string[];
+    requiredArgs: string[];
+    optionalArgs: string[];
+    optionalBooleanArgs: string[];
   } {
-    const required_args = [
+    const requiredArgs = [
       "--log",
       this.log_file,
       "--analysis",
       this.analysis_type,
     ];
-    const optional_args: string[] = [];
-    const optional_boolean_args: string[] = [];
+    const optionalArgs: string[] = [];
+    const optionalBooleanArgs: string[] = [];
     const addIfDefined = (value: any, arg: string) => {
       if (value !== undefined) {
-        optional_args.push(arg, value.toString());
+        optionalArgs.push(arg, value.toString());
       }
     };
 
@@ -179,12 +179,12 @@ export class AnalysisOptions {
     addIfDefined(this.group, "--group");
     addIfDefined(this.team_map_file, "--team-map-file");
 
-    if (this.verbose_results) optional_boolean_args.push("--verbose-results");
+    if (this.verbose_results) optionalBooleanArgs.push("--verbose-results");
 
     return {
-      required_args,
-      optional_args,
-      optional_boolean_args,
+      requiredArgs,
+      optionalArgs,
+      optionalBooleanArgs,
     };
   }
 
