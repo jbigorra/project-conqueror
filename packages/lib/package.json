@@ -4,6 +4,9 @@
   "description": "Library containting different utility classes and patterns.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "exports": {
+    "./patterns": "./src/patterns/index.ts"
+  },
   "scripts": {
     "test": "vitest",
     "test:ui": "vitest --ui",

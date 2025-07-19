@@ -105,6 +105,9 @@ importers:
 
   packages/behave:
     dependencies:
+      '@project-conqueror/lib':
+        specifier: workspace:^
+        version: link:../lib
       csv-parse:
         specifier: ^6.0.0
         version: 6.0.0
