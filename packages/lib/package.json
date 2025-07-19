@@ -1,0 +1,35 @@
+{
+  "name": "@project-conqueror/lib",
+  "version": "0.1.0",
+  "description": "Library containting different utility classes and patterns.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "tdd": "vitest --watch",
+    "build": "tsc -b",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "library",
+    "common",
+    "patterns",
+    "typescript",
+    "utilities"
+  ],
+  "author": "Juan Bigorra <jbigorra.soft.eng@pm.me>",
+  "license": "ISC",
+  "packageManager": "pnpm@10.13.1",
+  "devDependencies": {
+    "@adonisjs/eslint-config": "^2.1.0",
+    "@types/node": "^22.13.10",
+    "@vitest/ui": "^3.2.4",
+    "eslint": "^9.31.0",
+    "fishery": "^2.3.1",
+    "typescript": "^5.8.3",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.2.4",
+    "vitest-mock-extended": "^3.1.0"
+  }
+}
