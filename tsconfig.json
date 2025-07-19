@@ -1,9 +1,7 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "lib": [
-      "ESNext"
-    ],
+    "lib": ["ESNext"],
     "moduleDetection": "force",
     "useDefineForClassFields": true,
     "module": "ESNext",
@@ -14,6 +12,12 @@
     "noUnusedParameters": true,
     "isolatedModules": true,
     "skipLibCheck": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/lib/*": ["./packages/lib/src/*"],
+      "@/behave/*": ["./packages/behave/src/*"],
+      "@/webapp/*": ["./apps/webapp/app/*"]
+    }
   }
 }
