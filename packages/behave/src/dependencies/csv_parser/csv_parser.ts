@@ -4,13 +4,13 @@ import { ICSVParser } from "../interfaces";
 
 export class CSVParser implements ICSVParser {
   async parse(csv: string): Promise<Result<Record<string, string>[]>> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       parse(
         csv,
         { columns: true },
         (error: CsvError | undefined, data: unknown[]) => {
           if (error) {
-            reject(Result.error(error));
+            resolve(Result.error(error));
           }
           resolve(Result.success(data as unknown as Record<string, string>[]));
         }
