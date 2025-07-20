@@ -74,7 +74,7 @@ describe("AnalysisRunner", () => {
     });
   });
 
-  it("should return the data as a csv object with key:value pairs when the cliExecutor succeeds", async () => {
+  it("should return the data as a csv array of objects with key:value pairs when the cliExecutor succeeds", async () => {
     const cliExecutor = mock<ICLIExecutor>();
     cliExecutor.execute.mockResolvedValue({
       stdout: "key1,key2\nvalue1,value2\n",
@@ -96,5 +96,12 @@ describe("AnalysisRunner", () => {
         key2: "value2",
       },
     ]);
+  });
+
+  describe("AnalysisRunner.create", () => {
+    it("should create an instance of AnalysisRunner", () => {
+      const analysisRunner = AnalysisRunner.create({});
+      expect(analysisRunner).toBeInstanceOf(AnalysisRunner);
+    });
   });
 });
