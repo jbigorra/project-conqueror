@@ -1,6 +1,8 @@
 import { AnalysisOptions } from "@/behave/behave";
-import { ICLIExecutor, TCLIResult } from "@/behave/dependencies/interfaces";
+import { CLIResult } from "@/behave/dependencies/code_maat/cli/cli_result";
+import { ICLIExecutor } from "@/behave/dependencies/interfaces";
 import { AnalysisRunner } from "@/behave/runners/analysis_runner";
+import { Result } from "@/lib/patterns";
 import { describe, expect, it } from "vitest";
 import { mock } from "vitest-mock-extended";
 import { analysisOptionsFactory } from "../fixtures/factories/analysis_options_factory";
@@ -9,10 +11,9 @@ describe("AnalysisRunner", () => {
   it("should return an error when an cliExecutor fails to execute", async () => {
     const cliExecutor = mock<ICLIExecutor>();
     const errorMessage = "Failed to execute";
-    cliExecutor.execute.mockResolvedValue({
-      errorMessage: () => errorMessage,
-      isFailure: () => true,
-    } as TCLIResult);
+    cliExecutor.execute.mockResolvedValue(
+      Result.error(new Error(errorMessage))
+    );
 
     const analysisRunner = AnalysisRunner.create({ cliExecutor });
     const options = new AnalysisOptions(analysisOptionsFactory.build());
@@ -25,10 +26,9 @@ describe("AnalysisRunner", () => {
 
   it("should call the cliExecutor with the correct arguments", async () => {
     const cliExecutor = mock<ICLIExecutor>();
-    cliExecutor.execute.mockResolvedValue({
-      stdout: "key1,key2\nvalue1,value2\n",
-      isFailure: () => false,
-    } as TCLIResult);
+    cliExecutor.execute.mockResolvedValue(
+      Result.success(new CLIResult(0, "key1,key2\nvalue1,value2\n", ""))
+    );
 
     const analysisRunner = AnalysisRunner.create({ cliExecutor });
     const options = new AnalysisOptions(
@@ -76,10 +76,9 @@ describe("AnalysisRunner", () => {
 
   it("should return the data as a csv array of objects with key:value pairs when the cliExecutor succeeds", async () => {
     const cliExecutor = mock<ICLIExecutor>();
-    cliExecutor.execute.mockResolvedValue({
-      stdout: "key1,key2\nvalue1,value2\n",
-      isFailure: () => false,
-    } as TCLIResult);
+    cliExecutor.execute.mockResolvedValue(
+      Result.success(new CLIResult(0, "key1,key2\nvalue1,value2\n", ""))
+    );
     const analysisRunner = AnalysisRunner.create({ cliExecutor });
     const options = new AnalysisOptions(
       analysisOptionsFactory.build({
