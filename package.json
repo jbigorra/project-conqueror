@@ -1,13 +1,13 @@
 {
   "name": "project-conqueror",
-  "version": "0.0.0",
   "private": true,
-  "description": "",
-  "workspaces": [
-    "packages/*"
-  ],
-  "main": "./dist/index.js",
+  "version": "0.1.0",
+  "description": "Monorepo for 'Project Conqueror' a behavioural code analysis tool.",
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "scripts": {
+    "build": "pnpm run -r build",
     "test": "pnpm run -r --parallel test"
   },
   "keywords": [],
@@ -15,6 +15,8 @@
   "license": "ISC",
   "packageManager": "pnpm@10.13.1",
   "devDependencies": {
-    "@adonisjs/eslint-config": "^2.1.0"
+    "@adonisjs/eslint-config": "^2.1.0",
+    "turbo": "^2.5.5",
+    "typescript": "^5.8.3"
   }
 }
