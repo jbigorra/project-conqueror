@@ -1,10 +1,11 @@
+import { Voidable } from "#behave/types.js";
 import { Result } from "@prj-conq/lib/patterns";
 
 export type TCLIResult = {
   stdout: string;
   stderr: string;
   exitCode: number;
-  errorMessage: () => string;
+  errorMessage: () => Voidable<string>;
   isSuccess: () => boolean;
   isFailure: () => boolean;
 };
@@ -16,7 +17,7 @@ export type TCLIExecutorArgs = {
 };
 
 export interface ICLIExecutor {
-  execute(args: TCLIExecutorArgs): Promise<TCLIResult>;
+  execute(args: TCLIExecutorArgs): Promise<Result<TCLIResult>>;
 }
 
 export interface ICSVParser {
