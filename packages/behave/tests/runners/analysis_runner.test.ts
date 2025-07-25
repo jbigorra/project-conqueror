@@ -1,7 +1,7 @@
 import { AnalysisOptions } from "#behave/behave.js";
-import { CLIResult } from "#behave/dependencies/code_maat/cli/cli_result.js";
-import { ICLIExecutor } from "#behave/dependencies/interfaces.js";
-import { AnalysisRunner } from "#behave/runners/analysis_runner.js";
+import { CLIResult } from "#deps/code_maat/cli/cli_result.js";
+import { ICLIExecutor } from "#deps/interfaces.js";
+import { AnalysisRunner } from "#runners/analysis_runner.js";
 import { Result } from "@prj-conq/lib/patterns";
 import { describe, expect, it } from "vitest";
 import { mock } from "vitest-mock-extended";

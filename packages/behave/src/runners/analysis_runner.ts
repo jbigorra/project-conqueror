@@ -1,8 +1,8 @@
+import { AnalysisOptions } from "#behave/behave.js";
+import { CodeMaat } from "#deps/code_maat/code_maat.js";
+import { CSVParser } from "#deps/csv_parser/csv_parser.js";
+import { ICLIExecutor, ICSVParser } from "#deps/interfaces.js";
 import { Result } from "@prj-conq/lib/patterns";
-import { AnalysisOptions } from "../behave";
-import { CodeMaat } from "../dependencies/code_maat/code_maat";
-import { CSVParser } from "../dependencies/csv_parser/csv_parser";
-import { ICLIExecutor, ICSVParser } from "../dependencies/interfaces";
 
 export type TAnalysisResult = Record<string, string>[];
 

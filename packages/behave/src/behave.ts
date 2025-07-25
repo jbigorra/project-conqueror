@@ -1,5 +1,5 @@
-import { TAnalysisType } from "./analyses/types";
-import { IAnalysisRunner, TAnalysisResult } from "./runners/analysis_runner";
+import { TAnalysisType } from "#analyses/types.js";
+import { IAnalysisRunner, TAnalysisResult } from "#runners/analysis_runner.js";
 
 /**
  * The date string is in the format of "YYYY-MM-DD"

@@ -1,4 +1,4 @@
-import { CSVParser } from "#behave/dependencies/csv_parser/csv_parser.js";
+import { CSVParser } from "#deps/csv_parser/csv_parser.js";
 import { CsvError } from "csv-parse";
 import { beforeEach, describe, expect, it } from "vitest";
 

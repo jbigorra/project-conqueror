@@ -1,4 +1,8 @@
-import { ICLIExecutor, TCLIExecutorArgs, TCLIResult } from "../interfaces";
+import {
+  ICLIExecutor,
+  TCLIExecutorArgs,
+  TCLIResult,
+} from "#deps/interfaces.js";
 
 export class CodeMaat implements ICLIExecutor {
   constructor() {}

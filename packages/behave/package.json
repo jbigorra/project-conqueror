@@ -1,5 +1,5 @@
 {
-  "name": "@project-conqueror/behave",
+  "name": "@prj-conq/behave",
   "version": "0.1.0",
   "description": "A library that executes behavioural code analysis by using code-maat together with other tools for more complex analysis.",
   "exports": {
@@ -9,7 +9,10 @@
     }
   },
   "imports": {
-    "#behave/*": "./src/*"
+    "#behave/*": "./src/*",
+    "#deps/*": "./src/dependencies/*",
+    "#runners/*": "./src/runners/*",
+    "#analyses/*": "./src/analyses/*"
   },
   "scripts": {
     "build": "tsc -b",

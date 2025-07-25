@@ -1,6 +1,6 @@
+import { ICSVParser } from "#deps/interfaces.js";
 import { Result } from "@prj-conq/lib/patterns";
 import { CsvError, parse } from "csv-parse";
-import { ICSVParser } from "../interfaces";
 
 export class CSVParser implements ICSVParser {
   async parse(csv: string): Promise<Result<Record<string, string>[]>> {

@@ -1,5 +1,5 @@
-import { TCLIResult } from "#behave/dependencies/interfaces.js";
 import { Voidable } from "#behave/types.js";
+import { TCLIResult } from "#deps/interfaces.js";
 
 export class CLIResult implements TCLIResult {
   constructor(
