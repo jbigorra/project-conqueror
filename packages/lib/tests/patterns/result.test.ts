@@ -1,4 +1,4 @@
-import { Result } from "@/lib/patterns/result";
+import { Result } from "#lib/patterns/result.js";
 import { describe, expect, it } from "vitest";
 
 describe("Result", () => {

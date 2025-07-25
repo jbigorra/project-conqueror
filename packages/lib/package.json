@@ -2,10 +2,14 @@
   "name": "@project-conqueror/lib",
   "version": "0.1.0",
   "description": "Library containting different utility classes and patterns.",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "exports": {
-    "./patterns": "./src/patterns/index.ts"
+    "./patterns": {
+      "types": "./dist/patterns/index.d.ts",
+      "default": "./dist/patterns/index.js"
+    }
+  },
+  "imports": {
+    "#lib/*": "./src/*"
   },
   "scripts": {
     "test": "vitest run",
