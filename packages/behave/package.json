@@ -1,5 +1,6 @@
 {
   "name": "@prj-conq/behave",
+  "private": true,
   "version": "0.1.0",
   "description": "A library that executes behavioural code analysis by using code-maat together with other tools for more complex analysis.",
   "exports": {
@@ -14,8 +15,12 @@
     "#runners/*": "./src/runners/*",
     "#analyses/*": "./src/analyses/*"
   },
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "scripts": {
-    "build": "tsc -b",
+    "dev": "tsc --watch",
+    "build": "tsc",
     "clean": "rm -rf dist",
     "test": "vitest run",
     "tdd": "vitest"

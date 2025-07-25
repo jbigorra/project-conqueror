@@ -1,5 +1,6 @@
 {
   "name": "@prj-conq/lib",
+  "private": true,
   "version": "0.1.0",
   "description": "Library containting different utility classes and patterns.",
   "exports": {
@@ -11,11 +12,15 @@
   "imports": {
     "#lib/*": "./src/*"
   },
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc",
+    "clean": "rm -rf dist",
     "test": "vitest run",
-    "tdd": "vitest",
-    "build": "tsc -b",
-    "clean": "rm -rf dist"
+    "tdd": "vitest"
   },
   "keywords": [
     "library",
