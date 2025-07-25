@@ -1,5 +1,5 @@
 {
-  "name": "webapp",
+  "name": "@prj-conq/webapp",
   "version": "0.0.0",
   "private": true,
   "type": "module",

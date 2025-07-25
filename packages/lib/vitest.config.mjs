@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [tsconfigPaths()],
   resolve: {
     alias: {
-      "@/lib": path.resolve(__dirname, "./src"),
+      "#lib": path.resolve(__dirname, "./src"),
     },
   },
   test: {
