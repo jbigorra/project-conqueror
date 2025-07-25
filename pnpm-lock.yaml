@@ -111,7 +111,7 @@ importers:
 
   packages/behave:
     dependencies:
-      '@project-conqueror/lib':
+      '@prj-conq/lib':
         specifier: workspace:^
         version: link:../lib
       csv-parse:

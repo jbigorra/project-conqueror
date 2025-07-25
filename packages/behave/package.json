@@ -23,7 +23,7 @@
   "packageManager": "pnpm@10.13.1",
   "dependencies": {
     "csv-parse": "^6.0.0",
-    "@project-conqueror/lib": "workspace:^"
+    "@prj-conq/lib": "workspace:^"
   },
   "devDependencies": {
     "@adonisjs/eslint-config": "^2.1.0",

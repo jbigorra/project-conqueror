@@ -1,4 +1,4 @@
-import { Result } from "@project-conqueror/lib/patterns";
+import { Result } from "@prj-conq/lib/patterns";
 
 export type TCLIResult = {
   stdout: string;

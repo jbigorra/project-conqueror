@@ -1,4 +1,4 @@
-import { Result } from "@project-conqueror/lib/patterns";
+import { Result } from "@prj-conq/lib/patterns";
 import { CsvError, parse } from "csv-parse";
 import { ICSVParser } from "../interfaces";
 

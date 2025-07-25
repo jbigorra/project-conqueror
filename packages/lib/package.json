@@ -1,5 +1,5 @@
 {
-  "name": "@project-conqueror/lib",
+  "name": "@prj-conq/lib",
   "version": "0.1.0",
   "description": "Library containting different utility classes and patterns.",
   "exports": {

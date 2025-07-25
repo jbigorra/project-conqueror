@@ -1,4 +1,4 @@
-import { Result } from "@project-conqueror/lib/patterns";
+import { Result } from "@prj-conq/lib/patterns";
 import { AnalysisOptions } from "../behave";
 import { CodeMaat } from "../dependencies/code_maat/code_maat";
 import { CSVParser } from "../dependencies/csv_parser/csv_parser";
@@ -29,11 +29,11 @@ export class AnalysisRunner implements IAnalysisRunner {
   async run(options: AnalysisOptions): Promise<Result<TAnalysisResult>> {
     const cliResult = await this.cliExecutor.execute(options.toArgs());
 
-    if (cliResult.isError()) {
-      return Result.error(cliResult.getError());
+    if (cliResult.isFailure()) {
+      return Result.error(new Error(cliResult.errorMessage()));
     }
 
-    const csvResult = await this.csvParser.parse(cliResult.getValue().stdout);
+    const csvResult = await this.csvParser.parse(cliResult.stdout);
 
     return csvResult;
   }
