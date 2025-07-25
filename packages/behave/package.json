@@ -2,7 +2,15 @@
   "name": "@project-conqueror/behave",
   "version": "0.1.0",
   "description": "A library that executes behavioural code analysis by using code-maat together with other tools for more complex analysis.",
-  "main": "dist/index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "imports": {
+    "#behave/*": "./src/*"
+  },
   "scripts": {
     "build": "tsc -b",
     "clean": "rm -rf dist",

@@ -1,6 +1,6 @@
-import { AnalysisOptions, Behave } from "@/behave/behave";
-import { IAnalysisRunner } from "@/behave/runners/analysis_runner";
-import { Result } from "@/lib/patterns";
+import { AnalysisOptions, Behave } from "#behave/behave.js";
+import { IAnalysisRunner } from "#behave/runners/analysis_runner.js";
+import { Result } from "#lib/patterns/result.js";
 import { describe, expect, it } from "vitest";
 import { mock } from "vitest-mock-extended";
 import { analysisOptionsFactory } from "./fixtures/factories/analysis_options_factory";
