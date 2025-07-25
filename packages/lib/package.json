@@ -10,7 +10,8 @@
     }
   },
   "imports": {
-    "#lib/*": "./src/*"
+    ".": "./dist/index.js",
+    "#lib/*": "./dist/*"
   },
   "engines": {
     "node": ">=22.0.0"

@@ -9,6 +9,7 @@
   "scripts": {
     "build": "turbo build",
     "test": "turbo test",
+    "tdd": "turbo tdd",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md,json}\""
   },

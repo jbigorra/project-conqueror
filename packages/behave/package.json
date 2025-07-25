@@ -10,10 +10,10 @@
     }
   },
   "imports": {
-    "#behave/*": "./src/*",
-    "#deps/*": "./src/dependencies/*",
-    "#runners/*": "./src/runners/*",
-    "#analyses/*": "./src/analyses/*"
+    "#behave/*": "./dist/*",
+    "#deps/*": "./dist/dependencies/*",
+    "#runners/*": "./dist/runners/*",
+    "#analyses/*": "./dist/analyses/*"
   },
   "engines": {
     "node": ">=22.0.0"
