@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "@prj-conq/typescript-config/base.json",
   "compilerOptions": {
     "composite": true,
     "declaration": true,
@@ -11,6 +11,6 @@
       "@/behave/*": ["./src/*"]
     }
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist"],
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts"]
 }
