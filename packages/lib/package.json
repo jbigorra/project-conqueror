@@ -4,14 +4,23 @@
   "version": "0.1.0",
   "description": "Library containting different utility classes and patterns.",
   "exports": {
+    "./generics": {
+      "types": "./dist/generics/index.d.ts",
+      "default": "./dist/generics/index.js"
+    },
     "./patterns": {
       "types": "./dist/patterns/index.d.ts",
       "default": "./dist/patterns/index.js"
+    },
+    "./processes": {
+      "types": "./dist/processes/index.d.ts",
+      "default": "./dist/processes/index.js"
     }
   },
   "imports": {
-    ".": "./dist/index.js",
-    "#lib/*": "./dist/*"
+    "#lib/*": "./dist/*",
+    "#lib/generics": "./dist/generics/index.js",
+    "#lib/processes": "./dist/processes/index.js"
   },
   "engines": {
     "node": ">=22.0.0"

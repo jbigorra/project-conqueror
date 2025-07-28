@@ -1,20 +1,5 @@
-import { Voidable } from "#behave/types.js";
 import { Result } from "@prj-conq/lib/patterns";
-
-export type TCLIResult = {
-  stdout: string;
-  stderr: string;
-  exitCode: number;
-  errorMessage: () => Voidable<string>;
-  isSuccess: () => boolean;
-  isFailure: () => boolean;
-};
-
-export type TCLIExecutorArgs = {
-  requiredArgs: string[];
-  optionalArgs: string[];
-  optionalBooleanArgs: string[];
-};
+import { TCLIExecutorArgs, TCLIResult } from "@prj-conq/lib/processes";
 
 export interface ICLIExecutor {
   execute(args: TCLIExecutorArgs): Promise<Result<TCLIResult>>;
