@@ -148,11 +148,7 @@ export class AnalysisOptions {
     this.verboseResults = options.verboseResults ? "--verbose-results" : "";
   }
 
-  toArgs(): {
-    requiredArgs: string[];
-    optionalArgs: string[];
-    optionalBooleanArgs: string[];
-  } {
+  toArgs(): string[] {
     const requiredArgs = [
       "--log",
       this.logFile,
@@ -181,11 +177,7 @@ export class AnalysisOptions {
 
     if (this.verboseResults) optionalBooleanArgs.push("--verbose-results");
 
-    return {
-      requiredArgs,
-      optionalArgs,
-      optionalBooleanArgs,
-    };
+    return [...requiredArgs, ...optionalArgs, ...optionalBooleanArgs];
   }
 
   private _validate(options: TOptions): void {

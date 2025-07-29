@@ -1,8 +1,8 @@
 import { Result } from "@prj-conq/lib/patterns";
-import { TCLIExecutorArgs, TCLIResult } from "@prj-conq/lib/processes";
+import { TCLIResult } from "@prj-conq/lib/processes";
 
 export interface ICLIExecutor {
-  execute(args: TCLIExecutorArgs): Promise<Result<TCLIResult>>;
+  execute(args: string[]): Promise<Result<TCLIResult>>;
 }
 
 export interface ICSVParser {

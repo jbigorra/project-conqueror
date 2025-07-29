@@ -9,9 +9,3 @@ export type TCLIResult = {
   isSuccess: () => boolean;
   isFailure: () => boolean;
 };
-
-export type TCLIExecutorArgs = {
-  requiredArgs: string[];
-  optionalArgs: string[];
-  optionalBooleanArgs: string[];
-};
