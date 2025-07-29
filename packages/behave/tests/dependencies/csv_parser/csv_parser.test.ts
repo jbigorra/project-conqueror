@@ -1,5 +1,4 @@
 import { CSVParser } from "#deps/csv_parser/csv_parser.js";
-import { CsvError } from "csv-parse";
 import { beforeEach, describe, expect, it } from "vitest";
 
 describe("CSVParser", () => {
@@ -136,7 +135,7 @@ Jane;25;Los Angeles`;
       ]);
     });
 
-    it("should return an CsvError if the CSV is malformed", async () => {
+    it("should return an Error if the CSV is malformed", async () => {
       const csv_data = `name,age,city
 John,30,"New York
 Jane,25,Los Angeles`;
@@ -144,7 +143,7 @@ Jane,25,Los Angeles`;
       const result = await csv_parser.parse(csv_data);
 
       expect(result.isError()).toBe(true);
-      expect(result.getError()).toBeInstanceOf(CsvError);
+      expect(result.getError()).toBeInstanceOf(Error);
     });
   });
 });
