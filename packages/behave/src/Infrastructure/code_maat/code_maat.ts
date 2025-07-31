@@ -1,9 +1,10 @@
 import { ICLIExecutor } from "#deps/interfaces.js";
 import { Result } from "@prj-conq/lib/patterns";
-import { TCLIResult, TSpawnAsyncFn } from "@prj-conq/lib/processes";
+import { spawnAsync, TCLIResult, TSpawnAsyncFn } from "@prj-conq/lib/processes";
+import path from "node:path";
 
 export class CodeMaat implements ICLIExecutor {
-  private readonly pathToJar: string = "./vendor/code-maat-1.0.4-standalone.jar";
+  private readonly pathToJar: string = path.resolve(__dirname, "./vendor/code-maat-1.0.4-standalone.jar");
 
   constructor(
     private readonly spawnAsync: TSpawnAsyncFn
@@ -26,25 +27,21 @@ export class CodeMaat implements ICLIExecutor {
   }
 }
 
-// (async () => {
-//   const executor = new JarExecutor(
-//   "/Users/jbigorra/Projects/project-conqueror/packages/behave/src/dependencies/code_maat/vendor/code-maat-1.0.4-standalone.jar",
-//   spawnAsync
-// );
+(async () => {
+  const executor = new CodeMaat(spawnAsync);
 
-// const result = await executor.execute({
-//   requiredArgs: [
-//     "--log",
-//     "/Users/jbigorra/Projects/project-conqueror/logfile.log",
-//     "--analysis",
-//     "abs-churn",
-//     "-c",
-//     "git2"
-//   ],
-//   optionalArgs: [],
-//   optionalBooleanArgs: [],
-// });
+const result = await executor.execute([
+    "--log",
+    "/Users/jbigorra/Projects/project-conqueror/logfile.log",
+    "--analysis",
+    "abs-churn",
+    "-c",
+    "git2"
+  ]);
 
-//   console.log(result.getValue());
-//   console.log(result.getError());
-// })().catch(console.error);
+  if (result.isError()) {
+    console.log(result.getError());
+  } else {
+    console.log(result.getValue());
+  }
+})().catch(console.error);
