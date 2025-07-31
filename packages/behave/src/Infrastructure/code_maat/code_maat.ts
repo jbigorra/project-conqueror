@@ -1,6 +1,6 @@
 import { ICLIExecutor } from "#deps/interfaces.js";
 import { Result } from "@prj-conq/lib/patterns";
-import { spawnAsync, TCLIResult, TSpawnAsyncFn } from "@prj-conq/lib/processes";
+import { TCLIResult, TSpawnAsyncFn } from "@prj-conq/lib/processes";
 import path from "node:path";
 
 export class CodeMaat implements ICLIExecutor {
@@ -27,21 +27,3 @@ export class CodeMaat implements ICLIExecutor {
   }
 }
 
-(async () => {
-  const executor = new CodeMaat(spawnAsync);
-
-const result = await executor.execute([
-    "--log",
-    "/Users/jbigorra/Projects/project-conqueror/logfile.log",
-    "--analysis",
-    "abs-churn",
-    "-c",
-    "git2"
-  ]);
-
-  if (result.isError()) {
-    console.log(result.getError());
-  } else {
-    console.log(result.getValue());
-  }
-})().catch(console.error);
