@@ -1,4 +1,4 @@
-import { CSVParser } from "#deps/csv_parser/csv_parser.js";
+import { CSVParser } from "#infra/csv_parser/csv_parser.js";
 import { beforeEach, describe, expect, it } from "vitest";
 
 describe("CSVParser", () => {
