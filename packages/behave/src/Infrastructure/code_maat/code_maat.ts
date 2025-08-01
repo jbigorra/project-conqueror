@@ -1,4 +1,4 @@
-import { ICLIExecutor } from "#deps/interfaces.js";
+import { ICLIExecutor } from "#infra/interfaces.js";
 import { Result } from "@prj-conq/lib/patterns";
 import { TCLIResult, TSpawnAsyncFn } from "@prj-conq/lib/processes";
 import path from "node:path";

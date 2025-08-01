@@ -1,8 +1,8 @@
 import { AnalysisOptions } from "#behave/behave.js";
-import { CLIResult } from "#deps/code_maat/cli/cli_result.js";
-import { ICLIExecutor } from "#deps/interfaces.js";
+import { ICLIExecutor } from "#infra/interfaces.js";
 import { AnalysisRunner } from "#runners/analysis_runner.js";
 import { Result } from "@prj-conq/lib/patterns";
+import { CLIResult } from "@prj-conq/lib/processes";
 import { describe, expect, it } from "vitest";
 import { mock } from "vitest-mock-extended";
 import { analysisOptionsFactory } from "../fixtures/factories/analysis_options_factory";
@@ -39,39 +39,35 @@ describe("AnalysisRunner", () => {
 
     await analysisRunner.run(options);
 
-    expect(cliExecutor.execute).toHaveBeenCalledWith({
-      requiredArgs: [
-        "--log",
-        options.logFile,
-        "--analysis",
-        options.analysisType,
-      ],
-      optionalArgs: [
-        "--temporal-period",
-        options.temporalPeriod,
-        "--rows",
-        options.rows,
-        "--min-revs",
-        options.minRevs,
-        "--min-shared-revs",
-        options.minSharedRevs,
-        "--min-coupling",
-        options.minCoupling,
-        "--max-coupling",
-        options.maxCoupling,
-        "--max-changeset-size",
-        options.maxChangesetSize,
-        "--expression-to-match",
-        options.expressionToMatch,
-        "--input-encoding",
-        options.inputEncoding,
-        "--group",
-        options.group,
-        "--team-map-file",
-        options.teamMapFile,
-      ],
-      optionalBooleanArgs: [options.verboseResults],
-    });
+    expect(cliExecutor.execute).toHaveBeenCalledWith([
+      "--log",
+      options.logFile,
+      "--analysis",
+      options.analysisType,
+      "--temporal-period",
+      options.temporalPeriod,
+      "--rows",
+      options.rows,
+      "--min-revs",
+      options.minRevs,
+      "--min-shared-revs",
+      options.minSharedRevs,
+      "--min-coupling",
+      options.minCoupling,
+      "--max-coupling",
+      options.maxCoupling,
+      "--max-changeset-size",
+      options.maxChangesetSize,
+      "--expression-to-match",
+      options.expressionToMatch,
+      "--input-encoding",
+      options.inputEncoding,
+      "--group",
+      options.group,
+      "--team-map-file",
+      options.teamMapFile,
+      options.verboseResults,
+    ]);
   });
 
   it("should return the data as a csv array of objects with key:value pairs when the cliExecutor succeeds", async () => {

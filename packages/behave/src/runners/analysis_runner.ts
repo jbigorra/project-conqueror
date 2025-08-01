@@ -1,8 +1,9 @@
 import { AnalysisOptions } from "#behave/behave.js";
-import { CodeMaat } from "#deps/code_maat/code_maat.js";
-import { CSVParser } from "#deps/csv_parser/csv_parser.js";
-import { ICLIExecutor, ICSVParser } from "#deps/interfaces.js";
+import { CodeMaat } from "#infra/code_maat/code_maat.js";
+import { CSVParser } from "#infra/csv_parser/csv_parser.js";
+import { ICLIExecutor, ICSVParser } from "#infra/interfaces.js";
 import { Result } from "@prj-conq/lib/patterns";
+import { spawnAsync } from "@prj-conq/lib/processes";
 
 export type TAnalysisResult = Record<string, string>[];
 
@@ -20,7 +21,7 @@ export class AnalysisRunner implements IAnalysisRunner {
     cliExecutor?: ICLIExecutor;
     csvParser?: ICSVParser;
   }): IAnalysisRunner {
-    const { cliExecutor = new CodeMaat(), csvParser = new CSVParser() } =
+    const { cliExecutor = new CodeMaat(spawnAsync), csvParser = new CSVParser() } =
       dependencies;
 
     return new AnalysisRunner(cliExecutor, csvParser);

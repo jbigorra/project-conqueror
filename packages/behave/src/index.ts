@@ -1,6 +1,4 @@
 import { Behave } from "#behave/behave.js";
-import { CodeMaat } from "#deps/code_maat/code_maat.js";
-import { CSVParser } from "#deps/csv_parser/csv_parser.js";
 import { AnalysisRunner } from "#runners/analysis_runner.js";
 
 export default class BehaveInstance {
@@ -9,7 +7,7 @@ export default class BehaveInstance {
   static create() {
     if (!BehaveInstance.instance) {
       BehaveInstance.instance = new Behave(
-        new AnalysisRunner(new CodeMaat(), new CSVParser())
+        AnalysisRunner.create({})
       );
     }
 

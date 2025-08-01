@@ -1,4 +1,4 @@
-import { CodeMaat } from "#behave/Infrastructure/code_maat/code_maat.js";
+import { CodeMaat } from "#infra/code_maat/code_maat.js";
 import { CLIResult, TSpawnAsyncFn } from "@prj-conq/lib/processes";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, MockedFunction } from "vitest";
@@ -7,7 +7,7 @@ import { mockFn, mockReset } from "vitest-mock-extended";
 describe("CodeMaat", () => {
   let spawnAsyncMock: MockedFunction<TSpawnAsyncFn>;
   let codeMaat: CodeMaat;
-  const expectedJarPath = path.join(__dirname, "../../../", "src/Infrastructure/code_maat/vendor/code-maat-1.0.4-standalone.jar");
+  const expectedJarPath = path.join(__dirname, "../../../", "src/infrastructure/code_maat/vendor/code-maat-1.0.4-standalone.jar");
 
   beforeEach(() => {
     spawnAsyncMock = mockFn<TSpawnAsyncFn>();

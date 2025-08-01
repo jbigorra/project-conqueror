@@ -1,4 +1,4 @@
-import { ICSVParser } from "#deps/interfaces.js";
+import { ICSVParser } from "#infra/interfaces.js";
 import { Result } from "@prj-conq/lib/patterns";
 import { CsvError, parse } from "csv-parse";
 

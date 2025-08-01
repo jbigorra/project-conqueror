@@ -11,7 +11,7 @@
   },
   "imports": {
     "#behave/*": "./dist/*",
-    "#deps/*": "./dist/dependencies/*",
+    "#infra/*": "./dist/infrastructure/*",
     "#runners/*": "./dist/runners/*",
     "#analyses/*": "./dist/analyses/*"
   },
