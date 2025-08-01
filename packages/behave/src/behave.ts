@@ -154,6 +154,8 @@ export class AnalysisOptions {
       this.logFile,
       "--analysis",
       this.analysisType,
+      "--version-control",
+      "git2",
     ];
     const optionalArgs: string[] = [];
     const optionalBooleanArgs: string[] = [];

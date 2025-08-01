@@ -44,6 +44,8 @@ describe("AnalysisRunner", () => {
       options.logFile,
       "--analysis",
       options.analysisType,
+      "--version-control",
+      "git2",
       "--temporal-period",
       options.temporalPeriod,
       "--rows",
