@@ -5,6 +5,9 @@ export default defineConfig({
   resolve: {
     alias: {
       "#behave": path.resolve(__dirname, "./src"),
+      "#infra": path.resolve(__dirname, "./src/infrastructure"),
+      "#runners": path.resolve(__dirname, "./src/runners"),
+      "#analyses": path.resolve(__dirname, "./src/analyses")
     },
   },
   test: {
