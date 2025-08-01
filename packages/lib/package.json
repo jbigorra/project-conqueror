@@ -26,9 +26,9 @@
     "node": ">=22.0.0"
   },
   "scripts": {
-    "dev": "tsc --watch",
     "build": "tsc",
-    "clean": "rm -rf dist",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist && rm tsconfig.tsbuildinfo || echo 'No tsconfig.tsbuildinfo file found'",
     "test": "vitest run",
     "tdd": "vitest"
   },

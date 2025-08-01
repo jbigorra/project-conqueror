@@ -5,11 +5,20 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULTS", ".env*"],
-      "outputs": ["dist/**", "dist/**/*.js", "dist/**/*.d.ts"]
+      "outputs": ["dist/**"]
     },
     "dev": {
+      "dependsOn": ["clean", "//#dev:setup"],
       "cache": false,
       "persistent": true
+    },
+    "//#dev:setup": {
+      "cache": false,
+      "persistent": false
+    },
+    "test": {
+      "cache": false,
+      "persistent": false
     },
     "tdd": {
       "cache": false,

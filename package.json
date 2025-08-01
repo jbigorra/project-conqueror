@@ -8,6 +8,9 @@
   },
   "scripts": {
     "build": "turbo build",
+    "dev": "turbo dev",
+    "dev:setup": "sh ./setup-dev.sh",
+    "clean": "turbo clean",
     "test": "turbo test",
     "tdd": "turbo tdd",
     "lint": "turbo lint",
