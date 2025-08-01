@@ -8,6 +8,7 @@
   },
   "scripts": {
     "build": "turbo build",
+    "build:copy-vendor": "turbo build:copy-vendor",
     "dev": "turbo dev",
     "dev:setup": "sh ./setup-dev.sh",
     "clean": "turbo clean",

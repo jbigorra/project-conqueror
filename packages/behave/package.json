@@ -20,6 +20,7 @@
   },
   "scripts": {
     "build": "tsc",
+    "build:copy-vendor": "sh ./scripts/copy-vendor.sh",
     "dev": "tsc --watch",
     "clean": "rm -rf dist && rm tsconfig.tsbuildinfo || echo 'No tsconfig.tsbuildinfo file found'",
     "test": "vitest run",
