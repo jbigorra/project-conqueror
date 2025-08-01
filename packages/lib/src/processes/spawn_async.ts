@@ -2,12 +2,6 @@ import { spawn, SpawnOptionsWithoutStdio } from "child_process";
 import { CLIResult } from "./cli_result.js";
 import { TCLIResult } from "./types.js";
 
-export type TSpawnAsyncFn = (
-  command: string,
-  args: string[],
-  options?: SpawnOptionsWithoutStdio
-) => Promise<TCLIResult>;
-
 export function spawnAsync(
   command: string,
   args: string[] = [],
