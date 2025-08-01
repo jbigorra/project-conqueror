@@ -8,11 +8,16 @@
       "outputs": ["dist/**"]
     },
     "dev": {
-      "dependsOn": ["clean", "//#dev:setup"],
+      "dependsOn": [
+        // Clean the build artifacts
+        "clean",
+        // Needs to transpile the lib package to be able to use it in the behave package
+        "@prj-conq/lib#dev:setup"
+      ],
       "cache": false,
       "persistent": true
     },
-    "//#dev:setup": {
+    "dev:setup": {
       "cache": false,
       "persistent": false
     },
