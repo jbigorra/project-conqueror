@@ -9,6 +9,7 @@ node_modules
 # Build
 dist
 .turbo
+**/tsconfig.tsbuildinfo
 
 # Environment
 .env
