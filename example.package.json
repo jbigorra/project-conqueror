@@ -1,0 +1,43 @@
+{
+  "name": "@prj-conq/example",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Example package for Project Conqueror",
+  "exports": {
+    "./index": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "imports": {
+    "#alias1": "./dist/alias1.js",
+    "#alias2": "./dist/alias2.js",
+    "#alias3": "./dist/alias3.js"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "dev": "tsc --watch",
+    "dev:teardown": "pnpm run clean",
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "test": "vitest run",
+    "tdd": "vitest"
+  },
+  "keywords": [],
+  "author": "Juan Bigorra <jbigorra.soft.eng@pm.me>",
+  "license": "ISC",
+  "packageManager": "pnpm@10.13.1",
+  "devDependencies": {
+    "@adonisjs/eslint-config": "^2.1.0",
+    "@types/node": "^22.13.10",
+    "@vitest/ui": "^3.2.4",
+    "eslint": "^9.31.0",
+    "fishery": "^2.3.1",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4",
+    "vitest-mock-extended": "^3.1.0",
+    "@prj-conq/typescript-config": "workspace:*"
+  }
+}
