@@ -30,20 +30,80 @@ type TRegexExpressionToMatch = string;
  * Options for the analysis.
  */
 export type TOptions = {
+  /**
+   * The type of analysis to run.
+   */
   analysisType: TAnalysisType;
+  /**
+   * The absolute path to the log file.
+   */
   logFile: TLogFilePath;
+  /**
+   * The number of rows to return.
+   */
   rows?: string;
+  /**
+   * The minimum number of revisions per entity to consider.
+   */
   minRevs?: string;
+  /**
+   * The minimum number of shared revisions per entity to consider.
+   */
   minSharedRevs?: string;
+  /**
+   * The minimum coupling between two entities to consider (percentage).
+   */
   minCoupling?: string;
+  /**
+   * The maximum coupling between two entities to consider (percentage).
+   */
   maxCoupling?: string;
+  /**
+   * The maximum number of modules in a change set if it shall be included in a coupling analysis.
+   */
   maxChangesetSize?: string;
-  expressionToMatch?: TRegexExpressionToMatch;
+  /**
+   * The temporal period to consider.
+   */
   temporalPeriod?: string;
+  /**
+   * The date to consider as time zero when doing a code age analysis.
+   */
   ageTimeNow?: TDateString;
+  /**
+   * A regex to match against commit messages. Used with -messages analyses.
+   */
+  expressionToMatch?: TRegexExpressionToMatch;
+  /**
+   * The input encoding of the log file.
+   */
   inputEncoding?: TInputEncoding;
+  /**
+   * A file with a pre-defined set of layers. The data will be aggregated according to the group of layers.
+   * Example: layers.txt
+   *
+   * ```
+   *   UI Layer => src/main/webapp/.*
+   *   Business Layer => src/main/java/com/company/business/.*
+   *   Data Layer => src/main/java/com/company/data/.*
+   * ```
+   */
   group?: TLayersFilePath;
+  /**
+   * A CSV file with author,team that translates individuals into teams.
+   * Example: team_map.csv
+   *
+   * ```csv
+   *   author,team
+   *   John Doe,Team A
+   *   Jane Smith,Team B
+   *   Jim Beam,Team A
+   * ```
+   */
   teamMapFile?: TLayersFilePath;
+  /**
+   * Includes additional analysis details together with the results. Only implemented for change coupling.
+   */
   verboseResults?: boolean;
 };
 
