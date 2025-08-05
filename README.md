@@ -1,3 +1,6 @@
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=jbigorra_project-conqueror&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=jbigorra_project-conqueror)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=jbigorra_project-conqueror&metric=coverage)](https://sonarcloud.io/summary/new_code?id=jbigorra_project-conqueror)
+
 [![CodeScene Average Code Health](https://codescene.io/projects/69982/status-badges/average-code-health)](https://codescene.io/projects/69982)
 [![CodeScene Hotspot Code Health](https://codescene.io/projects/69982/status-badges/hotspot-code-health)](https://codescene.io/projects/69982)
 [![CodeScene Missed Goals](https://codescene.io/projects/69982/status-badges/missed-goals)](https://codescene.io/projects/69982)
