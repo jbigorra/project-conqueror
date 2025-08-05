@@ -1,0 +1,94 @@
+name: Quality Pipeline
+
+on:
+  workflow_run:
+    workflows: ["Build"]
+    types: [completed]
+    branches: [master]
+
+jobs:
+  quality:
+    name: Test and Lint
+    runs-on: ubuntu-latest
+    if: github.event.workflow_run.conclusion == 'success'
+    strategy:
+      matrix:
+        task: [test:coverage, lint]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+
+      - name: Restore Turbo cache
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ hashFiles('**/package.json', '**/pnpm-lock.yaml', 'turbo.json') }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
+      - name: Restore workspace cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            packages/*/node_modules
+            apps/*/node_modules
+            packages/*/dist
+            apps/*/build
+          key: workspace-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ github.event.workflow_run.head_sha }}
+          restore-keys: |
+            workspace-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}-
+
+      # Fallback: install if cache miss
+      - name: Install dependencies (if needed)
+        run: pnpm install --frozen-lockfile
+
+      # Now Turbo can use its cache effectively
+      - name: Run ${{ matrix.task }}
+        run: pnpm ${{ matrix.task }}
+
+      # Upload coverage only for test job
+      - name: Upload coverage artifacts
+        if: matrix.task == 'test:coverage'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-reports
+          path: |
+            packages/*/coverage/**
+            apps/*/coverage/**
+          retention-days: 1
+
+  sonarqube:
+    name: SonarQube Analysis
+    runs-on: ubuntu-latest
+    needs: quality
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
+          fetch-depth: 0
+
+      - name: Download coverage artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-reports
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
