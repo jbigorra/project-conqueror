@@ -6,6 +6,18 @@
 
 pwd
 
+echo "=== DEBUG: Checking file structure ==="
+echo "Contents of src/infrastructure/code_maat/:"
+ls -la src/infrastructure/code_maat/ || echo "Directory doesn't exist"
+
+echo "Contents of src/infrastructure/code_maat/vendor/:"
+ls -la src/infrastructure/code_maat/vendor/ || echo "Vendor directory doesn't exist"
+
+echo "Searching for any .jar files in the entire package:"
+find . -name "*.jar" -type f || echo "No JAR files found"
+
+echo "=== END DEBUG ==="
+
 echo "Creating dist/infrastructure/code_maat/vendor directory"
 mkdir -p ./dist/infrastructure/code_maat/vendor
 
