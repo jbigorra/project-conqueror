@@ -7,7 +7,7 @@ export default defineConfig({
       "#behave": path.resolve(__dirname, "./src"),
       "#infra": path.resolve(__dirname, "./src/infrastructure"),
       "#runners": path.resolve(__dirname, "./src/runners"),
-      "#analyses": path.resolve(__dirname, "./src/analyses")
+      "#analyses": path.resolve(__dirname, "./src/analyses"),
     },
   },
   test: {
@@ -16,6 +16,18 @@ export default defineConfig({
       tsconfig: "./tsconfig.json",
       checker: "tsc",
       enabled: true,
+    },
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "lcov", "clover"],
+      reportsDirectory: "./coverage",
+      exclude: [
+        "node_modules/",
+        "tests/",
+        "dist/",
+        "**/*.test.ts",
+        "**/*.spec.ts",
+      ],
     },
   },
 });
