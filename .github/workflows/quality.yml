@@ -122,3 +122,5 @@ jobs:
           projectBaseDir: ${{ matrix.project.path }}/
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_SCANNER_OPTS: >
+            -Dsonar.log.level=WARN
