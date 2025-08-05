@@ -13,7 +13,7 @@ jobs:
     if: github.event.workflow_run.conclusion == 'success'
     strategy:
       matrix:
-        task: [test:coverage, lint]
+        task: [test:coverage] # add lint to the list when we have a linting step
     steps:
       - name: Checkout
         uses: actions/checkout@v4
