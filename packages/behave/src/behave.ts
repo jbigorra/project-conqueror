@@ -2,31 +2,6 @@ import { TAnalysisType } from "#analyses/types.js";
 import { IAnalysisRunner, TAnalysisResult } from "#runners/analysis_runner.js";
 
 /**
- * The date string is in the format of "YYYY-MM-DD"
- */
-type TDateString = string;
-
-/**
- * Absolute path to the log file.
- */
-type TLogFilePath = string;
-
-/**
- * Absolute path to the layers file.
- */
-type TLayersFilePath = string;
-
-/**
- * The input encoding of the log file. Specify an encoding other than UTF-8 for the log file.
- */
-type TInputEncoding = "utf-8" | string;
-
-/**
- * A regex to match against commit messages. Used with -messages analyses.
- */
-type TRegexExpressionToMatch = string;
-
-/**
  * Options for the analysis.
  */
 export type TOptions = {
@@ -37,7 +12,7 @@ export type TOptions = {
   /**
    * The absolute path to the log file.
    */
-  logFile: TLogFilePath;
+  logFile: string;
   /**
    * The number of rows to return.
    */
@@ -67,18 +42,19 @@ export type TOptions = {
    */
   temporalPeriod?: string;
   /**
-   * The date to consider as time zero when doing a code age analysis.
+   * The date to consider as time zero when doing a code age analysis. Format:"YYYY-MM-DD"
    */
-  ageTimeNow?: TDateString;
+  ageTimeNow?: string;
   /**
    * A regex to match against commit messages. Used with -messages analyses.
    */
-  expressionToMatch?: TRegexExpressionToMatch;
+  expressionToMatch?: string;
   /**
    * The input encoding of the log file.
    */
-  inputEncoding?: TInputEncoding;
+  inputEncoding?: "utf-8" | "utf-16";
   /**
+   * Absolute path to the layers file.
    * A file with a pre-defined set of layers. The data will be aggregated according to the group of layers.
    * Example: layers.txt
    *
@@ -88,9 +64,9 @@ export type TOptions = {
    *   Data Layer => src/main/java/com/company/data/.*
    * ```
    */
-  group?: TLayersFilePath;
+  group?: string;
   /**
-   * A CSV file with author,team that translates individuals into teams.
+   * Absolute path to the csv file with author,team that translates individuals into teams.
    * Example: team_map.csv
    *
    * ```csv
@@ -100,7 +76,7 @@ export type TOptions = {
    *   Jim Beam,Team A
    * ```
    */
-  teamMapFile?: TLayersFilePath;
+  teamMapFile?: string;
   /**
    * Includes additional analysis details together with the results. Only implemented for change coupling.
    */
@@ -118,7 +94,7 @@ export class AnalysisOptions {
   /**
    * The absolute path to the log file.
    */
-  readonly logFile: TLogFilePath;
+  readonly logFile: string;
   /**
    * The number of rows to return.
    */
@@ -146,7 +122,7 @@ export class AnalysisOptions {
   /**
    * A regex to match against commit messages. Used with -messages analyses.
    */
-  readonly expressionToMatch?: TRegexExpressionToMatch;
+  readonly expressionToMatch?: string;
   /**
    * Considers all commits during the rolling temporal period as a single, logical commit set in number of days. Used with -coupling analyses.
    */
@@ -154,11 +130,11 @@ export class AnalysisOptions {
   /**
    * Specify a date as YYYY-MM-dd that counts as time zero when doing a code age analysis.
    */
-  readonly ageTimeNow?: TDateString;
+  readonly ageTimeNow?: string;
   /**
    * The input encoding of the log file.
    */
-  readonly inputEncoding?: TInputEncoding;
+  readonly inputEncoding?: "utf-8" | "utf-16";
   /**
    * A file with a pre-defined set of layers. The data will be aggregated according to the group of layers.
    * Example: layers.txt
@@ -169,7 +145,7 @@ export class AnalysisOptions {
    *   Data Layer => src/main/java/com/company/data/.*
    * ```
    */
-  readonly group?: TLayersFilePath;
+  readonly group?: string;
 
   /**
    * A CSV file with author,team that translates individuals into teams.
@@ -182,7 +158,7 @@ export class AnalysisOptions {
    *   Jim Beam,Team A
    * ```
    */
-  readonly teamMapFile?: TLayersFilePath;
+  readonly teamMapFile?: string;
 
   /**
    * Includes additional analysis details together with the results. Only implemented for change coupling.
@@ -282,7 +258,7 @@ export class Behave {
    * @returns The analysis result.
    */
   async runAnalysis(
-    options: AnalysisOptions
+    options: AnalysisOptions,
   ): Promise<TAnalysisResult | Error> {
     const result = await this.analysis.run(options);
 

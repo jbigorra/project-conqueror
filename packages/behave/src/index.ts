@@ -5,11 +5,7 @@ export default class BehaveInstance {
   private static instance: Behave | null = null;
 
   static create() {
-    if (!BehaveInstance.instance) {
-      BehaveInstance.instance = new Behave(
-        AnalysisRunner.create({})
-      );
-    }
+    BehaveInstance.instance ??= new Behave(AnalysisRunner.create({}));
 
     return BehaveInstance.instance;
   }
