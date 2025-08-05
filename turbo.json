@@ -30,6 +30,12 @@
       "cache": false,
       "persistent": false
     },
+    "test:coverage": {
+      "dependsOn": ["^test:coverage"],
+      "cache": false,
+      "persistent": false,
+      "outputs": ["coverage/**"]
+    },
     "tdd": {
       "cache": false,
       "persistent": true
