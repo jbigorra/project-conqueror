@@ -16,5 +16,17 @@ export default defineConfig({
       checker: "tsc",
       enabled: true,
     },
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "html", "lcov"],
+      reportsDirectory: "./coverage",
+      exclude: [
+        "node_modules/",
+        "tests/",
+        "dist/",
+        "**/*.test.ts",
+        "**/*.spec.ts",
+      ],
+    },
   },
 });

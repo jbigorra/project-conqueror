@@ -1,0 +1,18 @@
+{
+  "reporter": ["text", "html", "lcov"],
+  "include": [
+    "app/**/*.ts",
+    "config/**/*.ts",
+    "resources/**/*.js"
+  ],
+  "exclude": [
+    "tests/**/*",
+    "node_modules/**/*",
+    "dist/**/*",
+    "coverage/**/*",
+    "start/**/*",
+    "bin/**/*",
+    "public/**/*",
+    "database/**/*"
+  ]
+}
