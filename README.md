@@ -1,3 +1,8 @@
+[![CodeScene Average Code Health](https://codescene.io/projects/69982/status-badges/average-code-health)](https://codescene.io/projects/69982)
+[![CodeScene Hotspot Code Health](https://codescene.io/projects/69982/status-badges/hotspot-code-health)](https://codescene.io/projects/69982)
+[![CodeScene Missed Goals](https://codescene.io/projects/69982/status-badges/missed-goals)](https://codescene.io/projects/69982)
+[![CodeScene System Mastery](https://codescene.io/projects/69982/status-badges/system-mastery)](https://codescene.io/projects/69982)
+
 # Project Conqueror
 
 ## Packages
