@@ -19,14 +19,16 @@ export default defineConfig({
     },
     coverage: {
       provider: "v8",
-      reporter: ["text", "lcov", "clover"],
+      reporter: ["text", "html", "lcov"],
       reportsDirectory: "./coverage",
+      include: ["src/**/*.ts"],
       exclude: [
         "node_modules/",
         "tests/",
         "dist/",
         "**/*.test.ts",
         "**/*.spec.ts",
+        "**/*.config.{ts,js,cjs,mjs}",
       ],
     },
   },

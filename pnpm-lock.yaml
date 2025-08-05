@@ -166,6 +166,9 @@ importers:
       '@types/node':
         specifier: ^22.13.10
         version: 22.16.4
+      '@vitest/coverage-v8':
+        specifier: 3.2.4
+        version: 3.2.4(vitest@3.2.4)
       '@vitest/ui':
         specifier: ^3.2.4
         version: 3.2.4(vitest@3.2.4)
