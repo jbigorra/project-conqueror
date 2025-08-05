@@ -79,10 +79,9 @@ jobs:
     strategy:
       matrix:
         project:
+          - { name: "webapp", path: "apps/webapp" }
           - { name: "behave", path: "packages/behave" }
-          # Add more projects when you create their sonar-project.properties:
-          # - { name: "lib", path: "packages/lib" }
-          # - { name: "webapp", path: "apps/webapp" }
+          - { name: "lib", path: "packages/lib" }
     steps:
       - name: Checkout
         uses: actions/checkout@v4
