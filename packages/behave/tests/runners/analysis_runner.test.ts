@@ -12,7 +12,7 @@ describe("AnalysisRunner", () => {
     const cliExecutor = mock<ICLIExecutor>();
     const errorMessage = "Failed to execute";
     cliExecutor.execute.mockResolvedValue(
-      Result.error(new Error(errorMessage))
+      Result.error(new Error(errorMessage)),
     );
 
     const analysisRunner = AnalysisRunner.create({ cliExecutor });
@@ -27,14 +27,14 @@ describe("AnalysisRunner", () => {
   it("should call the cliExecutor with the correct arguments", async () => {
     const cliExecutor = mock<ICLIExecutor>();
     cliExecutor.execute.mockResolvedValue(
-      Result.success(new CLIResult(0, "key1,key2\nvalue1,value2\n", ""))
+      Result.success(new CLIResult(0, "key1,key2\nvalue1,value2\n", "")),
     );
 
     const analysisRunner = AnalysisRunner.create({ cliExecutor });
     const options = new AnalysisOptions(
       analysisOptionsFactory.build({
         analysisType: "abs-churn",
-      })
+      }),
     );
 
     await analysisRunner.run(options);
@@ -75,19 +75,19 @@ describe("AnalysisRunner", () => {
   it("should return the data as a csv array of objects with key:value pairs when the cliExecutor succeeds", async () => {
     const cliExecutor = mock<ICLIExecutor>();
     cliExecutor.execute.mockResolvedValue(
-      Result.success(new CLIResult(0, "key1,key2\nvalue1,value2\n", ""))
+      Result.success(new CLIResult(0, "key1,key2\nvalue1,value2\n", "")),
     );
     const analysisRunner = AnalysisRunner.create({ cliExecutor });
     const options = new AnalysisOptions(
       analysisOptionsFactory.build({
         analysisType: "abs-churn",
-      })
+      }),
     );
 
     const result = await analysisRunner.run(options);
 
     expect(result.isSuccess()).toBe(true);
-    expect(result.getValue()).deep.equal([
+    expect(result.getValue()).toEqual([
       {
         key1: "value1",
         key2: "value2",
