@@ -84,24 +84,15 @@ validate_and_normalize_path() {
     echo "$absolute_path"
 }
 
-# Function to create directory structure
-create_directory_structure() {
+# Function to create directory structure for a given base path
+create_onion_structure() {
     local base_path="$1"
     local domain_name="$2"
+    local structure_type="$3"  # "main" or "test"
     local full_path="$base_path/$domain_name"
 
-    print_info "Creating onion architecture structure for domain: $domain_name"
+    print_info "Creating $structure_type onion architecture structure for domain: $domain_name"
     print_info "Target location: $full_path"
-
-    # Check if domain directory already exists
-    if [[ -d "$full_path" ]]; then
-        print_warning "Directory $full_path already exists"
-        read -p "Do you want to continue and potentially overwrite existing files? (y/N): " -r
-        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-            print_info "Operation cancelled"
-            exit 0
-        fi
-    fi
 
     # Create the main domain directory
     mkdir -p "$full_path"
@@ -123,7 +114,63 @@ create_directory_structure() {
     mkdir -p "$full_path/infrastructure/database"
     mkdir -p "$full_path/infrastructure/http"
 
-    print_success "Directory structure created successfully"
+    print_success "$structure_type directory structure created successfully"
+}
+
+# Function to determine test path from main path
+get_test_path() {
+    local main_path="$1"
+
+    # Use sed to replace patterns more reliably
+    local test_path
+
+    # Handle common patterns
+    if [[ "$main_path" == */src/* ]]; then
+        # Replace /src/ with /tests/
+        test_path=$(echo "$main_path" | sed 's|/src/|/tests/|g')
+    elif [[ "$main_path" == */source/* ]]; then
+        # Replace /source/ with /tests/
+        test_path=$(echo "$main_path" | sed 's|/source/|/tests/|g')
+    elif [[ "$main_path" == */lib/* ]]; then
+        # Replace /lib/ with /tests/
+        test_path=$(echo "$main_path" | sed 's|/lib/|/tests/|g')
+    else
+        # If no common pattern found, add /tests suffix to the path
+        test_path="$main_path/tests"
+    fi
+
+    echo "$test_path"
+}
+
+# Function to create directory structure
+create_directory_structure() {
+    local base_path="$1"
+    local domain_name="$2"
+    local full_path="$base_path/$domain_name"
+
+    # Check if domain directory already exists
+    if [[ -d "$full_path" ]]; then
+        print_warning "Directory $full_path already exists"
+        read -p "Do you want to continue and potentially overwrite existing files? (y/N): " -r
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            print_info "Operation cancelled"
+            exit 0
+        fi
+    fi
+
+    # Create main structure
+    create_onion_structure "$base_path" "$domain_name" "main"
+
+    # Create corresponding test structure
+    local test_base_path
+    test_base_path=$(get_test_path "$base_path")
+
+    if [[ "$test_base_path" != "$base_path" ]]; then
+        print_info "Creating corresponding test structure..."
+        create_onion_structure "$test_base_path" "$domain_name" "test"
+    else
+        print_warning "Could not determine test path pattern, skipping test structure creation"
+    fi
 }
 
 # Function to create initial files
@@ -132,30 +179,11 @@ create_initial_files() {
     local domain_name="$2"
     local full_path="$base_path/$domain_name"
 
-    # Create the main page component
+    # Create the main page file (empty)
     local page_file="$full_path/presentation/ui/${domain_name}.page.jsx"
 
-    # Convert kebab-case domain name to PascalCase for component name
-    local component_name=""
-    IFS='-' read -ra ADDR <<< "$domain_name"
-    for i in "${ADDR[@]}"; do
-        component_name+="$(echo "${i:0:1}" | tr '[:lower:]' '[:upper:]')${i:1}"
-    done
-
-    cat > "$page_file" << EOF
-import React from 'react';
-
-const ${component_name}Page = () => {
-  return (
-    <div className="${domain_name}-page">
-      <h1>${component_name} Page</h1>
-      <p>Welcome to the ${domain_name} domain!</p>
-    </div>
-  );
-};
-
-export default ${component_name}Page;
-EOF
+    # Create empty page file
+    touch "$page_file"
 
     print_success "Created ${domain_name}.page.jsx"
 
@@ -172,11 +200,24 @@ EOF
         "infrastructure/http"
     )
 
+    # Create .gitkeep files for main structure
     for dir in "${directories[@]}"; do
         touch "$full_path/$dir/.gitkeep"
     done
 
-    print_success "Created .gitkeep files for empty directories"
+    # Create .gitkeep files for test structure
+    local test_base_path
+    test_base_path=$(get_test_path "$base_path")
+
+    if [[ "$test_base_path" != "$base_path" ]]; then
+        local test_full_path="$test_base_path/$domain_name"
+        for dir in "${directories[@]}"; do
+            touch "$test_full_path/$dir/.gitkeep"
+        done
+        print_success "Created .gitkeep files for main and test directories"
+    else
+        print_success "Created .gitkeep files for main directories"
+    fi
 }
 
 # Function to display the created structure
@@ -187,7 +228,7 @@ display_structure() {
 
     print_success "Onion architecture structure created successfully!"
     echo
-    print_info "Directory structure:"
+    print_info "Main directory structure:"
     echo
 
     # Use tree command if available, otherwise use find
@@ -199,11 +240,33 @@ display_structure() {
         find "$full_path" -type f | sed 's|[^/]*/|- |g'
     fi
 
+    # Show test structure if it exists
+    local test_base_path
+    test_base_path=$(get_test_path "$base_path")
+
+    if [[ "$test_base_path" != "$base_path" ]]; then
+        local test_full_path="$test_base_path/$domain_name"
+        if [[ -d "$test_full_path" ]]; then
+            echo
+            print_info "Test directory structure:"
+            echo
+
+            if command -v tree &> /dev/null; then
+                tree "$test_full_path"
+            else
+                find "$test_full_path" -type d | sed 's|[^/]*/|- |g'
+                echo
+                find "$test_full_path" -type f | sed 's|[^/]*/|- |g'
+            fi
+        fi
+    fi
+
     echo
     print_info "Next steps:"
     echo "1. Navigate to your new domain: cd $full_path"
     echo "2. Start implementing your domain logic in the appropriate layers"
     echo "3. Remember to follow the dependency rule: dependencies point inward"
+    echo "4. Write tests in the corresponding test structure"
     echo
     print_info "Layer descriptions:"
     echo "- Core: Business logic, entities, value objects, aggregates"
