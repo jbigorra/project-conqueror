@@ -1,12 +1,30 @@
 {
-  "name": "webapp",
-  "type": "module",
+  "name": "@prj-conq/webapp",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Modulithic web application for Project Conqueror",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "imports": {
+    "#hotspots/*": "./dist/features/hotspots/*",
+    "#server/*": "./dist/server/*",
+    "#shared/http/*": "./dist/shared/infrastructure/http/*",
+    "#shared/ui/components/*": "./dist/shared/presentation/ui/components/*",
+    "#shared/ui/partials/*": "./dist/shared/presentation/ui/partials/*",
+    "#shared/ui/layouts/*": "./dist/shared/presentation/ui/layouts/*"
+  },
   "scripts": {
-    "start": "bun run main.ts",
-    "dev": "bun run --watch main.ts",
+    "build": "tsc",
+    "build:prod": "bun build --compile --minify-whitespace --minify-syntax --target bun --outfile server ./src/main.ts",
+    "dev": "bun run --watch ./src/main.ts",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
+    "@prj-conq/typescript-config": "workspace:*",
     "@types/bun": "1",
     "fishery": "^2.3.1",
     "typescript": "^5.9.2",

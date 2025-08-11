@@ -30,30 +30,11 @@ importers:
         specifier: ^1.3.8
         version: 1.3.8(exact-mirror@0.1.5(@sinclair/typebox@0.34.38))(file-type@21.0.0)(typescript@5.9.2)
     devDependencies:
+      '@prj-conq/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
       '@types/bun':
         specifier: '1'
-        version: 1.2.19(@types/react@19.1.9)
-      fishery:
-        specifier: ^2.3.1
-        version: 2.3.1
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/node@22.16.4)(@vitest/ui@3.2.4)
-      vitest-mock-extended:
-        specifier: ^3.1.0
-        version: 3.1.0(typescript@5.9.2)(vitest@3.2.4)
-
-  apps/webapp1:
-    dependencies:
-      elysia:
-        specifier: ^1.3.8
-        version: 1.3.8(exact-mirror@0.1.5(@sinclair/typebox@0.34.38))(file-type@21.0.0)(typescript@5.9.2)
-    devDependencies:
-      '@types/bun':
-        specifier: ^1.2.19
         version: 1.2.19(@types/react@19.1.9)
       fishery:
         specifier: ^2.3.1
@@ -98,9 +79,6 @@ importers:
       typescript:
         specifier: ~5.8.3
         version: 5.8.3
-      vite-tsconfig-paths:
-        specifier: ^5.1.4
-        version: 5.1.4(typescript@5.8.3)(vite@6.3.5(@types/node@22.16.4))
       vitest:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@22.16.4)(@vitest/ui@3.2.4)
@@ -134,9 +112,6 @@ importers:
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
-      vite-tsconfig-paths:
-        specifier: ^5.1.4
-        version: 5.1.4(typescript@5.8.3)(vite@6.3.5(@types/node@22.16.4))
       vitest:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@22.16.4)(@vitest/ui@3.2.4)
@@ -1072,9 +1047,6 @@ packages:
     resolution: {integrity: sha512-bqWEnJ1Nt3neqx2q5SFfGS8r/ahumIakg3HcwtNlrVlwXIeNumWn/c7Pn/wKzGhf6SaW6H6uWXLqC30STCMchQ==}
     engines: {node: '>=18'}
 
-  globrex@0.1.2:
-    resolution: {integrity: sha512-uHJgbwAMwNFf5mLst7IWLNg14x1CkeqglJb/K3doi4dw6q2IvAAmM/Y81kevy83wP+Sst+nutFTYOGg3d1lsxg==}
-
   graphemer@1.4.0:
     resolution: {integrity: sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==}
 
@@ -1490,16 +1462,6 @@ packages:
       typescript:
         optional: true
 
-  tsconfck@3.1.6:
-    resolution: {integrity: sha512-ks6Vjr/jEw0P1gmOVwutM3B7fWxoWBL2KRDb1JfqGVawBmO5UsvmWOQFGHBPl5yxYz4eERr19E6L7NMv+Fej4w==}
-    engines: {node: ^18 || >=20}
-    hasBin: true
-    peerDependencies:
-      typescript: ^5.0.0
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-
   turbo-darwin-64@2.5.5:
     resolution: {integrity: sha512-RYnTz49u4F5tDD2SUwwtlynABNBAfbyT2uU/brJcyh5k6lDLyNfYKdKmqd3K2ls4AaiALWrFKVSBsiVwhdFNzQ==}
     cpu: [x64]
@@ -1579,14 +1541,6 @@ packages:
     resolution: {integrity: sha512-EbKSKh+bh1E1IFxeO0pg1n4dvoOTt0UDiXMd/qn++r98+jPO1xtJilvXldeuQ8giIB5IkpjCgMleHMNEsGH6pg==}
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
     hasBin: true
-
-  vite-tsconfig-paths@5.1.4:
-    resolution: {integrity: sha512-cYj0LRuLV2c2sMqhqhGpaO3LretdtMn/BVX4cPLanIZuwwrkVl+lK84E/miEXkCHWXuq65rhNN4rXsBcOB3S4w==}
-    peerDependencies:
-      vite: '*'
-    peerDependenciesMeta:
-      vite:
-        optional: true
 
   vite@6.3.5:
     resolution: {integrity: sha512-cZn6NDFE7wdTpINgs++ZJ4N49W2vRp8LCKrn3Ob1kYNtOo21vfDoaV5GzBfLU4MovSAB8uNRm4jgzVQZ+mBzPQ==}
@@ -2615,8 +2569,6 @@ snapshots:
 
   globals@16.3.0: {}
 
-  globrex@0.1.2: {}
-
   graphemer@1.4.0: {}
 
   has-flag@4.0.0: {}
@@ -2981,10 +2933,6 @@ snapshots:
     optionalDependencies:
       typescript: 5.9.2
 
-  tsconfck@3.1.6(typescript@5.8.3):
-    optionalDependencies:
-      typescript: 5.8.3
-
   turbo-darwin-64@2.5.5:
     optional: true
 
@@ -3067,17 +3015,6 @@ snapshots:
       - terser
       - tsx
       - yaml
-
-  vite-tsconfig-paths@5.1.4(typescript@5.8.3)(vite@6.3.5(@types/node@22.16.4)):
-    dependencies:
-      debug: 4.4.1
-      globrex: 0.1.2
-      tsconfck: 3.1.6(typescript@5.8.3)
-    optionalDependencies:
-      vite: 6.3.5(@types/node@22.16.4)
-    transitivePeerDependencies:
-      - supports-color
-      - typescript
 
   vite@6.3.5(@types/node@22.16.4):
     dependencies:

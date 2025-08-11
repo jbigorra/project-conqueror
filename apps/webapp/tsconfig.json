@@ -1,20 +1,13 @@
 {
+  "extends": "@prj-conq/typescript-config/base.json",
   "compilerOptions": {
-    "lib": [
-      "ESNext"
-    ],
-    "module": "ESNext",
-    "target": "ESNext",
-    "moduleResolution": "bundler",
-    "strict": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "moduleDetection": "force",
-    "noUncheckedIndexedAccess": true,
-    "noEmit": true,
-    "types": [
-      "bun-types" // add Bun global
-    ]
-  }
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "baseUrl": "."
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts"]
 }
