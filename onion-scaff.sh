@@ -49,33 +49,52 @@ validate_domain_name() {
 }
 
 # Function to validate and normalize path
+# Arg1: input path (relative or absolute)
+# Arg2: create_if_missing (optional: "true" to create the directory if missing)
 validate_and_normalize_path() {
     local input_path="$1"
+    local create_if_missing="${2:-false}"
+
+    # Strip matching surrounding quotes (single or double) if present
+    if [[ ${#input_path} -ge 2 ]]; then
+        if [[ "$input_path" == \"*\" && "$input_path" == *\" ]]; then
+            input_path="${input_path:1:${#input_path}-2}"
+        elif [[ "$input_path" == \'*\' && "$input_path" == *\' ]]; then
+            input_path="${input_path:1:${#input_path}-2}"
+        fi
+    fi
 
     # If path is empty, use current directory
     if [[ -z "$input_path" ]]; then
         input_path="."
     fi
 
-    # Convert to absolute path
     local absolute_path
     if [[ "$input_path" = /* ]]; then
-        # Already absolute path
         absolute_path="$input_path"
+        if [[ ! -d "$absolute_path" && "$create_if_missing" == "true" ]]; then
+            mkdir -p "$absolute_path" || {
+                print_error "Failed to create directory: $absolute_path"
+                return 1
+            }
+        fi
     else
-        # Relative path, convert to absolute
-        absolute_path="$(cd "$input_path" 2>/dev/null && pwd)" || {
-            print_error "Invalid path: $input_path"
+        # Relative path
+        absolute_path="$(pwd)/$input_path"
+        if [[ ! -d "$absolute_path" && "$create_if_missing" == "true" ]]; then
+            mkdir -p "$absolute_path" || {
+                print_error "Failed to create directory: $absolute_path"
+                return 1
+            }
+        fi
+        # If still doesn't exist and not creating, error out
+        if [[ ! -d "$absolute_path" && "$create_if_missing" != "true" ]]; then
+            print_error "Directory does not exist: $absolute_path"
             return 1
-        }
+        fi
     fi
 
-    # Check if directory exists and is writable
-    if [[ ! -d "$absolute_path" ]]; then
-        print_error "Directory does not exist: $absolute_path"
-        return 1
-    fi
-
+    # Check writable
     if [[ ! -w "$absolute_path" ]]; then
         print_error "Directory is not writable: $absolute_path"
         return 1
@@ -115,6 +134,43 @@ create_onion_structure() {
     mkdir -p "$full_path/infrastructure/http"
 
     print_success "$structure_type directory structure created successfully"
+}
+
+# Function to create shared folder structure (main or test)
+create_shared_structure() {
+    local base_path="$1"
+    local structure_type="$2"  # "main" or "test"
+    local full_path="$base_path/shared"
+
+    print_info "Creating $structure_type shared structure"
+    print_info "Target location: $full_path"
+
+    # Create directories
+    mkdir -p "$full_path/infrastructure/http"
+    mkdir -p "$full_path/presentation/ui/layouts"
+    mkdir -p "$full_path/presentation/ui/partials"
+    mkdir -p "$full_path/presentation/ui/components"
+
+    # Create files only for main structure (no .tsx files in tests)
+    if [[ "$structure_type" == "main" ]]; then
+        touch "$full_path/presentation/ui/layouts/main.layout.tsx"
+        touch "$full_path/presentation/ui/layouts/auth.layout.tsx"
+        touch "$full_path/presentation/ui/components/button.tsx"
+        touch "$full_path/presentation/ui/components/form-field.tsx"
+    fi
+
+    # Ensure empty directories tracked
+    local directories=(
+        "infrastructure/http"
+        "presentation/ui/layouts"
+        "presentation/ui/partials"
+        "presentation/ui/components"
+    )
+    for dir in "${directories[@]}"; do
+        touch "$full_path/$dir/.gitkeep"
+    done
+
+    print_success "$structure_type shared structure created successfully"
 }
 
 # Function to determine test path from main path
@@ -281,43 +337,89 @@ main() {
     print_info "=== Onion Architecture Scaffolding Tool ==="
     echo
 
-    # Get domain name from user
+    # Choose type: domain or shared
+    local scaffold_type=""
     while true; do
-        read -p "Enter the domain name: " domain_name
-        if validate_domain_name "$domain_name"; then
-            break
-        fi
-        echo "Please try again with a valid domain name."
+        read -p "What do you want to scaffold? (domain/shared): " scaffold_type
+        case "$scaffold_type" in
+            domain|Domain|DOMAIN)
+                scaffold_type="domain"
+                break
+                ;;
+            shared|Shared|SHARED)
+                scaffold_type="shared"
+                break
+                ;;
+            *)
+                echo "Please enter 'domain' or 'shared'."
+                ;;
+        esac
     done
 
     # Get target path from user
     echo
     read -p "Enter the relative path where you want to create the structure (press Enter for current directory): " target_path
 
-    # Validate and normalize the path
-    normalized_path=$(validate_and_normalize_path "$target_path")
+    # Validate and normalize the path; create if missing
+    normalized_path=$(validate_and_normalize_path "$target_path" true)
     if [[ $? -ne 0 ]]; then
         exit 1
     fi
 
-    echo
-    print_info "Domain name: $domain_name"
-    print_info "Target path: $normalized_path"
-    echo
+    if [[ "$scaffold_type" == "domain" ]]; then
+        # Get domain name from user
+        while true; do
+            read -p "Enter the domain name: " domain_name
+            if validate_domain_name "$domain_name"; then
+                break
+            fi
+            echo "Please try again with a valid domain name."
+        done
 
-    # Confirm with user
-    read -p "Proceed with creating the structure? (Y/n): " -r
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-        print_info "Operation cancelled"
-        exit 0
+        echo
+        print_info "Type: domain"
+        print_info "Domain name: $domain_name"
+        print_info "Target path: $normalized_path"
+        echo
+
+        # Confirm with user
+        read -p "Proceed with creating the structure? (Y/n): " -r
+        if [[ $REPLY =~ ^[Nn]$ ]]; then
+            print_info "Operation cancelled"
+            exit 0
+        fi
+
+        # Create the structure
+        create_directory_structure "$normalized_path" "$domain_name"
+        create_initial_files "$normalized_path" "$domain_name"
+        display_structure "$normalized_path" "$domain_name"
+
+        print_success "Onion architecture scaffolding completed!"
+    else
+        # Shared mode
+        echo
+        print_info "Type: shared"
+        print_info "Target path: $normalized_path"
+        echo
+
+        # Confirm with user
+        read -p "Proceed with creating the shared structure? (Y/n): " -r
+        if [[ $REPLY =~ ^[Nn]$ ]]; then
+            print_info "Operation cancelled"
+            exit 0
+        fi
+
+        # Create shared structure (main)
+        create_shared_structure "$normalized_path" "main"
+
+        # Create corresponding test structure
+        local test_base_path
+        test_base_path=$(get_test_path "$normalized_path")
+        print_info "Creating corresponding test shared structure..."
+        create_shared_structure "$test_base_path" "test"
+
+        print_success "Shared scaffolding completed!"
     fi
-
-    # Create the structure
-    create_directory_structure "$normalized_path" "$domain_name"
-    create_initial_files "$normalized_path" "$domain_name"
-    display_structure "$normalized_path" "$domain_name"
-
-    print_success "Onion architecture scaffolding completed!"
 }
 
 # Run the main function
