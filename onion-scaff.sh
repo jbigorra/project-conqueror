@@ -174,22 +174,36 @@ create_shared_structure() {
 }
 
 # Function to determine test path from main path
+# Ensures tests folder is always a sibling of src, never nested inside
 get_test_path() {
     local main_path="$1"
 
-    # Use sed to replace patterns more reliably
-    local test_path
-
-    # Handle common patterns
-    if [[ "$main_path" == */src/* ]]; then
-        # Replace /src/ with /tests/
-        test_path=$(echo "$main_path" | sed 's|/src/|/tests/|g')
+    # Handle paths that contain src/source/lib
+    if [[ "$main_path" == */src ]]; then
+        # Path ends with src - replace with tests
+        test_path="${main_path%/src}/tests"
+    elif [[ "$main_path" == */src/* ]]; then
+        # Path contains src - find the src parent and create sibling tests
+        # Split at /src/ and take everything before it, then append /tests/ and everything after src/
+        local before_src="${main_path%%/src/*}"
+        local after_src="${main_path#*/src/}"
+        test_path="$before_src/tests/$after_src"
+    elif [[ "$main_path" == */source ]]; then
+        # Path ends with source - replace with tests
+        test_path="${main_path%/source}/tests"
     elif [[ "$main_path" == */source/* ]]; then
-        # Replace /source/ with /tests/
-        test_path=$(echo "$main_path" | sed 's|/source/|/tests/|g')
+        # Path contains source - find the source parent and create sibling tests
+        local before_source="${main_path%%/source/*}"
+        local after_source="${main_path#*/source/}"
+        test_path="$before_source/tests/$after_source"
+    elif [[ "$main_path" == */lib ]]; then
+        # Path ends with lib - replace with tests
+        test_path="${main_path%/lib}/tests"
     elif [[ "$main_path" == */lib/* ]]; then
-        # Replace /lib/ with /tests/
-        test_path=$(echo "$main_path" | sed 's|/lib/|/tests/|g')
+        # Path contains lib - find the lib parent and create sibling tests
+        local before_lib="${main_path%%/lib/*}"
+        local after_lib="${main_path#*/lib/}"
+        test_path="$before_lib/tests/$after_lib"
     else
         # If no common pattern found, add /tests suffix to the path
         test_path="$main_path/tests"
