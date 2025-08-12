@@ -1,5 +1,13 @@
+import { opentelemetry } from "@elysiajs/opentelemetry";
+import { swagger } from "@elysiajs/swagger";
 import { Elysia } from "elysia";
+import logixlysia from "logixlysia";
+import { startServer } from "./app";
 
-const app = new Elysia().get("/", () => ({ hello: "Bun👋" })).listen(8080);
-
-console.log(`Listening on ${app.server!.url}`);
+startServer(new Elysia(), {
+  logger: logixlysia,
+  openapi: swagger,
+  opentelemetry: opentelemetry,
+})
+  .get("/", () => ({ hello: "Bun👋" }))
+  .listen(8080);

@@ -4,18 +4,16 @@
   "version": "0.1.0",
   "description": "Modulithic web application for Project Conqueror",
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    }
+    ".": "./src/main.ts"
   },
   "imports": {
-    "#hotspots/*": "./dist/features/hotspots/*",
-    "#server/*": "./dist/server/*",
-    "#shared/http/*": "./dist/shared/infrastructure/http/*",
-    "#shared/ui/components/*": "./dist/shared/presentation/ui/components/*",
-    "#shared/ui/partials/*": "./dist/shared/presentation/ui/partials/*",
-    "#shared/ui/layouts/*": "./dist/shared/presentation/ui/layouts/*"
+    "#src/*": "./src/*",
+    "#hotspots/*": "./src/features/hotspots/*",
+    "#server/*": "./src/server/*",
+    "#shared/http/*": "./src/shared/infrastructure/http/*",
+    "#shared/ui/components/*": "./src/shared/presentation/ui/components/*",
+    "#shared/ui/partials/*": "./src/shared/presentation/ui/partials/*",
+    "#shared/ui/layouts/*": "./src/shared/presentation/ui/layouts/*"
   },
   "scripts": {
     "build": "tsc",
