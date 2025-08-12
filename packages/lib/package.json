@@ -43,7 +43,7 @@
   ],
   "author": "Juan Bigorra <jbigorra.soft.eng@pm.me>",
   "license": "ISC",
-  "packageManager": "pnpm@10.13.1",
+  "packageManager": "pnpm@10.14.0",
   "devDependencies": {
     "@adonisjs/eslint-config": "^2.1.0",
     "@prj-conq/typescript-config": "workspace:*",

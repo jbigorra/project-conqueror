@@ -30,7 +30,7 @@
   "keywords": [],
   "author": "Juan Bigorra <jbigorra.soft.eng@pm.me>",
   "license": "ISC",
-  "packageManager": "pnpm@10.13.1",
+  "packageManager": "pnpm@10.14.0",
   "dependencies": {
     "@prj-conq/lib": "workspace:^",
     "csv-parse": "^6.0.0"
