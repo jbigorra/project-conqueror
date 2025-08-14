@@ -1,9 +1,9 @@
+import packageJson from "#package.json";
 import { uploadFilesController } from "#upload/presentation/controllers/upload-files.controller.ts";
 import { opentelemetry } from "@elysiajs/opentelemetry";
 import { swagger } from "@elysiajs/swagger";
 import { Elysia } from "elysia";
 import logixlysia from "logixlysia";
-import packageJson from "../../../../package.json";
 
 export interface IStartServerDeps {
   logger: typeof logixlysia;

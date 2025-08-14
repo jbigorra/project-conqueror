@@ -7,10 +7,11 @@
     ".": "./src/main.ts"
   },
   "imports": {
+    "#package.json": "./package.json",
     "#src/*": "./src/*",
     "#shared/http/*": "./src/shared/infrastructure/http/*",
-    "#shared/infrastructure/server/*": "./src/shared/infrastructure/server/*",
-    "#shared/infrastructure/client/*": "./src/shared/infrastructure/client/*",
+    "#shared/server/*": "./src/shared/infrastructure/server/*",
+    "#shared/client/*": "./src/shared/infrastructure/client/*",
     "#shared/ui/components/*": "./src/shared/presentation/ui/components/*",
     "#shared/ui/partials/*": "./src/shared/presentation/ui/partials/*",
     "#shared/ui/layouts/*": "./src/shared/presentation/ui/layouts/*",
