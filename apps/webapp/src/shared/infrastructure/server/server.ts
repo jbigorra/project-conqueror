@@ -1,8 +1,9 @@
+import { uploadFilesController } from "#upload/presentation/controllers/upload-files.controller.ts";
 import { opentelemetry } from "@elysiajs/opentelemetry";
 import { swagger } from "@elysiajs/swagger";
 import { Elysia } from "elysia";
 import logixlysia from "logixlysia";
-import packageJson from "../package.json";
+import packageJson from "../../../../package.json";
 
 export interface IStartServerDeps {
   logger: typeof logixlysia;
@@ -10,9 +11,7 @@ export interface IStartServerDeps {
   opentelemetry: typeof opentelemetry;
 }
 
-type TStartServerFn = (app: Elysia, deps: IStartServerDeps) => Elysia;
-
-export const startServer: TStartServerFn = (app, deps) => {
+export const startServer = (app: Elysia, deps: IStartServerDeps) => {
   return app
     .use(
       deps.logger({
@@ -41,5 +40,15 @@ export const startServer: TStartServerFn = (app, deps) => {
         },
       }),
     )
-    .use(deps.opentelemetry());
+    .use(deps.opentelemetry())
+    .use(uploadFilesController)
+    .listen(8080);
 };
+
+export const app = startServer(new Elysia(), {
+  logger: logixlysia,
+  openapi: swagger,
+  opentelemetry: opentelemetry,
+});
+
+export type App = typeof app;

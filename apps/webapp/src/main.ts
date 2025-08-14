@@ -1,13 +1,3 @@
-import { opentelemetry } from "@elysiajs/opentelemetry";
-import { swagger } from "@elysiajs/swagger";
-import { Elysia } from "elysia";
-import logixlysia from "logixlysia";
-import { startServer } from "./app";
+import { app } from "./shared/infrastructure/server/server";
 
-startServer(new Elysia(), {
-  logger: logixlysia,
-  openapi: swagger,
-  opentelemetry: opentelemetry,
-})
-  .get("/", () => ({ hello: "Bun👋" }))
-  .listen(8080);
+console.log(`\n\n\n Server is running on http://localhost:${app.server!.port}`);
