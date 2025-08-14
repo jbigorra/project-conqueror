@@ -7,16 +7,20 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "baseUrl": ".",
-    "jsx": "react",
-    "jsxFactory": "Html.createElement",
-    "jsxFragmentFactory": "Html.Fragment",
+    "jsx": "react-jsx",
+    "jsxImportSource": "@kitajs/html",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
     "plugins": [
       {
         "name": "@kitajs/ts-html-plugin"
       }
     ],
-    "allowImportingTsExtensions": true,
-    "noEmit": true
+    "types": [
+      "@vitest/browser/providers/playwright",
+      "@kitajs/html/htmx.d.ts",
+      "@kitajs/html/alpine.d.ts"
+    ]
   },
   "include": [
     "src/**/*"

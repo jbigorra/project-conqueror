@@ -8,14 +8,12 @@
   },
   "imports": {
     "#package.json": "./package.json",
-    "#src/*": "./src/*",
     "#shared/http/*": "./src/shared/infrastructure/http/*",
     "#shared/server/*": "./src/shared/infrastructure/server/*",
     "#shared/client/*": "./src/shared/infrastructure/client/*",
     "#shared/ui/components/*": "./src/shared/presentation/ui/components/*",
     "#shared/ui/partials/*": "./src/shared/presentation/ui/partials/*",
     "#shared/ui/layouts/*": "./src/shared/presentation/ui/layouts/*",
-    // features
     "#upload/*": "./src/features/upload/*",
     "#analyses/*": "./src/features/analyses/*"
   },
@@ -43,6 +41,7 @@
     "@elysiajs/html": "^1.3.1",
     "@elysiajs/opentelemetry": "^1.3.1",
     "@elysiajs/swagger": "^1.3.1",
+    "@kitajs/html": "^4.2.9",
     "@kitajs/ts-html-plugin": "^4.1.2",
     "bun-types": "^1.2.20",
     "elysia": "^1.3.8",

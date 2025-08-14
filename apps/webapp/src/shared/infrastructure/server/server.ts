@@ -41,14 +41,13 @@ export const startServer = (app: Elysia, deps: IStartServerDeps) => {
       }),
     )
     .use(deps.opentelemetry())
-    .use(uploadFilesController)
-    .listen(8080);
+    .use(uploadFilesController);
 };
 
-export const app = startServer(new Elysia(), {
+export const server = startServer(new Elysia(), {
   logger: logixlysia,
   openapi: swagger,
   opentelemetry: opentelemetry,
 });
 
-export type App = typeof app;
+export type App = typeof server;
