@@ -1,5 +1,3 @@
-import { Html } from "@elysiajs/html";
-
 export const MainLayout = ({ head, title, children }: { head: string; title?: string; children: JSX.Element }): JSX.Element => {
   return (
     <>
@@ -12,6 +10,7 @@ export const MainLayout = ({ head, title, children }: { head: string; title?: st
           {head}
         </head>
         <body>{children}</body>
+        <script defer src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.6/dist/htmx.min.js" integrity="sha384-Akqfrbj/HpNVo8k11SXBb6TlBWmXXlYQrCSqEWmyKJe+hDm3Z/B2WVG4smwBkRVm" crossorigin="anonymous"></script>
       </html>
     </>
   );

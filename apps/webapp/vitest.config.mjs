@@ -55,6 +55,22 @@ export default defineConfig({
         "**/*.config.{ts,js,cjs,mjs}",
       ],
     },
+    deps: {
+      optimizer: {
+        web: {
+          esbuildOptions: {
+            jsx: "automatic",
+            jsxImportSource: "@kitajs/html",
+          },
+        },
+        ssr: {
+          esbuildOptions: {
+            jsx: "automatic",
+            jsxImportSource: "@kitajs/html",
+          },
+        },
+      },
+    },
   },
   // test: {
   //   browser: {
