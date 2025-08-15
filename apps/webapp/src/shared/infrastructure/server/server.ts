@@ -1,6 +1,7 @@
 import packageJson from "#package.json";
 import { uploadFilesController } from "#upload/presentation/controllers/upload-files.controller.ts";
 import { opentelemetry } from "@elysiajs/opentelemetry";
+import { staticPlugin } from "@elysiajs/static";
 import { swagger } from "@elysiajs/swagger";
 import { Elysia } from "elysia";
 import logixlysia from "logixlysia";
@@ -9,6 +10,7 @@ export interface IStartServerDeps {
   logger: typeof logixlysia;
   openapi: typeof swagger;
   opentelemetry: typeof opentelemetry;
+  static: typeof staticPlugin;
 }
 
 export const startServer = (app: Elysia, deps: IStartServerDeps) => {
@@ -41,6 +43,12 @@ export const startServer = (app: Elysia, deps: IStartServerDeps) => {
       }),
     )
     .use(deps.opentelemetry())
+    .use(
+      deps.static({
+        assets: "src/assets",
+        prefix: "/",
+      }),
+    )
     .use(uploadFilesController);
 };
 
@@ -48,6 +56,7 @@ export const server = startServer(new Elysia(), {
   logger: logixlysia,
   openapi: swagger,
   opentelemetry: opentelemetry,
+  static: staticPlugin,
 });
 
 export type App = typeof server;

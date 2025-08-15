@@ -4,7 +4,7 @@ import { MainLayout } from "#shared/ui/layouts/main.layout.tsx";
 export const UploadPage = ({ html }) => {
   return html(
     <MainLayout
-      head=""
+      head={<script src="upload/js/upload.page.js" defer />}
       title="Upload your files"
     >
       <h1>Upload</h1>
