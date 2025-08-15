@@ -1,10 +1,16 @@
 import { MainLayout } from "#shared/ui/layouts/main.layout.tsx";
+import { PropsWithChildren } from "@kitajs/html";
 
-// @ts-ignore
-export const UploadPage = ({ html }) => {
+type UploadPageProps = {
+  html: (value: JSX.Element) => Promise<Response | string> | Response | string;
+}
+
+
+export const UploadPage = (props: PropsWithChildren<UploadPageProps>) => {
+  const { html } = props;
   return html(
     <MainLayout
-      head={<script src="upload/js/upload.page.js" defer />}
+      head={`<script src="upload/js/upload.page.js" defer />`}
       title="Upload your files"
     >
       <h1>Upload</h1>
@@ -14,8 +20,8 @@ export const UploadPage = ({ html }) => {
         hx-target="#upload-response"
         hx-swap="afterend"
       >
-        <label htmlFor="file" name="file">Upload a git log file</label>
-        <input type="file" name="file" />
+        <label for="file">Upload a git log file</label>
+        <input id="file" type="file" name="file" />
         <button>Upload</button>
       </form>
       <div id="upload-response"></div>

@@ -1,4 +1,12 @@
-export const MainLayout = ({ head, title, children }: { head: string; title?: string; children: JSX.Element }): JSX.Element => {
+import { PropsWithChildren } from "@kitajs/html";
+
+type MainLayoutProps = {
+  head: string;
+  title: string;
+}
+
+export const MainLayout = (props: PropsWithChildren<MainLayoutProps>) => {
+  const { head, title, children } = props;
   return (
     <>
       {'<!doctype html>'}
