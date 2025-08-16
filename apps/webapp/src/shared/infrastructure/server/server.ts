@@ -1,5 +1,5 @@
 import packageJson from "#package.json";
-import { uploadFilesController } from "#upload/presentation/controllers/upload-files.controller.ts";
+import { uploadFilesController } from "#upload/presentation/controllers/upload-files.controller.tsx";
 import { opentelemetry } from "@elysiajs/opentelemetry";
 import { staticPlugin } from "@elysiajs/static";
 import { swagger } from "@elysiajs/swagger";

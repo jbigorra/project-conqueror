@@ -1,19 +1,13 @@
 import { MainLayout } from "#shared/ui/layouts/main.layout.tsx";
 import { PropsWithChildren } from "@kitajs/html";
 
-type UploadPageProps = {
-  html: (value: JSX.Element) => Promise<Response | string> | Response | string;
-}
-
-
-export const UploadPage = (props: PropsWithChildren<UploadPageProps>) => {
-  const { html } = props;
-  return html(
+export const UploadPage = (props: PropsWithChildren) => {
+  return (
     <MainLayout
-      head={`<script src="upload/js/upload.page.js" defer />`}
+      head={`<script src="/upload/js/upload.page.js" defer></script>`}
       title="Upload your files"
     >
-      <h1>Upload</h1>
+      <h1>Upload your files</h1>
       <form id="form"
         hx-post="/upload"
         hx-encoding="multipart/form-data"
@@ -24,18 +18,19 @@ export const UploadPage = (props: PropsWithChildren<UploadPageProps>) => {
         <input id="file" type="file" name="file" />
         <button>Upload</button>
       </form>
+      <progress id='progress' value='0' max='100'></progress>
       <div id="upload-response"></div>
     </MainLayout>
-  );
+  )
 };
 
 
 // @ts-ignore
-export const ConfirmationMessage = ({ html }) => {
-  return html(
+export const ConfirmationMessage = () => {
+  return (
     <>
       <strong class="font-bold">Success!</strong><br />
       <span class="block sm:inline">File uploaded successfully</span>
     </>
-  );
+  )
 };
