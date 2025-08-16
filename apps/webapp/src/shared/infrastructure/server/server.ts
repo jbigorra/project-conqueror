@@ -47,6 +47,7 @@ export const startServer = (app: Elysia, deps: IStartServerDeps) => {
       deps.static({
         assets: "src/assets",
         prefix: "/",
+        noCache: process.env.NODE_ENV === "development",
       }),
     )
     .use(uploadFilesController);
