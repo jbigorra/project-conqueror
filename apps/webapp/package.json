@@ -32,9 +32,13 @@
     "@prj-conq/behave": "workspace:*",
     "@prj-conq/lib": "workspace:*",
     "@prj-conq/typescript-config": "workspace:*",
+    "@vitejs/plugin-react": "^5.0.0",
+    "@vitest/browser": "^3.2.4",
     "fishery": "^2.3.1",
+    "playwright": "^1.54.2",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4",
+    "vitest-browser-react": "^1.0.1",
     "vitest-mock-extended": "^3.1.0"
   },
   "dependencies": {
