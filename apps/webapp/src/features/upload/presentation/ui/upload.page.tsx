@@ -24,8 +24,6 @@ export const UploadPage = (props: PropsWithChildren) => {
   )
 };
 
-
-// @ts-ignore
 export const ConfirmationMessage = () => {
   return (
     <>

@@ -1,0 +1,47 @@
+/* HTML and body styles */
+
+html, body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Main content styles (layout only) */
+
+main {
+  flex: 1;
+}
+
+/* Left sidebar (aside) menu styles */
+
+main > div > aside {
+  nav {
+    ul {
+      li {
+        list-style: none;
+      }
+    }
+    button {
+      background-color: #fff;
+      border: 3px solid #000;
+      color: #000;
+      border-radius: 0px;
+      width: 100%;
+    }
+  }
+}
+
+/* Footer styles */
+footer {
+  text-align: center;
+  padding: 0.5rem;
+  vertical-align: middle;
+
+  p {
+    margin-bottom: 0;
+  }
+}
