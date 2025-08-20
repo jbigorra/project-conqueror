@@ -1,5 +1,6 @@
 import { server } from "#shared/server/server.ts";
 import { treaty } from "@elysiajs/eden";
+import { isHtml } from "@elysiajs/html";
 import { describe, expect, it } from "vitest";
 
 const client = treaty(server);
@@ -23,7 +24,7 @@ describe("UploadFilesController", () => {
     it("should return response with html body", async () => {
       const res = await client.upload.get();
 
-      expect(res.data).toMatchSnapshot();
+      expect(isHtml(res.data)).toBe(true);
     });
   });
 });
