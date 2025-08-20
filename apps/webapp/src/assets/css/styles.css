@@ -1,0 +1,45 @@
+@font-face {
+  font-family: "Source Sans 3";
+  src: url("../fonts/SourceSans3-VariableFont_wght.ttf") format("truetype");
+  font-weight: 200 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Source Sans 3";
+  src: url("../fonts/SourceSans3-Italic-VariableFont_wght.ttf") format("truetype");
+  font-weight: 200 900;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Tilt Warp";
+  src: url("../fonts/TiltWarp-Regular-VariableFont_XROT,YROT.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Ubuntu Mono";
+  src: url("../fonts/UbuntuMono-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Ubuntu Mono";
+  src: url("../fonts/UbuntuMono-Bold.ttf") format("truetype");
+  font-weight: bold;
+  font-style: normal;
+}
+
+:root, :host {
+  --pico-font-family-emoji: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --pico-font-family-sans-serif: "Source Sans 3", Helvetica, Arial, sans-serif, var(--pico-font-family-emoji);
+  --pico-font-family-monospace: "Ubuntu Mono", monospace, var(--pico-font-family-emoji);
+  --pico-font-family: var(--pico-font-family-sans-serif);
+
+  h1, h2, h3, h4, h5, h6, button {
+    font-family: "Tilt Warp", var(--pico-font-family);
+  }
+}
