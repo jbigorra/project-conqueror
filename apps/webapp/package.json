@@ -18,9 +18,9 @@
     "#analyses/*": "./src/features/analyses/*"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "NODE_ENV=production bun build --compile --minify-whitespace --minify-syntax --target bun --outfile server ./src/main.ts",
     "build:prod": "NODE_ENV=production bun build --compile --minify-whitespace --minify-syntax --target bun --outfile server ./src/main.ts",
-    "dev": "NODE_ENV=development bun run --hot ./src/main.ts",
+    "dev": "NODE_ENV=development bun run --watch ./src/main.ts",
     "dev:debug": "NODE_ENV=development bun --inspect-wait run --watch ./src/main.ts",
     "clean": "rm -rf dist && rm tsconfig.tsbuildinfo || echo 'No tsconfig.tsbuildinfo file found'",
     "test": "vitest run",

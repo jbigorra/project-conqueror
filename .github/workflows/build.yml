@@ -23,6 +23,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-turbo-
 
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: ".bun-version"
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
