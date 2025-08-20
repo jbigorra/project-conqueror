@@ -13,8 +13,8 @@ export function Header() {
         <ul>
           <li><a href="#" class="contrast">Analyze my repo</a></li>
           <li><a href="#" class="contrast">What's this?</a></li>
-          <li><a href="#" class="contrast">Docs</a></li>
-          <li><a href="#" class="contrast">Buy me a coffee</a></li>
+          <li><a href="#" class="contrast">Documentation</a></li>
+          {/* <li><a href="#" class="contrast">Buy me a coffee</a></li> */}
         </ul>
       </nav>
     </header>

@@ -1,0 +1,53 @@
+<svg width="100" height="100" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .log-outline, .log-line {
+      fill: none;
+      stroke: #eeeeee;
+      stroke-width: 2;
+      stroke-dasharray: 300;
+      stroke-dashoffset: 300;
+      animation: draw 3s ease forwards;
+      animation-delay: 0s;
+      animation-iteration-count: infinite;
+      animation-direction: normal;
+    }
+
+    .log-bg {
+      fill: #ffffff;
+    }
+
+    @keyframes fill-log-lines {
+      0% {
+        stroke-dashoffset: 300;
+      }
+      100% {
+        stroke-dashoffset: 0;
+      }
+    }
+
+    @keyframes draw {
+      0% {
+        stroke-dashoffset: 300;
+      }
+      80% {
+        fill: #ffffff;
+      }
+      100% {
+        stroke-dashoffset: 0;
+        stroke: #54e4ff;
+        fill: #fafafa;
+      }
+    }
+  </style>
+
+  <!-- Background (Light gray document) -->
+  <path class="log-bg" d="M12 4h28l12 12v44H12z"/>
+
+  <!-- Outline with animation -->
+  <path class="log-outline" d="M12 4h28l12 12v44H12z M40 4v12h12"/>
+
+  <!-- Playful log lines (static) -->
+  <line class="log-line" x1="20" y1="28" x2="44" y2="28"/>
+  <line class="log-line" x1="20" y1="36" x2="44" y2="36"/>
+  <line class="log-line" x1="20" y1="44" x2="36" y2="44"/>
+</svg>
