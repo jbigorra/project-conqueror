@@ -33,13 +33,68 @@
   font-style: normal;
 }
 
+[data-theme=light], :root:not([data-theme=dark]), :host(:not([data-theme=dark])) {
+  --pico-color: #373c44;
+  --pico-text-selection-color: rgba(246, 84, 126, 0.25);
+  --pico-muted-color: #646b79;
+  --pico-muted-border-color: rgb(231, 234, 239.5);
+  --pico-primary: #fd82b8;
+  --pico-primary-background: #ff549e;
+  --pico-primary-border: #000;
+  --pico-primary-underline: rgba(153, 50, 94, 0.5);
+  --pico-primary-hover: #99325e;
+  --pico-primary-hover-background: #c8427c;
+  --pico-primary-hover-border: var(--pico-primary-hover-background);
+  --pico-primary-hover-underline: var(--pico-primary-hover);
+  --pico-primary-focus: rgba(107, 35, 67, 0.5);
+  --pico-primary-inverse: #fff;
+  --pico-secondary: #fdf17f;
+  --pico-secondary-background: #ffee4f;
+  --pico-secondary-border: var(--pico-primary-border);
+  --pico-secondary-underline: rgba(255, 238, 79, 0.5);
+  --pico-secondary-hover: #998e2f;
+  --pico-secondary-hover-background: #c8bb3e;
+  --pico-secondary-hover-border: var(--pico-secondary-hover-background);
+  --pico-secondary-hover-underline: var(--pico-secondary-hover);
+  --pico-secondary-focus: rgba(153, 142, 47, 0.5);
+  --pico-secondary-inverse: #fff;
+  --pico-contrast: #82eafe;
+  --pico-contrast-background: #54e4ff;
+  --pico-contrast-border: var(--pico-primary-border);
+  --pico-contrast-underline: rgba(130, 234, 254, 0.5);
+  --pico-contrast-hover: #328899;
+  --pico-contrast-hover-background: #42b3c8;
+  --pico-contrast-hover-border: var(--pico-contrast-hover-background);
+  --pico-contrast-hover-underline: var(--pico-secondary-hover);
+  --pico-contrast-focus: rgba(66, 179, 200, 0.25);
+  --pico-contrast-inverse: #fff;
+  --pico-box-shadow: 0.0145rem 0.029rem 0.174rem rgba(129, 145, 181, 0.01698), 0.0335rem 0.067rem 0.402rem rgba(129, 145, 181, 0.024), 0.0625rem 0.125rem 0.75rem rgba(129, 145, 181, 0.03), 0.1125rem 0.225rem 1.35rem rgba(129, 145, 181, 0.036), 0.2085rem 0.417rem 2.502rem rgba(129, 145, 181, 0.04302), 0.5rem 1rem 6rem rgba(129, 145, 181, 0.06), 0 0 0 0.0625rem rgba(129, 145, 181, 0.015);
+  --pico-h1-color: #2d3138;
+  --pico-h2-color: #373c44;
+  --pico-h3-color: #424751;
+  --pico-h4-color: #4d535e;
+  --pico-h5-color: #5c6370;
+  --pico-h6-color: #646b79;
+  --pico-mark-background-color: rgb(252.5, 230.5, 191.5);
+  --pico-mark-color: #0f1114;
+  --pico-ins-color: rgb(28.5, 105.5, 84);
+  --pico-del-color: rgb(136, 56.5, 53);
+}
+
 :root, :host {
   --pico-font-family-emoji: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --pico-font-family-sans-serif: "Source Sans 3", Helvetica, Arial, sans-serif, var(--pico-font-family-emoji);
   --pico-font-family-monospace: "Ubuntu Mono", monospace, var(--pico-font-family-emoji);
   --pico-font-family: var(--pico-font-family-sans-serif);
+  --pico-border-radius: 0.5rem;
+  --pico-border-width: 0.1875rem;
 
   h1, h2, h3, h4, h5, h6, button {
     font-family: "Tilt Warp", var(--pico-font-family);
+  }
+
+  button {
+    border-color: #000;
+    border-style: solid;
   }
 }
