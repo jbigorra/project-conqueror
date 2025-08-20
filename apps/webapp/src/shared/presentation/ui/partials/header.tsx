@@ -11,9 +11,9 @@ export function Header() {
           </li>
         </ul>
         <ul>
-          <li><a href="#" class="contrast">Analyze my repo</a></li>
-          <li><a href="#" class="contrast">What's this?</a></li>
-          <li><a href="#" class="contrast">Documentation</a></li>
+          <li><a href="#">Analyze my repo</a></li>
+          <li><a href="#">What's this?</a></li>
+          <li><a href="#">Documentation</a></li>
           {/* <li><a href="#" class="contrast">Buy me a coffee</a></li> */}
         </ul>
       </nav>

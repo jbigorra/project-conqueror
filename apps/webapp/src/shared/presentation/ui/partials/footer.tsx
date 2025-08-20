@@ -4,7 +4,7 @@ export function Footer() {
       <div class="container">
         <div class="row">
           <div class="col-xs-12 col-md-12">
-            <p>Copyright 2025 TD Radar</p>
+            <small>&copy; 2025 Juan Bigorra. All rights reserved.</small>
           </div>
         </div>
       </div>
