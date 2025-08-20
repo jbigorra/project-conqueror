@@ -12,6 +12,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Enable Corepack
+        run: corepack enable
+
       - name: Cache turbo build setup
         uses: actions/cache@v4
         with:
@@ -19,11 +22,6 @@ jobs:
           key: ${{ runner.os }}-turbo-${{ hashFiles('**/package.json', '**/pnpm-lock.yaml', 'turbo.json') }}
           restore-keys: |
             ${{ runner.os }}-turbo-
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: $(jq -r '.packageManager' package.json | cut -d'@' -f2)
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
