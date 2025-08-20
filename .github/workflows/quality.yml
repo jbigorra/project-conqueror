@@ -54,11 +54,6 @@ jobs:
       - name: Install dependencies (if needed)
         run: pnpm install --frozen-lockfile
 
-      - name: Prepare test environment
-        run: |
-          cd apps/webapp
-          ./ci/prepare-test.sh
-
       # Now Turbo can use its cache effectively
       - name: Run ${{ matrix.task }}
         run: pnpm ${{ matrix.task }}
