@@ -1,0 +1,90 @@
+/* HTML and body styles */
+
+html, body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+}
+
+/* Header menu styles */
+
+header {
+  nav {
+    column-gap: 0.5rem;
+    ul {
+      display: flex;
+      flex-direction: row;
+      gap: 1rem;
+      flex: 0 0 auto;
+      li {
+        a {
+          font-size: 0.875rem;
+          font-family: "Tilt Warp", var(--pico-font-family);
+          color: #000;
+          &:hover {
+            color: #000;
+            text-decoration-color: #000;
+            text-decoration-thickness: 3px;
+            text-decoration-skip-ink: none;
+            text-underline-offset: 0.250em;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* Page content styles (layout only) */
+
+.page-content {
+  padding: 0.5rem;
+  border: 1px dashed #000;
+}
+
+/* Left sidebar (aside) menu styles */
+
+main > div > aside {
+  nav.menu {
+    ul {
+      margin-left: 0;
+      margin-right: 0;
+      gap: 0.725rem;
+      li {
+        padding-top: 0;
+        padding-bottom: 0;
+        list-style: none;
+        button {
+          font-family: var(--pico-font-family);
+          background-color: #fff;
+          border: 3px solid #000;
+          color: #000;
+          border-radius: 0px;
+          width: 100%;
+          &:hover {
+            background-color: #ececec;
+            text-decoration: none;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* Footer styles */
+footer {
+  text-align: center;
+  padding: 0.5rem;
+  vertical-align: middle;
+  small {
+    color: #a3a3a3;
+    font-weight: 100;
+  }
+}
