@@ -19,7 +19,8 @@
     "types": [
       "@vitest/browser/providers/playwright",
       "@kitajs/html/htmx.d.ts",
-      "@kitajs/html/alpine.d.ts"
+      "@kitajs/html/alpine.d.ts",
+      "bun-types"
     ]
   },
   "include": [
