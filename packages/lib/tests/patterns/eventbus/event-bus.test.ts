@@ -278,7 +278,7 @@ describe("EventBus", () => {
     });
 
     it("should enable logging when configured", async () => {
-      const consoleSpy = vi.spyOn(console, "log").mockImplementation();
+      const consoleSpy = vi.spyOn(console, "log");
       const eventBusWithLogging = new EventBus({ enableLogging: true });
 
       const handler = new SyncTestHandler();
