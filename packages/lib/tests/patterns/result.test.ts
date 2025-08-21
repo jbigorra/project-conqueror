@@ -1,4 +1,4 @@
-import { Result } from "#lib/patterns/result.js";
+import { Result } from "#lib/patterns/index.js";
 import { describe, expect, it } from "vitest";
 
 describe("Result", () => {
@@ -81,7 +81,7 @@ describe("Result", () => {
     it("should handle async-like transformations", () => {
       const result = Result.success({ name: "John", age: 30 });
       const mapped = result.map(
-        (user) => `${user.name} is ${user.age} years old`
+        (user) => `${user.name} is ${user.age} years old`,
       );
 
       expect(mapped.getValue()).toBe("John is 30 years old");

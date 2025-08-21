@@ -18,9 +18,7 @@
     }
   },
   "imports": {
-    "#lib/*": "./dist/*",
-    "#lib/generics": "./dist/generics/index.js",
-    "#lib/processes": "./dist/processes/index.js"
+    "#lib/*": "./dist/*"
   },
   "engines": {
     "node": ">=22.0.0"
