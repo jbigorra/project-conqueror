@@ -8,8 +8,8 @@ const BUCKET_PATH =
 
 export const uploadFilesController = new Elysia({ prefix: "/upload" })
   .use(html())
-  .decorate("uploadFile", UploadFile.create())
-  .onError(({ error, code, set, body }) => {
+  .decorate("uploadFile", UploadFile.create({}))
+  .onError(({ error, code, set }) => {
     if (code) {
       set.status = 200;
       // @ts-ignore
