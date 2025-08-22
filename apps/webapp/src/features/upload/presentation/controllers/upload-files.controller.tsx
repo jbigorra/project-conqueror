@@ -9,13 +9,6 @@ const BUCKET_PATH =
 export const uploadFilesController = new Elysia({ prefix: "/upload" })
   .use(html())
   .decorate("uploadFile", UploadFile.create())
-  .get("/", async () => {
-    return (
-      <UploadPage>
-        <UploadForm values={{}} errors={{}} />
-      </UploadPage>
-    );
-  })
   .onError(({ error, code, set, body }) => {
     if (code) {
       set.status = 200;
@@ -23,6 +16,13 @@ export const uploadFilesController = new Elysia({ prefix: "/upload" })
       const errors = error.validator.schema.properties as UploadFormSubmitErrors;
       return (<UploadFormWithErrors values={{}} errors={errors} />);
     }
+  })
+  .get("/", async () => {
+    return (
+      <UploadPage>
+        <UploadForm values={{}} errors={{}} />
+      </UploadPage>
+    );
   })
   .post(
     "/",
