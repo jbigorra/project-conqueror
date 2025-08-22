@@ -32,31 +32,53 @@ export function UploadPage(props: PropsWithChildren) {
         </div>
         <div class="row">
           <div class="col-xs-12 center-xs">
-            <form id="form"
-              hx-post="/upload"
-              hx-encoding="multipart/form-data"
-              hx-target="#upload-response"
-              hx-swap="afterend"
-            >
-              <div aria-label="Upload a git log file" class="drop-area">
-                <img src="upload/img/anim-file.svg" alt="animated file" />
-                <span>Drop your git log file here or click to browse.</span>
-                <input id="file" type="file" name="file" />
-              </div>
-              <button>Upload</button>
-            </form>
-            <div id="upload-response"></div>
+            {props.children}
           </div>
         </div>
     </Layout>
   )
 };
 
+export type UploadFormSubmitErrors = {
+  file?: {
+    error: string;
+  }
+} | undefined;
+
+export function UploadForm(props: PropsWithChildren<{ values: any, errors: UploadFormSubmitErrors }>) {
+  const { values = {}, errors = {}, children } = props;
+  return (
+    <form id="form"
+      class="row"
+      hx-post="/upload"
+      hx-encoding="multipart/form-data"
+      hx-swap="outerHTML"
+    >
+      <div aria-label="Upload a git log file" class="drop-area col-xs-12">
+        <img src="upload/img/anim-file.svg" alt="animated file" />
+        <span>Drop your git log file here or click to browse.</span>
+        <input hx-preserve id="file" type="file" name="file" value={values.file} />
+      </div>
+      { errors.file && <div class="col-xs-12"><p><small><code>{errors.file.error}</code></small></p></div> }
+      <div class="col-xs-12">
+        <button class="upload-btn">Upload</button>
+      </div>
+      <div class="col-xs-12 center-xs">
+        { children }
+      </div>
+    </form>
+  )
+}
+
+export function UploadFormWithErrors(props: Readonly<{ values: any, errors: UploadFormSubmitErrors }>) {
+  const { values, errors } = props;
+  return (<UploadForm values={values} errors={errors} />)
+}
+
 export function ConfirmationMessage() {
   return (
-    <>
-      <strong class="font-bold">Success!</strong><br />
-      <span class="block sm:inline">File uploaded successfully</span>
-    </>
+    <small>
+      <ins>File uploaded successfully!</ins>
+    </small>
   )
 };
