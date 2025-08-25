@@ -310,7 +310,7 @@ describe("EventBus", () => {
       expect(event.aggregateId).toBe("aggregate-123");
       expect(event.payload).toEqual({ key: "value" });
       expect(event.eventId).toBeDefined();
-      expect(event.occurredAt).toBeInstanceOf(Date);
+      expect(event.createdAt).toBeInstanceOf(Date);
       expect(event.version).toBe(1);
     });
 
