@@ -28,9 +28,9 @@
     "dev": "tsc --watch",
     "dev:setup": "tsc",
     "clean": "rm -rf dist && rm tsconfig.tsbuildinfo || echo 'No tsconfig.tsbuildinfo file found'",
-    "test": "vitest run",
-    "test:coverage": "vitest run --coverage",
-    "tdd": "vitest"
+    "test": "bun test",
+    "test:coverage": "bun test --coverage",
+    "tdd": "bun test --watch"
   },
   "keywords": [
     "library",
@@ -43,15 +43,10 @@
   "license": "ISC",
   "packageManager": "pnpm@10.14.0",
   "devDependencies": {
-    "@adonisjs/eslint-config": "^2.1.0",
     "@prj-conq/typescript-config": "workspace:*",
     "@types/node": "^22.13.10",
-    "@vitest/coverage-v8": "3.2.4",
-    "@vitest/ui": "^3.2.4",
-    "eslint": "^9.31.0",
+    "bun-automock": "^0.2.1",
     "fishery": "^2.3.1",
-    "typescript": "^5.8.3",
-    "vitest": "^3.2.4",
-    "vitest-mock-extended": "^3.1.0"
+    "typescript": "^5.9.2"
   }
 }

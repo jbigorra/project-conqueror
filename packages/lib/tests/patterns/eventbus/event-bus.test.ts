@@ -4,7 +4,7 @@ import {
   EventBus,
   EventHandlerResult,
 } from "#lib/patterns/index.js";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, spyOn } from "bun:test";
 
 // Test event classes
 class TestEvent extends BaseDomainEvent {
@@ -278,7 +278,7 @@ describe("EventBus", () => {
     });
 
     it("should enable logging when configured", async () => {
-      const consoleSpy = vi.spyOn(console, "log");
+      const consoleSpy = spyOn(console, "log");
       const eventBusWithLogging = new EventBus({ enableLogging: true });
 
       const handler = new SyncTestHandler();

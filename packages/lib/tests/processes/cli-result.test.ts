@@ -1,5 +1,5 @@
 import { CLIResult } from "#lib/processes/index.js";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "bun:test";
 
 describe("CLIResult", () => {
   describe("constructor", () => {
@@ -14,7 +14,9 @@ describe("CLIResult", () => {
     });
 
     it("should throw error when errorCode is null", () => {
-      expect(() => new CLIResult(null as any, "stdout", "stderr")).toThrow("errorCode is can't be null");
+      expect(() => new CLIResult(null as any, "stdout", "stderr")).toThrow(
+        "errorCode is can't be null",
+      );
     });
 
     it("should accept signal as error code", () => {
@@ -37,11 +39,14 @@ describe("CLIResult", () => {
       expect(result.isSuccess()).toBe(true);
     });
 
-    it.each([1, -1, "SIGKILL" as const])("should return false when error code is %s", (errorCode) => {
-      const result = new CLIResult(errorCode, "", "");
+    it.each([1, -1, "SIGKILL" as const])(
+      "should return false when error code is %s",
+      (errorCode) => {
+        const result = new CLIResult(errorCode, "", "");
 
-      expect(result.isSuccess()).toBe(false);
-    });
+        expect(result.isSuccess()).toBe(false);
+      },
+    );
   });
 
   describe("isFailure", () => {
@@ -51,11 +56,14 @@ describe("CLIResult", () => {
       expect(result.isFailure()).toBe(false);
     });
 
-    it.each([1, -1, "SIGKILL" as const])("should return true when error code is %s", (errorCode) => {
-      const result = new CLIResult(errorCode, "", "");
+    it.each([1, -1, "SIGKILL" as const])(
+      "should return true when error code is %s",
+      (errorCode) => {
+        const result = new CLIResult(errorCode, "", "");
 
-      expect(result.isFailure()).toBe(true);
-    });
+        expect(result.isFailure()).toBe(true);
+      },
+    );
   });
 
   describe("errorMessage", () => {
@@ -67,22 +75,57 @@ describe("CLIResult", () => {
 
     it.each([
       // Should return stderr when it exists
-      [1, { stderr: "command not found", stdout: "", error: null }, "command not found"],
+      [
+        1,
+        { stderr: "command not found", stdout: "", error: null },
+        "command not found",
+      ],
       // Should return stdout when it exists
-      [1, { stderr: "", stdout: "usage: command [options]", error: null }, "usage: command [options]"],
+      [
+        1,
+        { stderr: "", stdout: "usage: command [options]", error: null },
+        "usage: command [options]",
+      ],
       // Should prioritize stderr over stdout
-      [1, { stderr: "command not found", stdout: "usage: command [options]", error: null }, "command not found"],
+      [
+        1,
+        {
+          stderr: "command not found",
+          stdout: "usage: command [options]",
+          error: null,
+        },
+        "command not found",
+      ],
       // Should prioritize error message over stderr and stdout when error exists
-      [1, { stderr: "command not found", stdout: "usage: command [options]", error: new Error("spawn failed") }, "spawn failed"],
+      [
+        1,
+        {
+          stderr: "command not found",
+          stdout: "usage: command [options]",
+          error: new Error("spawn failed"),
+        },
+        "spawn failed",
+      ],
       // Should return default message with numeric errorCode when no other messages
-      [127, { stderr: "", stdout: "", error: null }, "Command failed with errorCode 127"],
+      [
+        127,
+        { stderr: "", stdout: "", error: null },
+        "Command failed with errorCode 127",
+      ],
       // Should return default message with signal when killed by signal when no other messages
-      ["SIGTERM" as const, { stderr: "", stdout: "", error: null }, "Command failed with errorCode SIGTERM"],
-    ])("should return error message when error exists", (errorCode, { stdout, stderr, error }, expectedErrorMessage) => {
-      const result = new CLIResult(errorCode, stdout, stderr, error);
+      [
+        "SIGTERM" as const,
+        { stderr: "", stdout: "", error: null },
+        "Command failed with errorCode SIGTERM",
+      ],
+    ])(
+      "should return error message when error exists",
+      (errorCode, { stdout, stderr, error }, expectedErrorMessage) => {
+        const result = new CLIResult(errorCode, stdout, stderr, error);
 
-      expect(result.errorMessage()).toBe(expectedErrorMessage);
-    });
+        expect(result.errorMessage()).toBe(expectedErrorMessage);
+      },
+    );
 
     it("should handle whitespace-only stderr", () => {
       const result = new CLIResult(1, "", "   ");
@@ -103,4 +146,3 @@ describe("CLIResult", () => {
     });
   });
 });
-

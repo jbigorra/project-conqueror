@@ -1,5 +1,5 @@
 import { Result } from "#lib/patterns/index.js";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "bun:test";
 
 describe("Result", () => {
   describe("Success", () => {
