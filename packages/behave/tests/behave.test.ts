@@ -76,7 +76,7 @@ describe("AnalysisOptions", () => {
     };
 
     expect(() => new AnalysisOptions(options as any)).toThrowError(
-      /ageTimeNow/
+      /ageTimeNow/,
     );
   });
 
@@ -87,7 +87,7 @@ describe("AnalysisOptions", () => {
     };
 
     expect(() => new AnalysisOptions(options)).toThrowError(
-      /not yet supported/
+      /not yet supported/,
     );
   });
 });
