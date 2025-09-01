@@ -5,12 +5,13 @@ import { CLIResult } from "./cli-result";
 type TSpawn = (command: string, args: readonly string[], options?: SpawnOptionsWithoutStdio) => ChildProcess;
 type TDeps = { spawn: TSpawn };
 
-export type TSpawnAsyncFn<D = TDeps, R = TCLIResult> =                          // prettier-ignore
-  (dependencies: D) =>                                                                  // prettier-ignore
-    (command: string, args: string[], options?: SpawnOptionsWithoutStdio) =>    // prettier-ignore
-      Promise<R>; // prettier-ignore
+export type TSpawnAsyncFn = (
+  command: string,
+  args: readonly string[],
+  options?: SpawnOptionsWithoutStdio,
+) => Promise<TCLIResult>;
 
-export const spawnAsync: TSpawnAsyncFn<TDeps, TCLIResult> = (dependencies) => {
+export const spawnAsync = (dependencies: TDeps): TSpawnAsyncFn => {
   return (command, args = [], options) => {
     return new Promise((resolve) => {
       const child = dependencies.spawn(command, args, options);
