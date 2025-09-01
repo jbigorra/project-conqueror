@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "description": "Library containting different utility classes and patterns.",
+  "type": "module",
   "exports": {
     "./generics": {
       "types": "./dist/generics/index.d.ts",
@@ -24,9 +25,9 @@
     "bun": ">=1.2.20"
   },
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
-    "dev:setup": "tsc",
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "dev:setup": "tsdown",
     "clean": "rm -rf dist && rm tsconfig.tsbuildinfo || echo 'No tsconfig.tsbuildinfo file found'",
     "test": "bun test",
     "test:coverage": "bun test --coverage",
@@ -48,6 +49,7 @@
     "@types/node": "^22.13.10",
     "bun-automock": "^0.2.5",
     "fishery": "^2.3.1",
+    "tsdown": "^0.14.2",
     "typescript": "^5.9.0"
   }
 }
