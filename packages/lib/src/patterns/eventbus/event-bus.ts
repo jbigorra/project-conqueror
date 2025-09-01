@@ -1,5 +1,5 @@
-import { DomainEvent } from "./domain-event";
-import { EventHandler, EventHandlerResult } from "./event-handler";
+import type { DomainEvent } from "./domain-event";
+import type { EventHandler, EventHandlerResult } from "./event-handler";
 
 export interface EventBusConfig {
   enableLogging?: boolean;
@@ -38,21 +38,15 @@ export class EventBus {
     const existingHandlers = this.handlers.get(eventType)!;
 
     // Prevent duplicate handler registration
-    const isDuplicate = existingHandlers.some(
-      (h) => h.handlerName === handler.handlerName,
-    );
+    const isDuplicate = existingHandlers.some((h) => h.handlerName === handler.handlerName);
 
     if (isDuplicate) {
-      throw new Error(
-        `Handler '${handler.handlerName}' is already registered for event '${eventType}'`,
-      );
+      throw new Error(`Handler '${handler.handlerName}' is already registered for event '${eventType}'`);
     }
 
     existingHandlers.push(handler);
 
-    this.log(
-      `Subscribed handler '${handler.handlerName}' to event '${eventType}'`,
-    );
+    this.log(`Subscribed handler '${handler.handlerName}' to event '${eventType}'`);
   }
 
   /**
@@ -63,17 +57,13 @@ export class EventBus {
     if (!handlers) return false;
 
     const initialLength = handlers.length;
-    const filteredHandlers = handlers.filter(
-      (h) => h.handlerName !== handlerName,
-    );
+    const filteredHandlers = handlers.filter((h) => h.handlerName !== handlerName);
 
     this.handlers.set(eventType, filteredHandlers);
 
     const wasRemoved = filteredHandlers.length < initialLength;
     if (wasRemoved) {
-      this.log(
-        `Unsubscribed handler '${handlerName}' from event '${eventType}'`,
-      );
+      this.log(`Unsubscribed handler '${handlerName}' from event '${eventType}'`);
     }
 
     return wasRemoved;
@@ -99,9 +89,7 @@ export class EventBus {
   async publish(event: DomainEvent): Promise<PublishResult> {
     const handlers = this.handlers.get(event.eventType) || [];
 
-    this.log(
-      `Publishing event '${event.eventType}' to ${handlers.length} handlers`,
-    );
+    this.log(`Publishing event '${event.eventType}' to ${handlers.length} handlers`);
 
     if (handlers.length === 0) {
       return {
@@ -127,8 +115,7 @@ export class EventBus {
           });
         }
       } catch (error) {
-        const errorInstance =
-          error instanceof Error ? error : new Error(String(error));
+        const errorInstance = error instanceof Error ? error : new Error(String(error));
         errors.push({ handlerName: handler.handlerName, error: errorInstance });
       }
     });
@@ -141,9 +128,7 @@ export class EventBus {
       errors,
     };
 
-    this.log(
-      `Event '${event.eventType}' processed: ${handledCount} successful, ${errors.length} failed`,
-    );
+    this.log(`Event '${event.eventType}' processed: ${handledCount} successful, ${errors.length} failed`);
 
     return result;
   }
@@ -170,10 +155,7 @@ export class EventBus {
     this.log("Cleared all event handlers");
   }
 
-  private async executeHandlerWithRetry(
-    handler: EventHandler,
-    event: DomainEvent,
-  ): Promise<EventHandlerResult> {
+  private async executeHandlerWithRetry(handler: EventHandler, event: DomainEvent): Promise<EventHandlerResult> {
     let lastError: Error | undefined;
 
     for (let attempt = 0; attempt <= this.config.maxRetries; attempt++) {
@@ -182,9 +164,7 @@ export class EventBus {
 
         if (result.success) {
           if (attempt > 0) {
-            this.log(
-              `Handler '${handler.handlerName}' succeeded on attempt ${attempt + 1}`,
-            );
+            this.log(`Handler '${handler.handlerName}' succeeded on attempt ${attempt + 1}`);
           }
           return result;
         }
