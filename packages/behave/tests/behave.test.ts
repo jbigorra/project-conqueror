@@ -21,12 +21,12 @@ describe("behave", () => {
 
     const result = await behave.runAnalysis(options);
 
-    expect(analysis.run).toHaveBeenCalledWith(options);
+    expect(analysis.run.spy()).toHaveBeenCalledWith(options);
     expect(result).toEqual(expectedAnalysisResult);
   });
 
   it("should return an error when the analysis run fails", async () => {
-    const analysis = mock<IAnalysisRunner>();
+    const analysis = mockFn<IAnalysisRunner>();
     const expectedError = new Error("Analysis failed");
     analysis.run.mockResolvedValue(Result.error(expectedError));
     const options = new AnalysisOptions(analysisOptionsFactory.build());

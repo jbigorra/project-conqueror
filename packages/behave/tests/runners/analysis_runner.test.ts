@@ -25,7 +25,7 @@ describe("AnalysisRunner", () => {
   });
 
   it("should call the cliExecutor with the correct arguments", async () => {
-    const cliExecutor = mock<ICLIExecutor>();
+    const cliExecutor = mockFn<ICLIExecutor>();
     cliExecutor.execute.mockResolvedValue(
       Result.success(new CLIResult(0, "key1,key2\nvalue1,value2\n", "")),
     );
@@ -39,7 +39,7 @@ describe("AnalysisRunner", () => {
 
     await analysisRunner.run(options);
 
-    expect(cliExecutor.execute).toHaveBeenCalledWith([
+    expect(cliExecutor.execute.spy()).toHaveBeenCalledWith([
       "--log",
       options.logFile,
       "--analysis",
@@ -73,7 +73,7 @@ describe("AnalysisRunner", () => {
   });
 
   it("should return the data as a csv array of objects with key:value pairs when the cliExecutor succeeds", async () => {
-    const cliExecutor = mock<ICLIExecutor>();
+    const cliExecutor = mockFn<ICLIExecutor>();
     cliExecutor.execute.mockResolvedValue(
       Result.success(new CLIResult(0, "key1,key2\nvalue1,value2\n", "")),
     );
