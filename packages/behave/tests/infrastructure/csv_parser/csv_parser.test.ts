@@ -30,9 +30,7 @@ John,30,New York`;
 
       const result = await csv_parser.parse(csv_data);
 
-      expect(result.getValue()).toEqual([
-        { name: "John", age: "30", city: "New York" },
-      ]);
+      expect(result.getValue()).toEqual([{ name: "John", age: "30", city: "New York" }]);
     });
 
     it("should successfully parse CSV with empty values", async () => {

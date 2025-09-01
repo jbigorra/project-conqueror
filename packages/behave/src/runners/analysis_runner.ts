@@ -18,14 +18,8 @@ export class AnalysisRunner implements IAnalysisRunner {
     private readonly csvParser: ICSVParser,
   ) {}
 
-  static create(dependencies: {
-    cliExecutor?: ICLIExecutor;
-    csvParser?: ICSVParser;
-  }): IAnalysisRunner {
-    const {
-      cliExecutor = new CodeMaat(spawnAsync({ spawn })),
-      csvParser = new CSVParser(),
-    } = dependencies;
+  static create(dependencies: { cliExecutor?: ICLIExecutor; csvParser?: ICSVParser }): IAnalysisRunner {
+    const { cliExecutor = new CodeMaat(spawnAsync({ spawn })), csvParser = new CSVParser() } = dependencies;
 
     return new AnalysisRunner(cliExecutor, csvParser);
   }

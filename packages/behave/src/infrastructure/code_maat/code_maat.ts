@@ -20,4 +20,3 @@ export class CodeMaat implements ICLIExecutor {
     return Result.success(result);
   }
 }
-

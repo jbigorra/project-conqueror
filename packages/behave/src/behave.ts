@@ -185,14 +185,7 @@ export class AnalysisOptions {
   }
 
   toArgs(): string[] {
-    const requiredArgs = [
-      "--log",
-      this.logFile,
-      "--analysis",
-      this.analysisType,
-      "--version-control",
-      "git2",
-    ];
+    const requiredArgs = ["--log", this.logFile, "--analysis", this.analysisType, "--version-control", "git2"];
     const optionalArgs: string[] = [];
     const optionalBooleanArgs: string[] = [];
     const addIfDefined = (value: any, arg: string) => {
@@ -257,9 +250,7 @@ export class Behave {
    * @param options - The options for the analysis.
    * @returns The analysis result.
    */
-  async runAnalysis(
-    options: AnalysisOptions,
-  ): Promise<TAnalysisResult | Error> {
+  async runAnalysis(options: AnalysisOptions): Promise<TAnalysisResult | Error> {
     const result = await this.analysis.run(options);
 
     if (result.isError()) {

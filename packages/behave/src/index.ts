@@ -4,7 +4,7 @@ import { AnalysisRunner } from "#runners/analysis_runner.ts";
 export default class BehaveInstance {
   private static instance: Behave | null = null;
 
-  static create() {
+  static create(): Behave {
     BehaveInstance.instance ??= new Behave(AnalysisRunner.create({}));
 
     return BehaveInstance.instance;

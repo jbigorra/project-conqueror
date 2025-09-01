@@ -7,8 +7,5 @@ export interface ICLIExecutor {
 
 export interface ICSVParser {
   parse(csv: string): Promise<Result<Record<string, string>[]>>;
-  unparse(
-    data: Record<string, string>[],
-    filepath?: string
-  ): Promise<Result<string>>;
+  unparse(data: Record<string, string>[], filepath?: string): Promise<Result<string>>;
 }
