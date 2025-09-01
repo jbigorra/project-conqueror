@@ -1,5 +1,5 @@
-import { TAnalysisType } from "#analyses/types.js";
-import { IAnalysisRunner, TAnalysisResult } from "#runners/analysis_runner.js";
+import type { TAnalysisType } from "#analyses/types.ts";
+import type { IAnalysisRunner, TAnalysisResult } from "#runners/analysis_runner.ts";
 
 /**
  * Options for the analysis.
