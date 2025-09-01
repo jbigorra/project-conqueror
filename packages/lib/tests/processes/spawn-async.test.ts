@@ -1,9 +1,7 @@
-import { CLIResult, spawnAsync } from "#lib/processes/index.js";
+import { CLIResult, spawnAsync } from "#lib/processes/index.ts";
+import { beforeEach, describe, expect, it, mock } from "bun:test";
 import { spawn } from "child_process";
 import { EventEmitter } from "events";
-import { beforeEach, describe, expect, it, vi } from "vitest";
-
-vi.mock("child_process");
 
 class CustomChildProcessFake extends EventEmitter {
   stdout: EventEmitter = new EventEmitter();
@@ -13,12 +11,14 @@ class CustomChildProcessFake extends EventEmitter {
 describe("spawAsync", () => {
   let mockChildProcess: CustomChildProcessFake;
   let spawnMock: any;
+  let SUT: ReturnType<typeof spawnAsync>;
 
   beforeEach(() => {
-    vi.clearAllMocks();
-    spawnMock = vi.mocked(spawn);
+    mock.clearAllMocks();
     mockChildProcess = new CustomChildProcessFake();
+    spawnMock = mock<typeof spawn>();
     spawnMock.mockReturnValue(mockChildProcess as any);
+    SUT = spawnAsync({ spawn: spawnMock });
   });
 
   it("should call spawn with the correct arguments", async () => {
@@ -26,7 +26,7 @@ describe("spawAsync", () => {
     const args = ["hello"];
     const options = { cwd: "/tmp" };
 
-    const resultPromise = spawnAsync(command, args, options);
+    const resultPromise = SUT(command, args, options);
 
     process.nextTick(() => {
       mockChildProcess.emit("close", 0);
@@ -41,7 +41,7 @@ describe("spawAsync", () => {
     const command = "echo";
     const args = ["hello"];
 
-    const resultPromise = spawnAsync(command, args);
+    const resultPromise = SUT(command, args);
 
     process.nextTick(() => {
       mockChildProcess.stdout!.emit("data", "hello");
@@ -56,7 +56,7 @@ describe("spawAsync", () => {
   });
 
   it("should resolve failure with stderr", async () => {
-    const resultPromise = spawnAsync("false");
+    const resultPromise = SUT("false", []);
 
     process.nextTick(() => {
       mockChildProcess.stderr!.emit("data", "command failed");
@@ -70,7 +70,7 @@ describe("spawAsync", () => {
   });
 
   it("should resolve failure when killed by signal (null exit code)", async () => {
-    const resultPromise = spawnAsync("sleep", ["10"]);
+    const resultPromise = SUT("sleep", ["10"]);
 
     process.nextTick(() => {
       mockChildProcess.emit("close", null, "SIGTERM" as NodeJS.Signals);
@@ -83,7 +83,7 @@ describe("spawAsync", () => {
   });
 
   it("should resolve failure with Error when process fails to spawn", async () => {
-    const resultPromise = spawnAsync("non-existent-command");
+    const resultPromise = SUT("non-existent-command", []);
 
     const testError = new Error("ENOENT: no such file or directory");
     process.nextTick(() => {
