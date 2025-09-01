@@ -1,16 +1,19 @@
 import { ChildProcess, type SpawnOptionsWithoutStdio } from "child_process";
+import type { TCLIResult } from "./cli-result";
 import { CLIResult } from "./cli-result";
-import type { TCLIResult } from "./types";
 
 type TSpawn = (command: string, args: readonly string[], options?: SpawnOptionsWithoutStdio) => ChildProcess;
-export interface TDeps {
-  spawn: TSpawn;
-}
+type TDeps = { spawn: TSpawn };
 
-export function spawnAsync(deps: TDeps): (...args: Parameters<TSpawn>) => Promise<TCLIResult> {
-  return (command: string, args: readonly string[] = [], options?: SpawnOptionsWithoutStdio) => {
+export type TSpawnAsyncFn<D = TDeps, R = TCLIResult> =                          // prettier-ignore
+  (dependencies: D) =>                                                                  // prettier-ignore
+    (command: string, args: string[], options?: SpawnOptionsWithoutStdio) =>    // prettier-ignore
+      Promise<R>; // prettier-ignore
+
+export const spawnAsync: TSpawnAsyncFn<TDeps, TCLIResult> = (dependencies) => {
+  return (command, args = [], options) => {
     return new Promise((resolve) => {
-      const child = deps.spawn(command, args, options);
+      const child = dependencies.spawn(command, args, options);
       let stdout = "";
       let stderr = "";
       let err: Error | null = null;
@@ -36,4 +39,4 @@ export function spawnAsync(deps: TDeps): (...args: Parameters<TSpawn>) => Promis
       });
     });
   };
-}
+};
