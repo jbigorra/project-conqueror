@@ -80,9 +80,7 @@ describe("Result", () => {
 
     it("should handle async-like transformations", () => {
       const result = Result.success({ name: "John", age: 30 });
-      const mapped = result.map(
-        (user) => `${user.name} is ${user.age} years old`,
-      );
+      const mapped = result.map((user) => `${user.name} is ${user.age} years old`);
 
       expect(mapped.getValue()).toBe("John is 30 years old");
     });
@@ -130,9 +128,7 @@ describe("Result", () => {
       const error2 = new Error("second error");
 
       const result = Result.success(5);
-      const chained = result
-        .flatMap(() => Result.error(error1))
-        .flatMap(() => Result.error(error2)); // This should not execute
+      const chained = result.flatMap(() => Result.error(error1)).flatMap(() => Result.error(error2)); // This should not execute
 
       expect(chained.isError()).toBe(true);
       expect(chained.getError()).toBe(error1);
