@@ -18,7 +18,7 @@
     }
   },
   "imports": {
-    "#lib/*": "./dist/*"
+    "#lib/*": "./src/*"
   },
   "engines": {
     "node": ">=22.0.0"
