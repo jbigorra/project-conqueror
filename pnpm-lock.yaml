@@ -8,9 +8,6 @@ importers:
 
   .:
     devDependencies:
-      '@adonisjs/eslint-config':
-        specifier: ^2.1.0
-        version: 2.1.0(eslint@9.31.0)(prettier@3.6.2)(typescript@5.8.3)
       prettier:
         specifier: ^3.6.2
         version: 3.6.2
@@ -18,8 +15,8 @@ importers:
         specifier: ^2.5.5
         version: 2.5.5
       typescript:
-        specifier: ^5.8.3
-        version: 5.8.3
+        specifier: ^5.9.0
+        version: 5.9.2
 
   apps/webapp:
     dependencies:
@@ -78,6 +75,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: 3.2.4
         version: 3.2.4(@vitest/browser@3.2.4)(vitest@3.2.4)
+      bun-automock:
+        specifier: ^0.2.5
+        version: 0.2.5(typescript@5.9.2)
       fishery:
         specifier: ^2.3.1
         version: 2.3.1
@@ -88,7 +88,7 @@ importers:
         specifier: ^1.90.0
         version: 1.90.0
       typescript:
-        specifier: ^5.9.2
+        specifier: ^5.9.0
         version: 5.9.2
       vitest:
         specifier: ^3.2.4
@@ -109,9 +109,6 @@ importers:
         specifier: ^6.0.0
         version: 6.0.0
     devDependencies:
-      '@adonisjs/eslint-config':
-        specifier: ^2.1.0
-        version: 2.1.0(eslint@9.31.0)(prettier@3.6.2)(typescript@5.8.3)
       '@prj-conq/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -121,6 +118,9 @@ importers:
       '@vitest/ui':
         specifier: ^3.2.4
         version: 3.2.4(vitest@3.2.4)
+      bun-automock:
+        specifier: ^0.2.5
+        version: 0.2.5(typescript@5.9.2)
       eslint:
         specifier: ^9.31.0
         version: 9.31.0
@@ -128,63 +128,36 @@ importers:
         specifier: ^2.3.1
         version: 2.3.1
       typescript:
-        specifier: ~5.8.3
-        version: 5.8.3
+        specifier: ^5.9.0
+        version: 5.9.2
       vitest:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@22.16.4)(@vitest/browser@3.2.4)(@vitest/ui@3.2.4)(sass@1.90.0)
       vitest-mock-extended:
         specifier: ^3.1.0
-        version: 3.1.0(typescript@5.8.3)(vitest@3.2.4)
+        version: 3.1.0(typescript@5.9.2)(vitest@3.2.4)
 
   packages/lib:
     devDependencies:
-      '@adonisjs/eslint-config':
-        specifier: ^2.1.0
-        version: 2.1.0(eslint@9.31.0)(prettier@3.6.2)(typescript@5.8.3)
       '@prj-conq/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
       '@types/node':
         specifier: ^22.13.10
         version: 22.16.4
-      '@vitest/coverage-v8':
-        specifier: 3.2.4
-        version: 3.2.4(@vitest/browser@3.2.4)(vitest@3.2.4)
-      '@vitest/ui':
-        specifier: ^3.2.4
-        version: 3.2.4(vitest@3.2.4)
-      eslint:
-        specifier: ^9.31.0
-        version: 9.31.0
+      bun-automock:
+        specifier: ^0.2.5
+        version: 0.2.5(typescript@5.9.2)
       fishery:
         specifier: ^2.3.1
         version: 2.3.1
       typescript:
-        specifier: ^5.8.3
-        version: 5.8.3
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/node@22.16.4)(@vitest/browser@3.2.4)(@vitest/ui@3.2.4)(sass@1.90.0)
-      vitest-mock-extended:
-        specifier: ^3.1.0
-        version: 3.1.0(typescript@5.8.3)(vitest@3.2.4)
+        specifier: ^5.9.0
+        version: 5.9.2
 
   packages/typescript-config: {}
 
 packages:
-
-  '@adonisjs/eslint-config@2.1.0':
-    resolution: {integrity: sha512-JMa3m0BTI+chOGae5RjmmPvN7ugL/rgvADoChbeoHiIbpWB2QmAKoOF/Hv8DNDWWv3ZNwabi5Dpo5jL7dGWatQ==}
-    peerDependencies:
-      eslint: ^9.9.0
-      prettier: ^3.3.3
-
-  '@adonisjs/eslint-plugin@2.0.0':
-    resolution: {integrity: sha512-C51Wd1YtgSQ9JssP7eqdNI8X58ZxOW+8Z5nm9BHnSM/mpcx1nexAKao69eYDx6TcSvmRKKrEHwdJOMas25NAaQ==}
-    engines: {node: '>=20.6.0'}
-    peerDependencies:
-      eslint: ^9.9.1
 
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
@@ -1259,9 +1232,11 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
 
-  builtin-modules@5.0.0:
-    resolution: {integrity: sha512-bkXY9WsVpY7CvMhKSR6pZilZu9Ln5WDrKVBUXf2S443etkmEO4V58heTecXcUIsNsi4Rx8JUO4NfX1IcQl4deg==}
-    engines: {node: '>=18.20'}
+  bun-automock@0.2.5:
+    resolution: {integrity: sha512-zJ6dUR3N/+YebD9E+Ulp5/qhnbUiy17LZf68fQahMCdLj28/INXfdg4qlnU9FHXi4ekM4aDsj0Di8/dp28BOxQ==}
+    engines: {bun: '>=1.2.21'}
+    peerDependencies:
+      typescript: ^5.9.2
 
   bun-types@1.2.20:
     resolution: {integrity: sha512-pxTnQYOrKvdOwyiyd/7sMt9yFOenN004Y6O4lCcCUoKVej48FS5cvTw9geRaEcB9TsDZaJKAxPTVvi8tFsVuXA==}
