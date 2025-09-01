@@ -14,5 +14,5 @@ export type TCLIResult = {
 export type TSpawnAsyncFn = (
   command: string,
   args: string[],
-  options?: SpawnOptionsWithoutStdio
+  options?: SpawnOptionsWithoutStdio,
 ) => Promise<TCLIResult>;
