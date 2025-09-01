@@ -1,9 +1,4 @@
-import {
-  BaseDomainEvent,
-  BaseEventHandler,
-  EventBus,
-  EventHandlerResult,
-} from "#lib/patterns/index.js";
+import { BaseDomainEvent, BaseEventHandler, EventBus, EventHandlerResult } from "#lib/patterns/index.ts";
 import { beforeEach, describe, expect, it, spyOn } from "bun:test";
 
 // Test event classes

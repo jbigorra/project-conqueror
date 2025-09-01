@@ -1,4 +1,4 @@
-import { Result } from "#lib/patterns/index.js";
+import { Result } from "#lib/patterns/index.ts";
 import { describe, expect, it } from "bun:test";
 
 describe("Result", () => {

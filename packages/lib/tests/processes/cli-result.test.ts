@@ -1,4 +1,4 @@
-import { CLIResult } from "#lib/processes/index.js";
+import { CLIResult } from "#lib/processes/index.ts";
 import { describe, expect, it } from "bun:test";
 
 describe("CLIResult", () => {
