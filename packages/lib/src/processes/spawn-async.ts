@@ -10,7 +10,6 @@ export interface TDeps {
 export function spawnAsync(deps: TDeps): (...args: Parameters<TSpawn>) => Promise<TCLIResult> {
   return (command: string, args: readonly string[] = [], options?: SpawnOptionsWithoutStdio) => {
     return new Promise((resolve) => {
-      console.log("spawn is mock:", typeof deps.spawn.mock);
       const child = deps.spawn(command, args, options);
       let stdout = "";
       let stderr = "";
