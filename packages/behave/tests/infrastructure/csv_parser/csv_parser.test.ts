@@ -1,5 +1,5 @@
-import { CSVParser } from "#infra/csv_parser/csv_parser.js";
-import { beforeEach, describe, expect, it } from "vitest";
+import { CSVParser } from "#infra/csv_parser/csv_parser.ts";
+import { beforeEach, describe, expect, it } from "bun:test";
 
 describe("CSVParser", () => {
   let csv_parser: CSVParser;

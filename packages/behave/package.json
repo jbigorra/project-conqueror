@@ -10,22 +10,22 @@
     }
   },
   "imports": {
-    "#behave/*": "./dist/*",
-    "#infra/*": "./dist/infrastructure/*",
-    "#runners/*": "./dist/runners/*",
-    "#analyses/*": "./dist/analyses/*"
+    "#behave/*": "./src/*",
+    "#infra/*": "./src/infrastructure/*",
+    "#runners/*": "./src/runners/*",
+    "#analyses/*": "./src/analyses/*"
   },
   "engines": {
-    "node": ">=22.0.0"
+    "bun": ">=1.2.21"
   },
   "scripts": {
     "build": "tsc",
     "build:copy-vendor": "sh ./scripts/copy-vendor.sh",
     "dev": "tsc --watch",
     "clean": "rm -rf dist && rm tsconfig.tsbuildinfo || echo 'No tsconfig.tsbuildinfo file found'",
-    "test": "vitest run",
-    "test:coverage": "vitest run --coverage",
-    "tdd": "vitest"
+    "test": "bun test",
+    "test:coverage": "bun test --coverage",
+    "tdd": "bun test --watch"
   },
   "keywords": [],
   "author": "Juan Bigorra <jbigorra.soft.eng@pm.me>",
@@ -37,13 +37,9 @@
   },
   "devDependencies": {
     "@prj-conq/typescript-config": "workspace:*",
-    "@vitest/coverage-v8": "3.2.4",
-    "@vitest/ui": "^3.2.4",
+    "@types/bun": "^1.2.20",
     "bun-automock": "^0.2.5",
-    "eslint": "^9.31.0",
     "fishery": "^2.3.1",
-    "typescript": "^5.9.0",
-    "vitest": "^3.2.4",
-    "vitest-mock-extended": "^3.1.0"
+    "typescript": "^5.9.0"
   }
 }
