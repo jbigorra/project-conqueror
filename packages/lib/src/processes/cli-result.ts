@@ -1,5 +1,14 @@
 import type { Undefinedable } from "#lib/generics/index.ts";
-import type { TCLIResult } from "./types";
+
+export type TCLIResult = {
+  stdout: string;
+  stderr: string;
+  errorCode: number | NodeJS.Signals;
+  error: Error | null;
+  errorMessage: () => Undefinedable<string>;
+  isSuccess: () => boolean;
+  isFailure: () => boolean;
+};
 
 export class CLIResult implements TCLIResult {
   constructor(
