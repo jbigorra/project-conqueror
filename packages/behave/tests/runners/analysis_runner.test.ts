@@ -1,15 +1,15 @@
-import { AnalysisOptions } from "#behave/behave.js";
-import { ICLIExecutor } from "#infra/interfaces.js";
-import { AnalysisRunner } from "#runners/analysis_runner.js";
+import { AnalysisOptions } from "#behave/behave.ts";
+import { ICLIExecutor } from "#infra/interfaces.ts";
+import { AnalysisRunner } from "#runners/analysis_runner.ts";
 import { Result } from "@prj-conq/lib/patterns";
 import { CLIResult } from "@prj-conq/lib/processes";
-import { describe, expect, it } from "vitest";
-import { mock } from "vitest-mock-extended";
+import { mockFn } from "bun-automock";
+import { describe, expect, it } from "bun:test";
 import { analysisOptionsFactory } from "../fixtures/factories/analysis_options_factory";
 
 describe("AnalysisRunner", () => {
   it("should return an error when an cliExecutor fails to execute", async () => {
-    const cliExecutor = mock<ICLIExecutor>();
+    const cliExecutor = mockFn<ICLIExecutor>();
     const errorMessage = "Failed to execute";
     cliExecutor.execute.mockResolvedValue(
       Result.error(new Error(errorMessage)),

@@ -1,9 +1,10 @@
-import { AnalysisOptions } from "#behave/behave.js";
-import { CodeMaat } from "#infra/code_maat/code_maat.js";
-import { CSVParser } from "#infra/csv_parser/csv_parser.js";
-import { ICLIExecutor, ICSVParser } from "#infra/interfaces.js";
+import { AnalysisOptions } from "#behave/behave.ts";
+import { CodeMaat } from "#infra/code_maat/code_maat.ts";
+import { CSVParser } from "#infra/csv_parser/csv_parser.ts";
+import type { ICLIExecutor, ICSVParser } from "#infra/interfaces.ts";
 import { Result } from "@prj-conq/lib/patterns";
 import { spawnAsync } from "@prj-conq/lib/processes";
+import { spawn } from "node:child_process";
 
 export type TAnalysisResult = Record<string, string>[];
 

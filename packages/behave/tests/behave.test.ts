@@ -1,13 +1,13 @@
-import { AnalysisOptions, Behave } from "#behave/behave.js";
+import { AnalysisOptions, Behave } from "#behave/behave.ts";
 import { IAnalysisRunner } from "#behave/runners/analysis_runner.js";
 import { Result } from "@prj-conq/lib/patterns";
-import { describe, expect, it } from "vitest";
-import { mock } from "vitest-mock-extended";
+import { mockFn } from "bun-automock";
+import { describe, expect, it } from "bun:test";
 import { analysisOptionsFactory } from "./fixtures/factories/analysis_options_factory";
 
 describe("behave", () => {
   it("should return the analysis result", async () => {
-    const analysis = mock<IAnalysisRunner>();
+    const analysis = mockFn<IAnalysisRunner>();
     const expectedAnalysisResult = [
       {
         csv: "1",

@@ -1,5 +1,5 @@
-import BehaveInstance from "#behave/index.js";
-import { describe, expect, it } from "vitest";
+import BehaveInstance from "#behave/index.ts";
+import { describe, expect, it } from "bun:test";
 
 describe("Behave", () => {
   it("should be defined", () => {

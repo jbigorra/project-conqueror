@@ -1,5 +1,5 @@
-import { Behave } from "#behave/behave.js";
-import { AnalysisRunner } from "#runners/analysis_runner.js";
+import { Behave } from "#behave/behave.ts";
+import { AnalysisRunner } from "#runners/analysis_runner.ts";
 
 export default class BehaveInstance {
   private static instance: Behave | null = null;
