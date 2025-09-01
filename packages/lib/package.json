@@ -21,7 +21,7 @@
     "#lib/*": "./src/*"
   },
   "engines": {
-    "node": ">=22.0.0"
+    "bun": ">=1.2.20"
   },
   "scripts": {
     "build": "tsc",
