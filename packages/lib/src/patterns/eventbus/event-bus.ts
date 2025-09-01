@@ -227,6 +227,3 @@ export class EventBus {
     }
   }
 }
-
-// Singleton instance for global use
-export const eventBus = new EventBus();
