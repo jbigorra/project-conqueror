@@ -6,8 +6,20 @@
     "declarationMap": true,
     "outDir": "./dist",
     "rootDir": "./src",
-    "baseUrl": "."
+    "baseUrl": ".",
+    "noEmit": true,
+    "emitDeclarationOnly": true,
+    "allowImportingTsExtensions": true,
+    "types": [
+      "@types/bun"
+    ]
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts"]
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.test.ts"
+  ]
 }
