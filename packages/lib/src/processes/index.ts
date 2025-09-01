@@ -1,3 +1,3 @@
-export * from "./cli-result.js";
-export * from "./spawn-async.js";
-export * from "./types.js";
+export * from "./cli-result";
+export * from "./spawn-async";
+export * from "./types";

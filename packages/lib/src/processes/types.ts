@@ -1,5 +1,5 @@
-import { Undefinedable } from "#lib/generics/index.js";
-import { SpawnOptionsWithoutStdio } from "child_process";
+import type { SpawnOptionsWithoutStdio } from "child_process";
+import type { Undefinedable } from "../generics";
 
 export type TCLIResult = {
   stdout: string;

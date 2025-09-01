@@ -1,5 +1,5 @@
-import { Undefinedable } from "#lib/generics/index.js";
-import { TCLIResult } from "./types.js";
+import type { Undefinedable } from "#lib/generics/index.ts";
+import type { TCLIResult } from "./types";
 
 export class CLIResult implements TCLIResult {
   constructor(

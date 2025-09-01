@@ -1,6 +1,6 @@
-import { ChildProcess, SpawnOptionsWithoutStdio } from "child_process";
-import { CLIResult } from "./cli-result.js";
-import { TCLIResult } from "./types.js";
+import { ChildProcess, type SpawnOptionsWithoutStdio } from "child_process";
+import { CLIResult } from "./cli-result";
+import type { TCLIResult } from "./types";
 
 type TSpawn = (command: string, args: readonly string[], options?: SpawnOptionsWithoutStdio) => ChildProcess;
 export interface TDeps {
