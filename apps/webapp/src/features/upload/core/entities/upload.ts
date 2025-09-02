@@ -1,6 +1,7 @@
+type TUUID = string;
 export class Upload {
   id?: number;
-  identifier: string;
+  identifier: TUUID;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date | null;
