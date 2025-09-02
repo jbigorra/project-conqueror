@@ -23,9 +23,9 @@
     "dev": "NODE_ENV=development bun run --watch ./src/main.ts",
     "dev:debug": "NODE_ENV=development bun --inspect-wait run --watch ./src/main.ts",
     "clean": "rm -rf dist && rm tsconfig.tsbuildinfo || echo 'No tsconfig.tsbuildinfo file found'",
-    "test": "vitest run",
-    "test:coverage": "vitest run --coverage",
-    "tdd": "vitest",
+    "test": "bun test",
+    "test:coverage": "bun test --coverage",
+    "tdd": "bun test --watch",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
