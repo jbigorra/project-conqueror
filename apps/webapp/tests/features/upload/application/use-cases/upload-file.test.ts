@@ -1,10 +1,8 @@
-import {
-  IFileStorage,
-  UploadFile,
-} from "#upload/application/use-cases/upload-file.js";
+import type { IFileStorage } from "#upload/application/dependencies/file-storage.ts";
+import { UploadFile } from "#upload/application/use-cases/upload-file.ts";
 import { EventBus, Result } from "@prj-conq/lib/patterns";
-import { beforeEach, describe, expect, it } from "vitest";
-import { mock, MockProxy } from "vitest-mock-extended";
+import { mockFn, type MockProxy } from "bun-automock";
+import { beforeEach, describe, expect, it } from "bun:test";
 
 describe("UploadFile", () => {
   let fileStorage: MockProxy<IFileStorage>;
@@ -12,8 +10,8 @@ describe("UploadFile", () => {
   let uploadFile: UploadFile;
 
   beforeEach(() => {
-    fileStorage = mock<IFileStorage>();
-    eventBus = mock<EventBus>();
+    fileStorage = mockFn<IFileStorage>();
+    eventBus = mockFn<EventBus>();
     uploadFile = UploadFile.create({
       fileStorage,
       eventBus,
@@ -28,7 +26,7 @@ describe("UploadFile", () => {
 
     await uploadFile.execute(validFile);
 
-    expect(fileStorage.upload).toHaveBeenCalledWith(validFile);
+    expect(fileStorage.upload.spy()).toHaveBeenCalledWith(validFile);
   });
 
   it("should produce FileUploadedEvent when file is uploaded successfully", async () => {
@@ -40,7 +38,7 @@ describe("UploadFile", () => {
     await uploadFile.execute(validFile);
 
     const expectedFileName = "test.log";
-    expect(eventBus.publish).toHaveBeenCalledWith(
+    expect(eventBus.publish.spy()).toHaveBeenCalledWith(
       expect.objectContaining({
         eventType: "upload.FileUploaded",
         aggregateId: expectedFileName,
