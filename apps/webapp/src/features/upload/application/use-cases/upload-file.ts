@@ -1,27 +1,8 @@
-import { IUseCase } from "#shared/generics-types/usecase.ts";
+import type { IUseCase } from "#shared/generics-types/usecase.ts";
 import { FileUploadedEvent } from "#upload/core/events/file-uploaded-event.ts";
+import { S3FileStorage } from "#upload/infrastructure/http/s3-file-storage.ts";
 import { EventBus, Result } from "@prj-conq/lib/patterns";
-
-export interface IFileStorage {
-  upload(file: File): Promise<Result<void>>;
-  download(file: File): Promise<Result<void>>;
-}
-
-export class FileStorage implements IFileStorage {
-  async upload(file: File): Promise<Result<void>> {
-    // const file = await this.file.text();
-    // await Bun.file(BUCKET_PATH + "/" + Date.now() + "-" + file.name).write(
-    //   file,
-    // );
-    console.log("uploading file: ", file.name);
-    return Result.success(undefined);
-  }
-
-  async download(file: File): Promise<Result<void>> {
-    console.log("downloading file: ", file.name);
-    return Result.success(undefined);
-  }
-}
+import type { IFileStorage } from "../dependencies/file-storage.ts";
 
 type Deps = {
   fileStorage?: IFileStorage;
