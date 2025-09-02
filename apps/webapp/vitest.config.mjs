@@ -36,7 +36,7 @@ export default defineConfig({
     },
   },
   test: {
-    name: "webapp",
+    name: "webapp/e2e",
     typecheck: {
       tsconfig: "./tsconfig.json",
       checker: "tsc",
@@ -46,7 +46,7 @@ export default defineConfig({
       provider: "v8",
       reporter: ["text", "html", "lcov"],
       reportsDirectory: "./coverage",
-      include: ["src/**/*.ts"],
+      include: ["src/e2e/**/*.ts"],
       exclude: [
         "node_modules/",
         "dist/",
