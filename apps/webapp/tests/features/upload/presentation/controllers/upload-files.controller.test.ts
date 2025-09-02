@@ -1,7 +1,7 @@
-import { server } from "#shared/server/server.js";
+import { server } from "#shared/server/server.ts";
 import { treaty } from "@elysiajs/eden";
 import { isHtml } from "@elysiajs/html";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "bun:test";
 
 const client = treaty(server);
 
