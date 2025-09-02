@@ -1,3 +1,4 @@
+import { ObjectStorageError } from "#error.ts";
 import { S3FileStorage } from "#upload/infrastructure/http/s3-file-storage.ts";
 import { S3Client } from "bun";
 import { mockFn } from "bun-automock";
@@ -14,10 +15,7 @@ describe.only("S3FileStorage", () => {
     const result = await fileStorage.upload(file);
 
     expect(result.isSuccess()).toBe(true);
-    expect(s3Client.write.spy()).toHaveBeenCalledWith(
-      "test.log",
-      "Test content",
-    );
+    expect(s3Client.write.spy()).toHaveBeenCalledWith("test.log", "Test content");
   });
 
   it("should return error result when uploading file throws an error", async () => {
@@ -33,9 +31,7 @@ describe.only("S3FileStorage", () => {
     const result = await fileStorage.upload(file);
 
     expect(result.isError()).toBe(true);
-    expect(result.getError().code).toBe("OBJECT_STORAGE_ERROR");
-    expect(result.getError().message).toBe(
-      `${S3FileStorage.name}: upload failed`,
-    );
+    expect(result.getError().message).toBe(`${S3FileStorage.name}: upload failed`);
+    expect(result.getError()).toBeInstanceOf(ObjectStorageError);
   });
 });

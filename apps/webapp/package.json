@@ -9,6 +9,7 @@
     ".": "./src/main.ts"
   },
   "imports": {
+    "#error.ts": "./src/errors.ts",
     "#package.json": "./package.json",
     "#shared/generics-types/*": "./src/shared/generics-types/*",
     "#shared/http/*": "./src/shared/infrastructure/http/*",

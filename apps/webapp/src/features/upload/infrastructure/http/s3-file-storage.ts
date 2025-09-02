@@ -1,3 +1,4 @@
+import { ObjectStorageError } from "#error.ts";
 import type { IFileStorage } from "#upload/application/dependencies/file-storage.js";
 import { Result } from "@prj-conq/lib/patterns";
 import { S3Client } from "bun";
@@ -12,10 +13,9 @@ export class S3FileStorage implements IFileStorage {
 
       return Result.success(undefined);
     } catch (e: any) {
-      const error = new Error(`${S3FileStorage.name}: upload failed`, {
-        cause: e.cause,
+      const error = new ObjectStorageError(`${S3FileStorage.name}: upload failed`, {
+        cause: e,
       });
-      error.code = "OBJECT_STORAGE_ERROR";
       return Result.error(error);
     }
   }
