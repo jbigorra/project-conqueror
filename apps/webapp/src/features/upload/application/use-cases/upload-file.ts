@@ -48,6 +48,10 @@ export class UploadFile implements IUseCase<File, void> {
       identifier: "someUuid",
     });
 
+    if (insertResult.isError()) {
+      return Result.error(insertResult.getError());
+    }
+
     this.eventBus.publish(new FileUploadedEvent({ filename: file.name }));
 
     return Result.success(undefined);

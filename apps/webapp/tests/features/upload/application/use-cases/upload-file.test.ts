@@ -151,4 +151,23 @@ describe("UploadFile", () => {
       "File does not have a .log extension",
     );
   });
+
+  it("should return error result when respository fails to log the file uploaded", async () => {
+    fileStorage.upload.mockResolvedValue(Result.success(undefined));
+    uploadsRepository.insertOne.mockResolvedValue(
+      Result.error<Upload>(
+        new Error("Failed to insertOne entry in the database"),
+      ),
+    );
+    const validFile = new File(["Test content"], "test.log", {
+      type: "text/plain",
+    });
+
+    const result = await uploadFile.execute(validFile);
+
+    expect(result.isError()).toBe(true);
+    expect(result.getError().message).toBe(
+      "Failed to insertOne entry in the database",
+    );
+  });
 });
