@@ -1,28 +1,7 @@
 {
-  "extends": "@prj-conq/typescript-config/base.json",
+  "extends": "@prj-conq/typescript-config/tsconfig.base.json",
   "compilerOptions": {
-    // Environment setup & latest features
-    "lib": [
-      "ESNext"
-    ],
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleDetection": "force",
-    "allowJs": false,
-    // Bundler mode
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
-    "noEmit": true,
-    "outDir": "./dist",
-    // Best practices
-    "strict": true,
-    "skipLibCheck": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true,
-    "noImplicitOverride": true,
-    "sourceMap": true,
-    "rootDir": ".",
+    "composite": true,
     "types": [
       "@types/bun"
     ]

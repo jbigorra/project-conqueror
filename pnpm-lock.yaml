@@ -157,11 +157,18 @@ importers:
       fishery:
         specifier: ^2.3.1
         version: 2.3.1
+      tsdown:
+        specifier: ^0.14.2
+        version: 0.14.2(typescript@5.9.2)
       typescript:
         specifier: ^5.9.0
         version: 5.9.2
 
-  packages/typescript-config: {}
+  packages/typescript-config:
+    devDependencies:
+      '@tsconfig/bun':
+        specifier: ^1.0.8
+        version: 1.0.8
 
 packages:
 

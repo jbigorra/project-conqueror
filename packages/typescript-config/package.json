@@ -3,5 +3,8 @@
   "private": true,
   "version": "0.1.0",
   "description": "Typescript configuration for Project Conqueror",
-  "packageManager": "pnpm@10.14.0"
+  "packageManager": "pnpm@10.14.0",
+  "devDependencies": {
+    "@tsconfig/bun": "^1.0.8"
+  }
 }

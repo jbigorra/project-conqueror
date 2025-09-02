@@ -1,16 +1,8 @@
 {
-  "extends": "@prj-conq/typescript-config/base.json",
+  "extends": "@prj-conq/typescript-config/tsconfig.base.json",
   "compilerOptions": {
     "composite": true,
-    "declaration": true,
-    "declarationMap": true,
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "baseUrl": ".",
-    "jsx": "react-jsx",
     "jsxImportSource": "@kitajs/html",
-    "allowImportingTsExtensions": true,
-    "noEmit": true,
     "plugins": [
       {
         "name": "@kitajs/ts-html-plugin"
