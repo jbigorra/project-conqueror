@@ -12,7 +12,7 @@
       "@vitest/browser/providers/playwright",
       "@kitajs/html/htmx.d.ts",
       "@kitajs/html/alpine.d.ts",
-      "bun-types"
+      "@types/bun"
     ]
   },
   "include": [
@@ -21,6 +21,6 @@
   "exclude": [
     "node_modules",
     "dist",
-    "**/*.test.ts"
+    "tests/**/*"
   ]
 }
