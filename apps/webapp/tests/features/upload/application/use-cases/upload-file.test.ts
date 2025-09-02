@@ -1,5 +1,7 @@
+import type { IBaseRepository } from "#shared/generics-types/repository.ts";
 import type { IFileStorage } from "#upload/application/dependencies/file-storage.ts";
 import { UploadFile } from "#upload/application/use-cases/upload-file.ts";
+import { Upload } from "#upload/core/entities/upload.ts";
 import { EventBus, Result } from "@prj-conq/lib/patterns";
 import { mockFn, type MockProxy } from "bun-automock";
 import { beforeEach, describe, expect, it } from "bun:test";
@@ -8,18 +10,30 @@ describe("UploadFile", () => {
   let fileStorage: MockProxy<IFileStorage>;
   let eventBus: MockProxy<EventBus>;
   let uploadFile: UploadFile;
+  let uploadsRepository: MockProxy<IBaseRepository<Upload>>;
 
   beforeEach(() => {
     fileStorage = mockFn<IFileStorage>();
     eventBus = mockFn<EventBus>();
+    uploadsRepository = mockFn<IBaseRepository<Upload>>();
     uploadFile = UploadFile.create({
-      fileStorage,
-      eventBus,
+      fileStorage: fileStorage,
+      eventBus: eventBus,
+      uploadsRepository,
     });
   });
 
-  it("should be should upload the file to the file storage", async () => {
+  it("should upload the file to the file storage", async () => {
     fileStorage.upload.mockResolvedValue(Result.success(undefined));
+    uploadsRepository.insertOne.mockResolvedValue(
+      Result.success<Upload>({
+        id: 1,
+        identifier: "someUuid",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        deletedAt: null,
+      }),
+    );
     const validFile = new File(["Test content"], "test.log", {
       type: "text/plain",
     });
@@ -29,8 +43,41 @@ describe("UploadFile", () => {
     expect(fileStorage.upload.spy()).toHaveBeenCalledWith(validFile);
   });
 
+  it("should log the file uploaded in the database", async () => {
+    fileStorage.upload.mockResolvedValue(Result.success(undefined));
+    uploadsRepository.insertOne.mockResolvedValue(
+      Result.success<Upload>({
+        id: 1,
+        identifier: "someUuid",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        deletedAt: null,
+      }),
+    );
+    const validFile = new File(["Test content"], "test.log", {
+      type: "text/plain",
+    });
+
+    await uploadFile.execute(validFile);
+
+    expect(uploadsRepository.insertOne.spy()).toHaveBeenCalledWith(
+      expect.objectContaining({
+        identifier: "someUuid",
+      }),
+    );
+  });
+
   it("should produce FileUploadedEvent when file is uploaded successfully", async () => {
     fileStorage.upload.mockResolvedValue(Result.success(undefined));
+    uploadsRepository.insertOne.mockResolvedValue(
+      Result.success<Upload>({
+        id: 1,
+        identifier: "someUuid",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        deletedAt: null,
+      }),
+    );
     const validFile = new File(["Test content"], "test.log", {
       type: "text/plain",
     });
@@ -49,6 +96,15 @@ describe("UploadFile", () => {
 
   it("should return success result when file is uploaded successfully", async () => {
     fileStorage.upload.mockResolvedValue(Result.success(undefined));
+    uploadsRepository.insertOne.mockResolvedValue(
+      Result.success<Upload>({
+        id: 1,
+        identifier: "someUuid",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        deletedAt: null,
+      }),
+    );
     const validFile = new File(["Test content"], "test.log", {
       type: "text/plain",
     });
@@ -75,6 +131,15 @@ describe("UploadFile", () => {
 
   it("should return error result when file does not have a .log extension", async () => {
     fileStorage.upload.mockResolvedValue(Result.success(undefined));
+    uploadsRepository.insertOne.mockResolvedValue(
+      Result.success<Upload>({
+        id: 1,
+        identifier: "someUuid",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        deletedAt: null,
+      }),
+    );
     const invalidFile = new File(["Test content"], "test.txt", {
       type: "text/plain",
     });

@@ -1,5 +1,8 @@
+import type { IBaseRepository } from "#shared/generics-types/repository.ts";
 import type { IUseCase } from "#shared/generics-types/usecase.ts";
+import type { Upload } from "#upload/core/entities/upload.ts";
 import { FileUploadedEvent } from "#upload/core/events/file-uploaded-event.ts";
+import { UploadsRepository } from "#upload/infrastructure/database/upload-repository.ts";
 import { S3FileStorage } from "#upload/infrastructure/http/s3-file-storage.ts";
 import { EventBus, Result } from "@prj-conq/lib/patterns";
 import type { IFileStorage } from "../dependencies/file-storage.ts";
@@ -7,6 +10,7 @@ import type { IFileStorage } from "../dependencies/file-storage.ts";
 type Deps = {
   fileStorage?: IFileStorage;
   eventBus?: EventBus;
+  uploadsRepository?: IBaseRepository<Upload>;
 };
 
 export class UploadFile implements IUseCase<File, void> {
@@ -15,14 +19,16 @@ export class UploadFile implements IUseCase<File, void> {
     const {
       fileStorage = new S3FileStorage(Bun.s3),
       eventBus = new EventBus(),
+      uploadsRepository = new UploadsRepository(),
     } = deps;
 
-    return new UploadFile(fileStorage, eventBus);
+    return new UploadFile(fileStorage, eventBus, uploadsRepository);
   }
 
   constructor(
     private readonly fileStorage: IFileStorage,
     private readonly eventBus: EventBus,
+    private readonly uploadsRepository: IBaseRepository<Upload>,
   ) {}
 
   async execute(file: File): Promise<Result<void>> {
@@ -32,11 +38,15 @@ export class UploadFile implements IUseCase<File, void> {
       return Result.error(new Error("File does not have a .log extension"));
     }
 
-    const result = await this.fileStorage.upload(file);
+    const uploadResult = await this.fileStorage.upload(file);
 
-    if (result.isError()) {
-      return Result.error(result.getError());
+    if (uploadResult.isError()) {
+      return Result.error(uploadResult.getError());
     }
+
+    const insertResult = await this.uploadsRepository.insertOne({
+      identifier: "someUuid",
+    });
 
     this.eventBus.publish(new FileUploadedEvent({ filename: file.name }));
 

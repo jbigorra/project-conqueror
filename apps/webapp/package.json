@@ -3,11 +3,14 @@
   "private": true,
   "version": "0.1.0",
   "description": "Modulithic web application for Project Conqueror",
+  "type": "module",
+  "module": "src/main.ts",
   "exports": {
     ".": "./src/main.ts"
   },
   "imports": {
     "#package.json": "./package.json",
+    "#shared/generics-types/*": "./src/shared/generics-types/*",
     "#shared/http/*": "./src/shared/infrastructure/http/*",
     "#shared/server/*": "./src/shared/infrastructure/server/*",
     "#shared/client/*": "./src/shared/infrastructure/client/*",
@@ -61,6 +64,6 @@
   },
   "packageManager": "pnpm@10.14.0",
   "engines": {
-    "bun": ">=1.2.2"
+    "bun": ">=1.2.21"
   }
 }
