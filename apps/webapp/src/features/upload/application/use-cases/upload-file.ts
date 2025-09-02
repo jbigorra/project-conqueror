@@ -30,7 +30,11 @@ type Deps = {
 
 export class UploadFile implements IUseCase<File, void> {
   static create(deps: Deps) {
-    const { fileStorage = new FileStorage(), eventBus = new EventBus() } = deps;
+    // note: Bun.s3 by default reads from .env file to get the config and credentials
+    const {
+      fileStorage = new S3FileStorage(Bun.s3),
+      eventBus = new EventBus(),
+    } = deps;
 
     return new UploadFile(fileStorage, eventBus);
   }
