@@ -47,7 +47,7 @@ describe("UploadFile", () => {
     expect(fileStorage.upload.spy()).toHaveBeenCalledWith(validFile, `${TEST_UUIDV7}.log`);
   });
 
-  it.only("should log the file uploaded in the database", async () => {
+  it("should log the file uploaded in the database", async () => {
     fileStorage.upload.mockResolvedValue(Result.success(undefined));
     uploadsRepository.insertOne.mockResolvedValue(
       Result.success<Upload>({
@@ -71,7 +71,7 @@ describe("UploadFile", () => {
     );
   });
 
-  it.only("should produce FileUploadedEvent when file is uploaded successfully", async () => {
+  it("should produce FileUploadedEvent when file is uploaded successfully", async () => {
     fileStorage.upload.mockResolvedValue(Result.success(undefined));
     uploadsRepository.insertOne.mockResolvedValue(
       Result.success<Upload>({
@@ -103,7 +103,7 @@ describe("UploadFile", () => {
     uploadsRepository.insertOne.mockResolvedValue(
       Result.success<Upload>({
         id: 1,
-        identifier: "someUuid",
+        identifier: TEST_UUIDV7,
         createdAt: new Date(),
         updatedAt: new Date(),
         deletedAt: null,
@@ -136,7 +136,7 @@ describe("UploadFile", () => {
     uploadsRepository.insertOne.mockResolvedValue(
       Result.success<Upload>({
         id: 1,
-        identifier: "someUuid",
+        identifier: TEST_UUIDV7,
         createdAt: new Date(),
         updatedAt: new Date(),
         deletedAt: null,
