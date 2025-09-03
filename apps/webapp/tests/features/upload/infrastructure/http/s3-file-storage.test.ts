@@ -4,7 +4,7 @@ import { S3Client } from "bun";
 import { mockFn } from "bun-automock";
 import { describe, expect, it } from "bun:test";
 
-describe.only("S3FileStorage", () => {
+describe("S3FileStorage", () => {
   it("should upload a file to S3 compatible object storage", async () => {
     const s3Client = mockFn<S3Client>();
     const fileStorage = new S3FileStorage(s3Client);
