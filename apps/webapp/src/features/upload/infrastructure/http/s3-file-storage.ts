@@ -6,10 +6,10 @@ import { S3Client } from "bun";
 export class S3FileStorage implements IFileStorage {
   constructor(private readonly s3Client: S3Client) {}
 
-  async upload(file: File): Promise<Result<void>> {
+  async upload(file: File, filename: string): Promise<Result<void>> {
     try {
       const fileContent = await file.text();
-      await this.s3Client.write(file.name, fileContent);
+      await this.s3Client.write(filename, fileContent);
 
       return Result.success(undefined);
     } catch (e: any) {

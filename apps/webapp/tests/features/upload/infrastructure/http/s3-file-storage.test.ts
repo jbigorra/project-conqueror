@@ -4,18 +4,19 @@ import { S3Client } from "bun";
 import { mockFn } from "bun-automock";
 import { describe, expect, it } from "bun:test";
 
-describe("S3FileStorage", () => {
+describe.only("S3FileStorage", () => {
   it("should upload a file to S3 compatible object storage", async () => {
     const s3Client = mockFn<S3Client>();
     const fileStorage = new S3FileStorage(s3Client);
     const file = new File(["Test content"], "test.log", {
       type: "text/plain",
     });
+    const filename = "anotherName.log";
 
-    const result = await fileStorage.upload(file);
+    const result = await fileStorage.upload(file, filename);
 
     expect(result.isSuccess()).toBe(true);
-    expect(s3Client.write.spy()).toHaveBeenCalledWith("test.log", "Test content");
+    expect(s3Client.write.spy()).toHaveBeenCalledWith(filename, "Test content");
   });
 
   it("should return error result when uploading file throws an error", async () => {
@@ -28,7 +29,7 @@ describe("S3FileStorage", () => {
       type: "text/plain",
     });
 
-    const result = await fileStorage.upload(file);
+    const result = await fileStorage.upload(file, "anotherName.log");
 
     expect(result.isError()).toBe(true);
     expect(result.getError().message).toBe(`${S3FileStorage.name}: upload failed`);
