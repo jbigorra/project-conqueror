@@ -1,14 +1,21 @@
 import Database from "bun:sqlite";
-import { drizzle } from "drizzle-orm/bun-sqlite";
+import { BunSQLiteDatabase, drizzle } from "drizzle-orm/bun-sqlite";
 
-export function createDevelopmentDatabase() {
-  return drizzle({ client: new Database("pq-development.sqlite") });
+let developmentDatabase: BunSQLiteDatabase | null = null;
+let productionDatabase: BunSQLiteDatabase | null = null;
+
+export function getDevelopmentDatabase() {
+  developmentDatabase ??= drizzle({ client: new Database("pq-development.sqlite") });
+
+  return developmentDatabase;
 }
 
-export function createProductionDatabase() {
-  return drizzle({ client: new Database("pq-production.sqlite") });
+export function getProductionDatabase() {
+  productionDatabase ??= drizzle({ client: new Database("pq-production.sqlite") });
+
+  return productionDatabase;
 }
 
-export function createTestDatabase() {
+export function getTestDatabase() {
   return drizzle({ client: new Database(":memory:") });
 }
