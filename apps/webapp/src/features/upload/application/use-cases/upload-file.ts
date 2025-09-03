@@ -6,12 +6,14 @@ import { FileUploadedEvent } from "#upload/core/events/file-uploaded-event.ts";
 import { UploadRepository } from "#upload/infrastructure/db/upload-repository.ts";
 import { S3FileStorage } from "#upload/infrastructure/http/s3-file-storage.ts";
 import { EventBus, Result } from "@prj-conq/lib/patterns";
+import { randomUUIDv7 } from "bun";
 import type { IFileStorage } from "../dependencies/file-storage.ts";
 
 type Deps = {
   fileStorage?: IFileStorage;
   eventBus?: EventBus;
   uploadsRepository?: IBaseRepository<Upload>;
+  UUIDv7?: () => string;
 };
 
 export class UploadFile implements IUseCase<File, void> {
@@ -21,15 +23,17 @@ export class UploadFile implements IUseCase<File, void> {
       fileStorage = new S3FileStorage(Bun.s3),
       eventBus = new EventBus(),
       uploadsRepository = UploadRepository.create({ db: getDevelopmentDatabase() }),
+      UUIDv7 = () => randomUUIDv7(),
     } = deps;
 
-    return new UploadFile(fileStorage, eventBus, uploadsRepository);
+    return new UploadFile(fileStorage, eventBus, uploadsRepository, UUIDv7);
   }
 
   constructor(
     private readonly fileStorage: IFileStorage,
     private readonly eventBus: EventBus,
     private readonly uploadsRepository: IBaseRepository<Upload>,
+    private readonly UUIDv7: () => string,
   ) {}
 
   async execute(file: File): Promise<Result<void>> {
@@ -38,22 +42,24 @@ export class UploadFile implements IUseCase<File, void> {
     if (fileExtension !== "log") {
       return Result.error(new Error("File does not have a .log extension"));
     }
+    const identifier = this.UUIDv7();
+    const filename = `${identifier}.log`;
 
-    const uploadResult = await this.fileStorage.upload(file);
+    const uploadResult = await this.fileStorage.upload(file, filename);
 
     if (uploadResult.isError()) {
       return Result.error(uploadResult.getError());
     }
 
     const insertResult = await this.uploadsRepository.insertOne({
-      identifier: "someUuid",
+      identifier: identifier,
     });
 
     if (insertResult.isError()) {
       return Result.error(insertResult.getError());
     }
 
-    this.eventBus.publish(new FileUploadedEvent({ filename: file.name }));
+    this.eventBus.publish(new FileUploadedEvent({ filename: filename }));
 
     return Result.success(undefined);
   }
