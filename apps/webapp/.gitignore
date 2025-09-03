@@ -6,3 +6,8 @@ bucket
 vitest-example/
 .env.*
 temp/
+
+# Ignore databases
+pq-production.sqlite
+pq-development.sqlite
+pq-test.sqlite
