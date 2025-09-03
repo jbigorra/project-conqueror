@@ -1,8 +1,8 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "a2a8a744-d84c-4730-b5c7-9a29ece1a458",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "9c695dd3-2fbf-485d-962d-2951b9cdb380",
+  "prevId": "a2a8a744-d84c-4730-b5c7-9a29ece1a458",
   "tables": {
     "uploads": {
       "name": "uploads",
@@ -33,8 +33,9 @@
           "name": "updated_at",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch())"
         },
         "deleted_at": {
           "name": "deleted_at",
