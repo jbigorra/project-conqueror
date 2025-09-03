@@ -1,8 +1,9 @@
+import { getDevelopmentDatabase } from "#shared/database/db.ts";
 import type { IBaseRepository } from "#shared/generics-types/repository.ts";
 import type { IUseCase } from "#shared/generics-types/usecase.ts";
 import type { Upload } from "#upload/core/entities/upload.ts";
 import { FileUploadedEvent } from "#upload/core/events/file-uploaded-event.ts";
-import { UploadRepository } from "#upload/infrastructure/database/upload-repository.ts";
+import { UploadRepository } from "#upload/infrastructure/db/upload-repository.ts";
 import { S3FileStorage } from "#upload/infrastructure/http/s3-file-storage.ts";
 import { EventBus, Result } from "@prj-conq/lib/patterns";
 import type { IFileStorage } from "../dependencies/file-storage.ts";
@@ -19,7 +20,7 @@ export class UploadFile implements IUseCase<File, void> {
     const {
       fileStorage = new S3FileStorage(Bun.s3),
       eventBus = new EventBus(),
-      uploadsRepository = new UploadRepository(),
+      uploadsRepository = UploadRepository.create({ db: getDevelopmentDatabase() }),
     } = deps;
 
     return new UploadFile(fileStorage, eventBus, uploadsRepository);
