@@ -16,9 +16,7 @@ export const uploadFilesController = createBaseController("uploadFilesController
           return (<UploadFormWithErrors values={{}} errors={errors} />);
         }
       })
-      .get("/", async ({ logger }) => {
-        console.log(logger);
-        logger.info("Rendering UploadPage", { test: "test", test2: 1 });
+      .get("/", async () => {
         return (
           <UploadPage>
             <UploadForm values={{}} errors={{}} />
