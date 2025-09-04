@@ -1,11 +1,12 @@
 import { getDevelopmentDatabase } from "#shared/database/db.ts";
+import { FileUploadedEvent } from "#shared/domain/events/file-uploaded-event.ts";
+import { EventBusInstance } from "#shared/event/event-bus.ts";
 import type { IBaseRepository } from "#shared/generics-types/repository.ts";
 import type { IUseCase } from "#shared/generics-types/usecase.ts";
 import type { Upload } from "#upload/core/entities/upload.ts";
-import { FileUploadedEvent } from "#upload/core/events/file-uploaded-event.ts";
 import { UploadRepository } from "#upload/infrastructure/db/upload-repository.ts";
 import { S3FileStorage } from "#upload/infrastructure/http/s3-file-storage.ts";
-import { EventBus, Result } from "@prj-conq/lib/patterns";
+import { type EventBus, Result } from "@prj-conq/lib/patterns";
 import { randomUUIDv7 } from "bun";
 import type { IFileStorage } from "../dependencies/file-storage.ts";
 
@@ -21,7 +22,7 @@ export class UploadFile implements IUseCase<File, void> {
     // note: Bun.s3 by default reads from .env file to get the config and credentials
     const {
       fileStorage = new S3FileStorage(Bun.s3),
-      eventBus = new EventBus(),
+      eventBus = EventBusInstance.get(),
       uploadsRepository = UploadRepository.create({ db: getDevelopmentDatabase() }),
       UUIDv7 = () => randomUUIDv7(),
     } = deps;
