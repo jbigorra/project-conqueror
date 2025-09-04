@@ -5,13 +5,13 @@ import { staticPlugin } from "@elysiajs/static";
 import { swagger } from "@elysiajs/swagger";
 import { Elysia } from "elysia";
 import logixlysia from "logixlysia";
-import { LoggerFactory } from "../logging/logger";
+import { LoggerInstance } from "../logging/logger";
 import { type BaseController } from "./controller-factory";
 import { indexController } from "./index.controller";
 
 export interface IStartServerDeps {
   httpLogger: typeof logixlysia;
-  customLogger: ReturnType<typeof LoggerFactory.getLogger>;
+  customLogger: ReturnType<typeof LoggerInstance.get>;
   openapi: typeof swagger;
   opentelemetry: typeof opentelemetry;
   static: typeof staticPlugin;
@@ -67,7 +67,7 @@ export const startServer = (app: Elysia, deps: IStartServerDeps) => {
 
 export const server = startServer(new Elysia(), {
   httpLogger: logixlysia,
-  customLogger: LoggerFactory.getLogger(),
+  customLogger: LoggerInstance.get(),
   openapi: swagger,
   opentelemetry: opentelemetry,
   static: staticPlugin,

@@ -75,14 +75,14 @@ class CustomLogger implements ICustomLogger {
   }
 }
 
-class LoggerFactory {
+class LoggerInstance {
   private static logger: CustomLogger | null = null;
 
-  static getLogger(): CustomLogger {
+  static get(): CustomLogger {
     this.logger ??= new CustomLogger(logixlysiaLogger);
     return this.logger;
   }
 }
 
-export { LoggerFactory };
+export { LoggerInstance };
 export type { ICustomLogger };
