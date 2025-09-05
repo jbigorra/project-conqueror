@@ -1,4 +1,3 @@
-import { FileUploadedHandler } from "#analyses/application/event-handlers/file-uploaded.handler.ts";
 import { EventBus } from "@prj-conq/lib/patterns";
 
 export class EventBusInstance {
@@ -11,6 +10,3 @@ export class EventBusInstance {
     return this.instance;
   }
 }
-
-const instance = EventBusInstance.get();
-instance.subscribe(new FileUploadedHandler());
