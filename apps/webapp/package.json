@@ -12,6 +12,8 @@
     "#error.ts": "./src/errors.ts",
     "#package.json": "./package.json",
     "#shared/generics-types/*": "./src/shared/generics-types/*",
+    "#shared/domain/*": "./src/shared/infrastructure/domain/events/*",
+    "#shared/event/*": "./src/shared/infrastructure/event/*",
     "#shared/logging/*": "./src/shared/infrastructure/logging/*",
     "#shared/database/*": "./src/shared/infrastructure/database/*",
     "#shared/http/*": "./src/shared/infrastructure/http/*",
