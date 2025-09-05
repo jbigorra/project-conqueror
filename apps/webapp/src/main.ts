@@ -1,7 +1,13 @@
 import { registerAnalysesEventHandlers } from "#analyses/infrastructure/bootstrap.ts";
 import { server, type App } from "#shared/server/server.ts";
 
-export function bootstrapServer(app: App, eventHandlersBootstraps: (() => void)[], port: number = 8080): void {
+interface BootstrapServerProps {
+  app: App;
+  eventHandlersBootstraps: (() => void)[];
+  port: number;
+}
+
+export function bootstrapServer({ app, eventHandlersBootstraps, port }: BootstrapServerProps): void {
   eventHandlersBootstraps.forEach((bootstrapFn) => bootstrapFn());
   app
     .onStart(({ routes }) => {
@@ -13,4 +19,4 @@ export function bootstrapServer(app: App, eventHandlersBootstraps: (() => void)[
     .listen(port);
 }
 
-bootstrapServer(server, [registerAnalysesEventHandlers]);
+bootstrapServer({ app: server, eventHandlersBootstraps: [registerAnalysesEventHandlers], port: 8080 });
