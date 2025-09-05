@@ -1,11 +1,16 @@
 import { registerAnalysesEventHandlers } from "#analyses/infrastructure/bootstrap.ts";
-import { server } from "#shared/server/server.ts";
-import Elysia from "elysia";
+import { server, type App } from "#shared/server/server.ts";
 
-// Bootstrap event handlers
-registerAnalysesEventHandlers();
+export function bootstrapServer(app: App, eventHandlersBootstraps: (() => void)[], port: number = 8080): void {
+  eventHandlersBootstraps.forEach((bootstrapFn) => bootstrapFn());
+  app
+    .onStart(({ routes }) => {
+      for (const route of routes) {
+        console.log(`ROUTE LOADED: ${route.method} ${route.path}`);
+      }
+      console.log(`Server is running on http://localhost:${app.server!.port}`);
+    })
+    .listen(port);
+}
 
-// Start server by using the server instance
-const app = new Elysia().use(server).listen(8080);
-
-console.log(`\n\n\n Server is running on http://localhost:${app.server!.port}`);
+bootstrapServer(server, [registerAnalysesEventHandlers]);
