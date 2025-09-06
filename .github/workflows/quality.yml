@@ -112,7 +112,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: coverage
-          path: ./
       - name: Find coverage report file
         run: |
           ls -la ${{ matrix.project.path }}
@@ -125,4 +124,4 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_SCANNER_OPTS: >
             -Dsonar.log.level=WARN
-            -Dsonar.javascript.lcov.reportPaths=${{ matrix.project.path }}/coverage/lcov.info
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
