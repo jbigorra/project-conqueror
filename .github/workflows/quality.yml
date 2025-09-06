@@ -114,7 +114,7 @@ jobs:
           name: coverage
       - name: Find coverage report file
         run: |
-          ls -la
+          ls -la ${{ matrix.project.path }}
           find ${{ matrix.project.path }} -name "lcov.info"
           LCOV_PATH=$(find ${{ matrix.project.path }} -name "lcov.info" | head -n 1)
           echo "LCOV_PATH=$LCOV_PATH" >> $GITHUB_ENV
