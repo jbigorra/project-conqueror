@@ -15,4 +15,5 @@ jobs:
         with:
           node-version: 22.0.0
           cache: "pnpm"
-      - run: pnpm audit --audit-level high
+      - name: Audit dependencies
+        run: pnpm audit --audit-level high
