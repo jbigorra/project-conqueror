@@ -1,13 +1,14 @@
 name: Build
-
 on:
-  push:
-  pull_request:
-
+  workflow_run:
+    workflows: ["Security Audit"]
+    types: [completed]
+    branches: [master, fix/*, feature/*]
 jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    if: github.event.workflow_run.conclusion == 'success'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
