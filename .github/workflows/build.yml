@@ -34,11 +34,18 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22.0.0
+          node-version: 20
           cache: "pnpm"
 
+      - name: Clean node_modules and lockfile
+        run: |
+          rm -rf node_modules
+          rm -f pnpm-lock.yaml
+          rm -rf packages/*/node_modules
+
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install
+        # run: pnpm install --frozen-lockfile
 
       # Turbo handles internal caching and dependencies
       - name: Build with Turbo
