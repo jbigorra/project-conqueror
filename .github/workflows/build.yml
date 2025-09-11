@@ -37,15 +37,17 @@ jobs:
           node-version: 20
           cache: "pnpm"
 
-      - name: Clean node_modules and lockfile
-        run: |
-          rm -rf node_modules
-          rm -f pnpm-lock.yaml
-          rm -rf packages/*/node_modules
+      # ONLY required when a problem building and mistmaching dependencies occurs
+      # - name: Clean node_modules and lockfile
+      #   run: |
+      #     rm -rf node_modules
+      #     rm -f pnpm-lock.yaml
+      #     rm -rf packages/*/node_modules
 
       - name: Install dependencies
-        run: pnpm install
-        # run: pnpm install --frozen-lockfile
+        # Remmove the --frozen-lockfile flag when running the clean step above
+        # run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       # Turbo handles internal caching and dependencies
       - name: Build with Turbo
