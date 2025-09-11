@@ -34,14 +34,14 @@
   "packageManager": "pnpm@10.14.0",
   "dependencies": {
     "@prj-conq/lib": "workspace:^",
-    "csv-parse": "6.0.0"
+    "csv-parse": "6.1.0"
   },
   "devDependencies": {
     "@prj-conq/typescript-config": "workspace:*",
-    "@types/bun": "^1.2.20",
+    "@types/bun": "^1.2.21",
     "bun-automock": "^0.2.5",
     "fishery": "2.3.1",
-    "tsdown": "^0.14.2",
-    "typescript": "^5.9.0"
+    "tsdown": "^0.15.0",
+    "typescript": "^5.9.2"
   }
 }
