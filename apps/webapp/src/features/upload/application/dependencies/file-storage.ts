@@ -6,5 +6,5 @@ export interface ICloudFileStorage {
 }
 
 export interface ILocalFileStorage {
-  save(filename: string, file: File): Promise<Result<void>>;
+  save(filename: string, file: File): Promise<Result<{ tempFilePath: string }>>;
 }

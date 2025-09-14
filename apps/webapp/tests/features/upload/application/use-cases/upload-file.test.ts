@@ -1,5 +1,5 @@
 import type { IBaseRepository } from "#shared/generics-types/repository.ts";
-import type { IFileStorage } from "#upload/application/dependencies/file-storage.ts";
+import type { ICloudFileStorage } from "#upload/application/dependencies/file-storage.ts";
 import { UploadFile } from "#upload/application/use-cases/upload-file.ts";
 import { Upload } from "#upload/core/entities/upload.ts";
 import { EventBus, Result } from "@prj-conq/lib/patterns";
@@ -7,7 +7,7 @@ import { mockFn, type MockProxy } from "bun-automock";
 import { beforeEach, describe, expect, it, Mock, mock } from "bun:test";
 
 describe("UploadFile", () => {
-  let fileStorage: MockProxy<IFileStorage>;
+  let fileStorage: MockProxy<ICloudFileStorage>;
   let eventBus: MockProxy<EventBus>;
   let uploadFile: UploadFile;
   let uploadsRepository: MockProxy<IBaseRepository<Upload>>;
@@ -15,7 +15,7 @@ describe("UploadFile", () => {
   const UUIDv7: Mock<() => string> = mock(() => TEST_UUIDV7);
 
   beforeEach(() => {
-    fileStorage = mockFn<IFileStorage>();
+    fileStorage = mockFn<ICloudFileStorage>();
     eventBus = mockFn<EventBus>();
     uploadsRepository = mockFn<IBaseRepository<Upload>>();
     uploadFile = UploadFile.create({
