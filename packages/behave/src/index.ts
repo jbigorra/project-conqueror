@@ -1,4 +1,4 @@
-import { Behave } from "#behave/behave.ts";
+import { AnalysisOptions, Behave } from "#behave/behave.ts";
 import { AnalysisRunner } from "#runners/analysis_runner.ts";
 
 export default class BehaveInstance {
@@ -11,4 +11,4 @@ export default class BehaveInstance {
   }
 }
 
-export type { Behave };
+export { AnalysisOptions, Behave };
