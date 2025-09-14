@@ -8,10 +8,10 @@ import { UploadRepository } from "#upload/infrastructure/db/upload-repository.ts
 import { S3FileStorage } from "#upload/infrastructure/http/s3-file-storage.ts";
 import { type EventBus, Result } from "@prj-conq/lib/patterns";
 import { randomUUIDv7 } from "bun";
-import type { IFileStorage } from "../dependencies/file-storage.ts";
+import type { ICloudFileStorage } from "../dependencies/file-storage.ts";
 
 type Deps = {
-  fileStorage?: IFileStorage;
+  fileStorage?: ICloudFileStorage;
   eventBus?: EventBus;
   uploadsRepository?: IBaseRepository<Upload>;
   UUIDv7?: () => string;
@@ -31,7 +31,7 @@ export class UploadFile implements IUseCase<File, void> {
   }
 
   constructor(
-    private readonly fileStorage: IFileStorage,
+    private readonly fileStorage: ICloudFileStorage,
     private readonly eventBus: EventBus,
     private readonly uploadsRepository: IBaseRepository<Upload>,
     private readonly UUIDv7: () => string,

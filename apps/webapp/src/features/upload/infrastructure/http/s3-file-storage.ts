@@ -1,9 +1,9 @@
 import { ObjectStorageError } from "#error.ts";
-import type { IFileStorage } from "#upload/application/dependencies/file-storage.js";
+import type { ICloudFileStorage } from "#upload/application/dependencies/file-storage.js";
 import { Result } from "@prj-conq/lib/patterns";
 import { S3Client } from "bun";
 
-export class S3FileStorage implements IFileStorage {
+export class S3FileStorage implements ICloudFileStorage {
   constructor(private readonly s3Client: S3Client) {}
 
   async upload(file: File, filename: string): Promise<Result<void>> {
@@ -20,7 +20,7 @@ export class S3FileStorage implements IFileStorage {
     }
   }
 
-  async download(file: File): Promise<Result<void>> {
+  async download(filename: string): Promise<Result<File>> {
     throw new Error("Not implemented");
   }
 }
