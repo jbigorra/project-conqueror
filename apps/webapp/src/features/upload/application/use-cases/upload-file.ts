@@ -60,7 +60,7 @@ export class UploadFile implements IUseCase<File, void> {
       return Result.error(insertResult.getError());
     }
 
-    this.eventBus.publish(new FileUploadedEvent({ filename: filename }));
+    this.eventBus.publish(new FileUploadedEvent({ filename: filename, file }));
 
     return Result.success(undefined);
   }

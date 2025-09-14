@@ -93,7 +93,10 @@ describe("UploadFile", () => {
       expect.objectContaining({
         eventType: "upload.FileUploaded",
         aggregateId: expectedFileName,
-        payload: { filename: expectedFileName },
+        payload: {
+          filename: expectedFileName,
+          file: validFile,
+        },
       }),
     );
   });
