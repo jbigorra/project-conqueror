@@ -10,3 +10,5 @@ export default class BehaveInstance {
     return BehaveInstance.instance;
   }
 }
+
+export type { Behave };
