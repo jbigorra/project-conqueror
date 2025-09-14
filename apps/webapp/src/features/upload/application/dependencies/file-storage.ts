@@ -1,6 +1,10 @@
 import { Result } from "@prj-conq/lib/patterns";
 
-export interface IFileStorage {
+export interface ICloudFileStorage {
   upload(file: File, filename: string): Promise<Result<void>>;
-  download(file: File): Promise<Result<void>>;
+  download(filename: string): Promise<Result<File>>;
+}
+
+export interface ILocalFileStorage {
+  save(filename: string, file: File): Promise<Result<void>>;
 }
