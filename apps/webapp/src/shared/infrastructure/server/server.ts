@@ -18,7 +18,7 @@ export interface IStartServerDeps {
   controllers: BaseController[];
 }
 
-export const startServer = (app: Elysia, deps: IStartServerDeps) => {
+export const createServer = (app: Elysia, deps: IStartServerDeps) => {
   return (
     app
       /**
@@ -65,7 +65,7 @@ export const startServer = (app: Elysia, deps: IStartServerDeps) => {
   );
 };
 
-export const server = startServer(new Elysia(), {
+export const server = createServer(new Elysia(), {
   httpLogger: logixlysia,
   customLogger: LoggerInstance.get(),
   openapi: swagger,
