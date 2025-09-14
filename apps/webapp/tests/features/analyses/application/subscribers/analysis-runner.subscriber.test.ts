@@ -89,13 +89,13 @@ describe.only("AnalysisRunnerSubscriber", async () => {
     expect(error?.message).toBe("Saving to temp directory failed");
   });
 
-  it("should analyse the gitlog file with the analysis tool (behave)", () => {
+  it("should analyse the gitlog file with the analysis tool (behave)", async () => {
     const expectedFile = new File(["Test content"], "uuidFilename.log", { type: "text/plain" });
     fileStorage.download.mockResolvedValue(Result.success(expectedFile));
     temporaryStorage.save.mockResolvedValue(Result.success({ tempFilePath: "absolute/path/to/uuidFilename.log" }));
     behave.runAnalysis.mockResolvedValue([]);
 
-    sut.handle(
+    await sut.handle(
       new FileUploadedEvent({
         filename: "uuidFilename.log",
         file: expectedFile,
