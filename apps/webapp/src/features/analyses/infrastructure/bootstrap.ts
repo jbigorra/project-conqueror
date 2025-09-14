@@ -1,8 +1,8 @@
 import { EventBusInstance } from "#shared/event/event-bus.ts";
-import { FileUploadedHandler } from "../application/event-handlers/file-uploaded.handler.ts";
+import { MainDevAnalysisSubscriber } from "../application/subscribers/main-dev-analysis.subscriber.ts";
 
 export function registerAnalysesEventHandlers(): void {
   const eventBus = EventBusInstance.get();
 
-  eventBus.subscribe(new FileUploadedHandler());
+  eventBus.subscribe(new MainDevAnalysisSubscriber());
 }
