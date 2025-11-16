@@ -1,6 +1,6 @@
+import type { ICloudFileStorage, ILocalFileStorage } from "#shared/dependencies/file-storage.ts";
 import type { FileUploadedEvent } from "#shared/domain/events/file-uploaded-event.ts";
-import type { ICloudFileStorage, ILocalFileStorage } from "#upload/application/dependencies/file-storage.ts";
-import { LocalFileStorage } from "#upload/infrastructure/fs/file-storage.ts";
+import { LocalFileStorage } from "#shared/fs/file-storage.ts";
 import { S3FileStorage } from "#upload/infrastructure/http/s3-file-storage.ts";
 import BehaveInstance, { type Behave, AnalysisOptions } from "@prj-conq/behave";
 import { type EventHandler, type EventHandlerResult } from "@prj-conq/lib/patterns";

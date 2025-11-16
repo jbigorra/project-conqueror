@@ -1,4 +1,5 @@
 import { AnalysisRunnerSubscriber } from "#analyses/application/subscribers/analysis-runner.subscriber.ts";
+import type { ICloudFileStorage, ILocalFileStorage } from "#shared/dependencies/file-storage.ts";
 import { FileUploadedEvent } from "#shared/domain/events/file-uploaded-event.ts";
 import type { ICloudFileStorage, ILocalFileStorage } from "#upload/application/dependencies/file-storage.ts";
 import { AnalysisOptions, type Behave } from "@prj-conq/behave";

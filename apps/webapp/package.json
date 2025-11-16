@@ -14,6 +14,8 @@
     "#shared/generics-types/*": "./src/shared/generics-types/*",
     "#shared/domain/*": "./src/shared/infrastructure/domain/events/*",
     "#shared/event/*": "./src/shared/infrastructure/event/*",
+    "#shared/dependencies/*": "./src/shared/dependencies/*",
+    "#shared/fs/*": "./src/shared/infrastructure/fs/*",
     "#shared/logging/*": "./src/shared/infrastructure/logging/*",
     "#shared/database/*": "./src/shared/infrastructure/database/*",
     "#shared/http/*": "./src/shared/infrastructure/http/*",
