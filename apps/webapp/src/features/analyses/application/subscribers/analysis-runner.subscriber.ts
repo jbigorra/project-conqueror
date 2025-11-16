@@ -33,21 +33,13 @@ export class AnalysisRunnerSubscriber implements EventHandler<FileUploadedEvent>
   ) {}
 
   async handle(event: FileUploadedEvent): Promise<EventHandlerResult> {
-    const downloadResult = await this.fileStorage.download(event.payload["filename"]);
-
-    if (downloadResult.isError()) {
-      return { success: false, error: downloadResult.getError() };
-    }
-
-    const file = downloadResult.getValue();
-
-    const saveResult = await this.temporaryStorage.save(event.payload["filename"], file);
+    const saveResult = await this.temporaryStorage.save(event.payload["filename"], event.payload["file"]);
 
     if (saveResult.isError()) {
       return { success: false, error: saveResult.getError() };
     }
 
-    await this.behave.runAnalysis(
+    const analysisResult = await this.behave.runAnalysis(
       new AnalysisOptions({
         analysisType: "main-dev",
         logFile: saveResult.getValue().tempFilePath,
@@ -56,6 +48,12 @@ export class AnalysisRunnerSubscriber implements EventHandler<FileUploadedEvent>
         minSharedRevs: "2",
       }),
     );
+
+    if (analysisResult instanceof Error) {
+      return { success: false, error: analysisResult };
+    }
+
+    console.log(analysisResult);
 
     return { success: true };
   }

@@ -1,10 +1,9 @@
 import { AnalysisRunnerSubscriber } from "#analyses/application/subscribers/analysis-runner.subscriber.ts";
 import type { ICloudFileStorage, ILocalFileStorage } from "#shared/dependencies/file-storage.ts";
 import { FileUploadedEvent } from "#shared/domain/events/file-uploaded-event.ts";
-import type { ICloudFileStorage, ILocalFileStorage } from "#upload/application/dependencies/file-storage.ts";
 import { AnalysisOptions, type Behave } from "@prj-conq/behave";
 import { Result } from "@prj-conq/lib/patterns";
-import { mockFn, MockProxy } from "bun-automock";
+import { mockFn, type MockProxy } from "bun-automock";
 import { afterEach, beforeEach, describe, expect, it, mock } from "bun:test";
 
 describe("AnalysisRunnerSubscriber", async () => {
@@ -28,40 +27,8 @@ describe("AnalysisRunnerSubscriber", async () => {
     mock.clearAllMocks();
   });
 
-  it("should fetch the file content from the file storage", async () => {
-    const expectedFile = new File(["Test content"], "uuidFilename.log", {
-      type: "text/plain",
-    });
-    fileStorage.download.mockResolvedValue(Result.success(expectedFile));
-    temporaryStorage.save.mockResolvedValue(Result.success({ tempFilePath: "absolute/path/to/uuidFilename.log" }));
-
-    await sut.handle(
-      new FileUploadedEvent({
-        filename: "uuidFilename.log",
-        file: expectedFile,
-      }),
-    );
-
-    expect(fileStorage.download.spy()).toHaveBeenCalledWith("uuidFilename.log");
-  });
-
-  it("should return error result when file storage fails to download the file", async () => {
-    fileStorage.download.mockResolvedValue(Result.error(new Error("File not found")));
-
-    const { success, error } = await sut.handle(
-      new FileUploadedEvent({
-        filename: "uuidFilename.log",
-        file: new File(["Test content"], "test.log", { type: "text/plain" }),
-      }),
-    );
-
-    expect(success).toBe(false);
-    expect(error?.message).toBe("File not found");
-  });
-
   it("should save the file to a temporary directory", async () => {
     const expectedFile = new File(["Test content"], "uuidFilename.log", { type: "text/plain" });
-    fileStorage.download.mockResolvedValue(Result.success(expectedFile));
     temporaryStorage.save.mockResolvedValue(Result.success({ tempFilePath: "absolute/path/to/uuidFilename.log" }));
 
     await sut.handle(
@@ -76,7 +43,6 @@ describe("AnalysisRunnerSubscriber", async () => {
 
   it("should return error result when temporary storage fails to save the file", async () => {
     const expectedFile = new File(["Test content"], "uuidFilename.log", { type: "text/plain" });
-    fileStorage.download.mockResolvedValue(Result.success(expectedFile));
     temporaryStorage.save.mockResolvedValue(Result.error(new Error("Saving to temp directory failed")));
 
     const { success, error } = await sut.handle(
@@ -92,7 +58,6 @@ describe("AnalysisRunnerSubscriber", async () => {
 
   it("should produce the main-dev analysis by analysing the gitlog file with the analysis tool (behave)", async () => {
     const expectedFile = new File(["Test content"], "uuidFilename.log", { type: "text/plain" });
-    fileStorage.download.mockResolvedValue(Result.success(expectedFile));
     temporaryStorage.save.mockResolvedValue(Result.success({ tempFilePath: "absolute/path/to/uuidFilename.log" }));
     behave.runAnalysis.mockResolvedValue([]);
 
@@ -116,7 +81,6 @@ describe("AnalysisRunnerSubscriber", async () => {
 
   it("should return sucess result when the analysis is produced successfully", async () => {
     const expectedFile = new File(["Test content"], "uuidFilename.log", { type: "text/plain" });
-    fileStorage.download.mockResolvedValue(Result.success(expectedFile));
     temporaryStorage.save.mockResolvedValue(Result.success({ tempFilePath: "absolute/path/to/uuidFilename.log" }));
     behave.runAnalysis.mockResolvedValue([]);
 
@@ -129,8 +93,23 @@ describe("AnalysisRunnerSubscriber", async () => {
 
     expect(success).toBe(true);
   });
-});
 
+  it("should return error result when behave fails to run the analysis", async () => {
+    const expectedFile = new File(["Test content"], "uuidFilename.log", { type: "text/plain" });
+    temporaryStorage.save.mockResolvedValue(Result.success({ tempFilePath: "absolute/path/to/uuidFilename.log" }));
+    behave.runAnalysis.mockResolvedValue(new Error("Analysis failed"));
+
+    const { success, error } = await sut.handle(
+      new FileUploadedEvent({
+        filename: "uuidFilename.log",
+        file: expectedFile,
+      }),
+    );
+
+    expect(success).toBe(false);
+    expect(error?.message).toBe("Analysis failed");
+  });
+});
 /**
  * Consider if the following tasks are required:
  * Introduce application services:

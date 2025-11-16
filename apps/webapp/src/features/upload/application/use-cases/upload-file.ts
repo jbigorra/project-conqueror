@@ -1,4 +1,5 @@
 import { getDevelopmentDatabase } from "#shared/database/db.ts";
+import type { ICloudFileStorage } from "#shared/dependencies/file-storage.ts";
 import { FileUploadedEvent } from "#shared/domain/events/file-uploaded-event.ts";
 import { EventBusInstance } from "#shared/event/event-bus.ts";
 import type { IBaseRepository } from "#shared/generics-types/repository.ts";
@@ -8,7 +9,6 @@ import { UploadRepository } from "#upload/infrastructure/db/upload-repository.ts
 import { S3FileStorage } from "#upload/infrastructure/http/s3-file-storage.ts";
 import { type EventBus, Result } from "@prj-conq/lib/patterns";
 import { randomUUIDv7 } from "bun";
-import type { ICloudFileStorage } from "../dependencies/file-storage.ts";
 
 type Deps = {
   fileStorage?: ICloudFileStorage;
@@ -38,6 +38,7 @@ export class UploadFile implements IUseCase<File, void> {
   ) {}
 
   async execute(file: File): Promise<Result<void>> {
+    console.log("UploadFile executing", file);
     const fileExtension = file.name.split(".").pop();
 
     if (fileExtension !== "log") {

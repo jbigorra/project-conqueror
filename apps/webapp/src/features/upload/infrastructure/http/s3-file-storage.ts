@@ -1,5 +1,5 @@
 import { ObjectStorageError } from "#error.ts";
-import type { ICloudFileStorage } from "#upload/application/dependencies/file-storage.js";
+import type { ICloudFileStorage } from "#shared/dependencies/file-storage.ts";
 import { Result } from "@prj-conq/lib/patterns";
 import { S3Client } from "bun";
 
