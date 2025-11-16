@@ -6,7 +6,7 @@ import { Result } from "@prj-conq/lib/patterns";
 import { mockFn, MockProxy } from "bun-automock";
 import { afterEach, beforeEach, describe, expect, it, mock } from "bun:test";
 
-describe.only("AnalysisRunnerSubscriber", async () => {
+describe("AnalysisRunnerSubscriber", async () => {
   let sut: AnalysisRunnerSubscriber;
   let fileStorage: MockProxy<ICloudFileStorage>;
   let temporaryStorage: MockProxy<ILocalFileStorage>;
@@ -130,6 +130,11 @@ describe.only("AnalysisRunnerSubscriber", async () => {
   });
 });
 
-// TemporaryStorageService should save the file to a temporary directory and persist in the database
-// Remove cloudstorage and save always to temp file. This requires worker that maintains
-// the temp storage and cleans up the files after a certain time.
+/**
+ * Consider if the following tasks are required:
+ * Introduce application services:
+ * - [ ] TemporaryStorageService should save the file to a temporary directory and persist in the database
+ *    - [ ] Remove cloudstorage and save always to temp file with the help of the TemporaryStorageService. This requires a new dependency in the subscriber.
+ *    - [ ] A worker is required to maintain the temp storage and cleans up the files after a certain time.
+ * - [ ] AnalysisService should handle the creation of more than one type of analysis and persist to the database the corresponding data.
+ */
