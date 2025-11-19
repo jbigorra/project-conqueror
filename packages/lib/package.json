@@ -6,16 +6,16 @@
   "type": "module",
   "exports": {
     "./generics": {
-      "types": "./dist/generics/index.d.ts",
-      "default": "./dist/generics/index.js"
+      "types": "./dist/generics/index.d.mts",
+      "default": "./dist/generics/index.mjs"
     },
     "./patterns": {
-      "types": "./dist/patterns/index.d.ts",
-      "default": "./dist/patterns/index.js"
+      "types": "./dist/patterns/index.d.mts",
+      "default": "./dist/patterns/index.mjs"
     },
     "./processes": {
-      "types": "./dist/processes/index.d.ts",
-      "default": "./dist/processes/index.js"
+      "types": "./dist/processes/index.d.mts",
+      "default": "./dist/processes/index.mjs"
     }
   },
   "imports": {
