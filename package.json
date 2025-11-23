@@ -23,9 +23,12 @@
   "license": "ISC",
   "packageManager": "pnpm@10.14.0",
   "devDependencies": {
+    "@oxc-minify/binding-darwin-arm64": "0.93.0",
+    "@oxc-transform/binding-darwin-arm64": "0.93.0",
+    "bunup": "^0.16.10",
     "prettier": "3.6.2",
-    "turbo": "2.5.6",
-    "typescript": "^5.9.2"
+    "turbo": "2.6.1",
+    "typescript": "^5.9.3"
   },
   "dependencies": {
     "ts-essentials": "^10.1.1"
