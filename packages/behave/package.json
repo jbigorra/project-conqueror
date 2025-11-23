@@ -20,9 +20,9 @@
     "bun": ">=1.2.21"
   },
   "scripts": {
-    "build": "tsdown",
+    "build": "bun build.ts",
     "build:copy-vendor": "sh ./scripts/copy-vendor.sh",
-    "dev": "tsdown --watch",
+    "dev": "bun build.ts --watch",
     "clean": "rm -rf dist && rm tsconfig.tsbuildinfo || echo 'No tsconfig.tsbuildinfo file found'",
     "test": "bun test",
     "test:coverage": "bun test --coverage",

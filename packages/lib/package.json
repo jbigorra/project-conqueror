@@ -25,9 +25,9 @@
     "bun": ">=1.2.21"
   },
   "scripts": {
-    "build": "tsdown",
-    "dev": "tsdown --watch",
-    "dev:setup": "tsdown",
+    "build": "bun build.ts",
+    "dev": "bun build.ts --watch",
+    "dev:setup": "bun build.ts",
     "clean": "rm -rf dist && rm tsconfig.tsbuildinfo || echo 'No tsconfig.tsbuildinfo file found'",
     "test": "bun test",
     "test:coverage": "bun test --coverage",
