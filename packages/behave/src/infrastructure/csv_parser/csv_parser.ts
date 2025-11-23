@@ -14,6 +14,7 @@ export class CSVParser implements ICSVParser {
     });
   }
 
+  // @ts-ignore
   async unparse(data: Record<string, string>[], filepath?: string): Promise<Result<string>> {
     throw new Error("Method not implemented.");
   }
