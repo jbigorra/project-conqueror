@@ -1,14 +1,22 @@
 {
   "name": "@prj-conq/behave",
-  "private": true,
-  "version": "0.1.0",
   "description": "A library that executes behavioural code analysis by using code-maat together with other tools for more complex analysis.",
+  "version": "0.1.0",
   "type": "module",
+  "private": true,
+  "files": [
+    "dist"
+  ],
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.mts",
-      "default": "./dist/index.mjs"
-    }
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    },
+    "./package.json": "./package.json"
   },
   "imports": {
     "#behave/*": "./src/*",

@@ -1,22 +1,32 @@
 {
   "name": "@prj-conq/lib",
-  "private": true,
-  "version": "0.1.0",
   "description": "Library containting different utility classes and patterns.",
+  "version": "0.1.0",
   "type": "module",
+  "private": true,
+  "files": [
+    "dist"
+  ],
   "exports": {
     "./generics": {
-      "types": "./dist/generics/index.d.mts",
-      "default": "./dist/generics/index.mjs"
+      "import": {
+        "types": "./dist/generics/index.d.ts",
+        "default": "./dist/generics/index.js"
+      }
     },
     "./patterns": {
-      "types": "./dist/patterns/index.d.mts",
-      "default": "./dist/patterns/index.mjs"
+      "import": {
+        "types": "./dist/patterns/index.d.ts",
+        "default": "./dist/patterns/index.js"
+      }
     },
     "./processes": {
-      "types": "./dist/processes/index.d.mts",
-      "default": "./dist/processes/index.mjs"
-    }
+      "import": {
+        "types": "./dist/processes/index.d.ts",
+        "default": "./dist/processes/index.js"
+      }
+    },
+    "./package.json": "./package.json"
   },
   "imports": {
     "#lib/*": "./src/*"
