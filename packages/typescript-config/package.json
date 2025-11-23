@@ -5,6 +5,6 @@
   "description": "Typescript configuration for Project Conqueror",
   "packageManager": "pnpm@10.14.0",
   "devDependencies": {
-    "@tsconfig/bun": "^1.0.8"
+    "@tsconfig/bun": "^1.0.10"
   }
 }
