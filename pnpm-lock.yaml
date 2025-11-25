@@ -18,9 +18,6 @@ importers:
       '@oxc-transform/binding-darwin-arm64':
         specifier: 0.93.0
         version: 0.93.0
-      bunup:
-        specifier: ^0.16.10
-        version: 0.16.10(typescript@5.9.3)
       prettier:
         specifier: 3.6.2
         version: 3.6.2
@@ -125,6 +122,9 @@ importers:
       bun-automock:
         specifier: ^0.2.5
         version: 0.2.5(typescript@5.9.3)
+      bunup:
+        specifier: ^0.16.10
+        version: 0.16.10(typescript@5.9.3)
       fishery:
         specifier: 2.3.1
         version: 2.3.1
@@ -146,6 +146,9 @@ importers:
       bun-automock:
         specifier: ^0.2.5
         version: 0.2.5(typescript@5.9.3)
+      bunup:
+        specifier: ^0.16.10
+        version: 0.16.10(typescript@5.9.3)
       fishery:
         specifier: 2.3.1
         version: 2.3.1

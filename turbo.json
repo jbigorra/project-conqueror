@@ -3,46 +3,39 @@
   "ui": "tui",
   "tasks": {
     "build": {
-      "dependsOn": ["^build", "build:copy-vendor"],
-      "inputs": ["$TURBO_DEFAULTS", ".env*"],
-      "outputs": ["dist/**"]
+      "dependsOn": [
+        "^build"
+      ],
+      "inputs": [
+        "$TURBO_DEFAULTS",
+        ".env*"
+      ],
+      "outputs": [
+        "dist/**",
+        "temp/**"
+      ]
     },
     "dev": {
-      "dependsOn": [
-        // Clean the build artifacts
-        "clean",
-        // Needs to transpile the lib package to be able to use it in the behave package
-        "@prj-conq/lib#dev:setup",
-        "build:copy-vendor"
-      ],
       "cache": false,
       "persistent": true
-    },
-    "dev:setup": {
-      "cache": false,
-      "persistent": false
-    },
-    "build:copy-vendor": {
-      "cache": false,
-      "persistent": false
     },
     "test": {
       "cache": false,
       "persistent": false
     },
     "test:coverage": {
-      "dependsOn": ["^test:coverage"],
+      "dependsOn": [
+        "^build"
+      ],
       "cache": false,
       "persistent": false,
-      "outputs": ["coverage/**"]
+      "outputs": [
+        "coverage/**"
+      ]
     },
     "tdd": {
       "cache": false,
       "persistent": true
-    },
-    "clean": {
-      "cache": false,
-      "persistent": false
     }
   }
 }

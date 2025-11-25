@@ -8,10 +8,7 @@
   },
   "scripts": {
     "build": "turbo build",
-    "build:copy-vendor": "turbo build:copy-vendor",
     "dev": "turbo dev",
-    "dev:setup": "sh ./setup-dev.sh",
-    "clean": "turbo clean",
     "test": "turbo test",
     "test:coverage": "turbo test:coverage",
     "tdd": "turbo tdd",
@@ -25,7 +22,6 @@
   "devDependencies": {
     "@oxc-minify/binding-darwin-arm64": "0.93.0",
     "@oxc-transform/binding-darwin-arm64": "0.93.0",
-    "bunup": "^0.16.10",
     "prettier": "3.6.2",
     "turbo": "2.6.1",
     "typescript": "^5.9.3"
