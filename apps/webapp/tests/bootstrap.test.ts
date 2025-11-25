@@ -1,7 +1,7 @@
 import type { App } from "#shared/server/server.ts";
 import { mockFn } from "bun-automock";
 import { describe, expect, it, mock, spyOn } from "bun:test";
-import { bootstrapServer } from "../src/main.ts";
+import { bootstrapServer } from "../src/bootstrap.ts";
 
 describe("bootstrapServer", () => {
   it("should call the event handlers bootstraps", () => {
