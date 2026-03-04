@@ -57,7 +57,6 @@
     "@types/node": "^24.10.1",
     "bun-automock": "^0.2.5",
     "bunup": "^0.16.31",
-    "fishery": "2.4.0",
     "typescript": "^5.9.3"
   }
 }
