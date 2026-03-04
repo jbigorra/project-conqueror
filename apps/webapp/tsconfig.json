@@ -8,20 +8,8 @@
         "name": "@kitajs/ts-html-plugin"
       }
     ],
-    "types": [
-      "@vitest/browser/providers/playwright",
-      "@kitajs/html/htmx.d.ts",
-      "@kitajs/html/alpine.d.ts",
-      "@types/bun"
-    ]
+    "types": ["@kitajs/html/htmx.d.ts", "@kitajs/html/alpine.d.ts", "@types/bun"]
   },
-  "include": [
-    "src/**/*",
-    "package.json"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "tests/**/*"
-  ]
+  "include": ["src/**/*", "package.json"],
+  "exclude": ["node_modules", "dist", "tests/**/*"]
 }
