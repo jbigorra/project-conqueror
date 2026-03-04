@@ -51,7 +51,7 @@
     "drizzle-kit": "^0.31.7",
     "fishery": "2.4.0",
     "playwright": "1.58.2",
-    "sass": "1.94.2",
+    "sass": "1.97.3",
     "typescript": "^5.9.3"
   },
   "dependencies": {
