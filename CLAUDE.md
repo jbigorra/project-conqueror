@@ -1,0 +1,95 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Commands
+
+### Root (all packages via Turbo)
+
+```bash
+pnpm run build          # Build all packages
+pnpm run dev            # Watch mode for all packages
+pnpm run test           # Run all tests
+pnpm run test:coverage  # Run tests with coverage
+pnpm run tdd            # Watch mode tests (TDD)
+pnpm run lint           # Lint all code
+pnpm run format         # Prettier format
+```
+
+### Webapp (apps/webapp)
+
+```bash
+bun run dev             # Start dev server with watch
+bun test                # Run all tests
+bun test --watch        # TDD watch mode
+bun test path/to/file   # Run a single test file
+bun run typecheck       # Type-check without emitting
+bun run db:generate     # Generate Drizzle migrations
+bun run db:migrate      # Run migrations
+```
+
+## Architecture
+
+### Monorepo Structure
+
+- `apps/webapp` — Main web application (Elysia.js + Bun runtime)
+- `packages/behave` — Code analysis engine library wrapping Code-Maat
+- `packages/lib` — Shared patterns: EventBus, Result type, `spawnAsync`
+- `packages/typescript-config` — Shared `tsconfig.json` base
+
+### Feature Structure (DDD)
+
+Each feature in `apps/webapp/src/features/` follows this layering:
+
+```
+feature/
+├── core/              # Entities, aggregates, value objects (pure domain logic)
+├── application/       # Use cases and event subscribers (orchestration)
+├── infrastructure/    # Repository implementations, DB, external services
+└── presentation/      # Controllers, JSX UI components
+```
+
+### Key Patterns
+
+**Result/Either (Railway-Oriented)**
+All use cases and repositories return `Result<T>` from `@prj-conq/lib`. Use `.isSuccess()`, `.isError()`, `.getValue()`, `.getError()`. Supports `.map()` and `.flatMap()`.
+
+**Event-Driven Architecture**
+Domain events (`FileUploadedEvent`) are published to the `EventBusInstance` singleton. Subscribers react asynchronously. Register subscribers in `main.ts` during bootstrap.
+
+**Dependency Injection via Static Factories**
+Classes expose a static `create()` method with optional dependency overrides, enabling test mocking without a DI container:
+
+```typescript
+UploadFile.create({ fileStorage: mockStorage, eventBus: mockBus });
+```
+
+**Repository Pattern**
+Repositories implement `IBaseRepository<T extends DomainEntity>` with methods: `insertOne`, `updateOne`, `findById`, `findOne`, `deleteOne`. Database is Drizzle ORM over SQLite.
+
+### Data Flow: Upload → Analysis
+
+1. User POSTs a `.log` git log file to `/upload`
+2. `UploadFile` use case: validates → saves to S3 → inserts DB record → publishes `FileUploadedEvent`
+3. `AnalysisRunnerSubscriber` handles the event asynchronously:
+   - Saves file locally (temp dir via `LocalFileStorage`)
+   - Runs `Behave.runAnalysis()` which spawns Code-Maat (Java JAR) as subprocess
+   - Parses CSV results
+4. UI is rendered server-side as HTML using KitaJS JSX + HTMX for dynamic updates
+
+### Shared Infrastructure
+
+- `src/shared/infrastructure/event/` — `EventBusInstance` singleton
+- `src/shared/infrastructure/fs/` — `S3FileStorage` and `LocalFileStorage`
+- `src/shared/infrastructure/database/db.ts` — Drizzle factories for dev/prod/test (test uses in-memory SQLite)
+- `src/shared/generics-types/` — `IUseCase`, `IBaseRepository`, `DomainEntity` base class
+
+### Technology Stack
+
+- **Runtime**: Bun 1.2.21+
+- **Web framework**: Elysia.js with `@elysiajs/html`, swagger, opentelemetry, static plugins
+- **UI**: KitaJS JSX (server-rendered HTML) + HTMX + Pico CSS + SASS
+- **Database**: SQLite via Drizzle ORM; `drizzle-kit` for migrations
+- **Analysis engine**: Code-Maat (Java JAR spawned as subprocess via `spawnAsync`)
+- **Testing**: Bun test runner + `bun-automock` + `fishery` factories + Playwright (E2E)
+- **Build orchestration**: Turbo + `bunup` for library packages
