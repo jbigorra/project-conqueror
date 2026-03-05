@@ -1,6 +1,9 @@
-import { LoggerInstance } from "#shared/logging/logger.ts";
+import packageJson from "#package.json";
 import html from "@elysiajs/html";
-import { Elysia } from "elysia";
+import { Elysia, type Context } from "elysia";
+import { type Logger } from "logixlysia";
+
+const isDevelopment = process.env.NODE_ENV === "development";
 
 /**
  * @description Create a base controller with all global plugins
@@ -10,7 +13,10 @@ import { Elysia } from "elysia";
 export const createBaseController = (controllerName: string) =>
   new Elysia({ name: controllerName }) // ignore-prettier
     .use(html()) // ignore-prettier
-    .decorate("logger", LoggerInstance.get()) // ignore-prettier
+    .derive(({ store }): { logger: Logger["pino"] } => ({
+      // @ts-ignore
+      logger: store.pino.child({ module: controllerName, requestId: crypto.randomUUID() }),
+    }))
     .as("scoped"); // ignore-prettier
 
 export type BaseController = ReturnType<typeof createBaseController>;

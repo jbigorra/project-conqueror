@@ -4,8 +4,10 @@ import { opentelemetry } from "@elysiajs/opentelemetry";
 import { staticPlugin } from "@elysiajs/static";
 import { swagger } from "@elysiajs/swagger";
 import { Elysia } from "elysia";
-import logixlysia from "logixlysia";
 import { indexController } from "./index.controller";
+import logixlysia from "logixlysia";
+
+const isDevelopment = process.env.NODE_ENV === "development";
 
 export const server = new Elysia()
   .use(
@@ -18,7 +20,32 @@ export const server = new Elysia()
         ip: true,
         logFilePath: "./logs/app.log",
         logFilter: {
-          level: ["INFO", "WARN", "ERROR", "DEBUG"],
+          level: ["INFO", "WARNING", "ERROR", "DEBUG"],
+        },
+        pino: {
+          level: isDevelopment ? "debug" : "info",
+          transport: isDevelopment
+            ? {
+                target: "pino-pretty",
+                options: { colorize: true, translateTime: "yyyy-mm-dd HH:MM:ss", ignore: "pid,hostname" },
+              }
+            : {
+                target: "pino/file",
+                options: { destination: 1 },
+              },
+          redact: {
+            paths: isDevelopment
+              ? []
+              : [
+                  "req.headers.authorization",
+                  "req.headers.cookie",
+                  "res.headers.set-cookie",
+                  "user.password",
+                  "user.email",
+                  "user.phone",
+                ],
+            remove: true,
+          },
         },
       },
     }),
@@ -40,7 +67,7 @@ export const server = new Elysia()
     staticPlugin({
       assets: "src/assets",
       prefix: "/",
-      noCache: process.env.NODE_ENV === "development",
+      alwaysStatic: !isDevelopment,
     }),
   )
   .use(indexController)
