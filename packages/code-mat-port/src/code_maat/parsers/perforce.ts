@@ -27,9 +27,9 @@ export function parseReadLog(text: string, _options: Record<string, unknown>): P
   for (const line of lines) {
     const headerMatch = line.match(CHANGE_HEADER);
     if (headerMatch) {
-      currentRev = headerMatch[1];
-      currentAuthor = headerMatch[2];
-      currentDate = `${headerMatch[3]}-${headerMatch[4]}-${headerMatch[5]}`;
+      currentRev = headerMatch[1]!;
+      currentAuthor = headerMatch[2]!;
+      currentDate = `${headerMatch[3]!}-${headerMatch[4]!}-${headerMatch[5]!}`;
       state = "MESSAGE";
       continue;
     }
@@ -48,7 +48,7 @@ export function parseReadLog(text: string, _options: Record<string, unknown>): P
           author: currentAuthor,
           rev: currentRev,
           date: currentDate,
-          entity: fileMatch[1],
+          entity: fileMatch[1]!,
           message: "",
         });
       }

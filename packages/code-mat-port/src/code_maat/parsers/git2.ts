@@ -12,25 +12,25 @@ export function parseReadLog(text: string, _options: Record<string, unknown>): P
 
   const lines = text.split("\n");
   const result: ParsedEntry[] = [];
-  let currentRev: string | null = null;
-  let currentDate: string | null = null;
-  let currentAuthor: string | null = null;
+  let currentRev: string | undefined;
+  let currentDate: string | undefined;
+  let currentAuthor: string | undefined;
 
   for (const line of lines) {
     const headerMatch = line.match(COMMIT_HEADER);
     if (headerMatch) {
-      currentRev = headerMatch[1];
-      currentDate = headerMatch[2];
-      currentAuthor = headerMatch[3];
+      currentRev = headerMatch[1]!;
+      currentDate = headerMatch[2]!;
+      currentAuthor = headerMatch[3]!;
       continue;
     }
 
     const fileMatch = line.match(FILE_LINE);
     if (fileMatch && currentRev) {
       result.push({
-        locAdded: fileMatch[1],
-        locDeleted: fileMatch[2],
-        entity: fileMatch[3],
+        locAdded: fileMatch[1]!,
+        locDeleted: fileMatch[2]!,
+        entity: fileMatch[3]!,
         rev: currentRev,
         date: currentDate!,
         author: currentAuthor!,
