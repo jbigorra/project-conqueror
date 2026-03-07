@@ -1,0 +1,40 @@
+{
+  "name": "code-mat-port",
+  "version": "0.0.0",
+  "description": "A typescript port of code-maat https://github.com/adamtornhill/code-maat",
+  "files": [
+    "dist"
+  ],
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.14.0",
+  "dependencies": {
+    "csv-parse": "6.1.0"
+  },
+  "devDependencies": {
+    "@prj-conq/typescript-config": "workspace:*",
+    "@types/bun": "^1.3.10",
+    "bun-automock": "^0.2.5",
+    "bunup": "^0.16.31",
+    "fishery": "2.4.0",
+    "typescript": "^5.9.3"
+  },
+  "engines": {
+    "bun": ">=1.3.10"
+  }
+}
