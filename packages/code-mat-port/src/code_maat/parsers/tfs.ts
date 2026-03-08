@@ -60,6 +60,7 @@ function parseDate(dateStr: string): string {
  * @returns Array of `TfsEntry` objects, one per (changeset × item) pair.
  *
  * @example
+ * const text = await Bun.file("tests/fixtures/log-fixtures/simple_tfs.txt").text();
  * parseReadLog(text, {});
  * // [{ author: "Ryan Coy", entity: "/Project", rev: "5", date: "2015-07-23", message: "Created team project folder /Project via the Team Project Creation Wizard" }]
  */
