@@ -1,3 +1,24 @@
+/**
+ * @module code-mat-port
+ *
+ * TypeScript port of [code-maat](https://github.com/adamtornhill/code-maat).
+ *
+ * Provides VCS log parsers, analysis algorithms, and an orchestration layer
+ * for computing coupling, churn, authorship, and other software evolution metrics.
+ *
+ * @example
+ * import { app } from "code-mat-port";
+ *
+ * const results = await app.runAnalysis("git.log", {
+ *   versionControl: "git",
+ *   analysis: "coupling",
+ *   minRevs: 5,
+ *   minSharedRevs: 5,
+ *   minCoupling: 30,
+ *   maxCoupling: 100,
+ *   maxChangesetSize: 30,
+ * });
+ */
 export * as authors from "./code_maat/analysis/authors";
 export * as churn from "./code_maat/analysis/churn";
 export * as codeAge from "./code_maat/analysis/code-age";
