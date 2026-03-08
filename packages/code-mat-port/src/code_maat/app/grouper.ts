@@ -2,6 +2,12 @@
 /// These groups are typically architectural boundaries. All data
 /// will be aggregated into that view before analysis.
 
+/**
+ * A single architectural group specification mapping a path pattern to a logical name.
+ *
+ * The `path` field is a compiled `RegExp` used to match entity paths. The `name`
+ * field is the logical group label that matching entities are renamed to.
+ */
 export type GroupSpec = {
   path: RegExp;
   name: string;
@@ -46,13 +52,26 @@ function plainPathToRegex(path: string): RegExp {
 }
 
 /**
- * Parses a group specification text into an array of GroupSpec objects.
+ * Parses a group specification text into an array of `GroupSpec` objects.
  *
- * Each non-empty line must have the form:
- *   path => name
+ * Each non-empty line must have the form `path => name`. If `path` starts
+ * with `^` and ends with `$` it is treated as a raw regex; otherwise it is
+ * treated as a plain path prefix and wrapped in a prefix-matching regex.
+ * Empty input returns an empty array. Lines that do not match the pattern
+ * throw an error.
  *
- * If `path` starts with ^ (and ends with $) it is treated as a raw regex.
- * Otherwise it is treated as a plain path prefix and wrapped in a prefix regex.
+ * @param input - Multi-line string where each line is `path => name`. Plain
+ *   paths are turned into prefix regexes; lines starting with `^` and ending
+ *   with `$` are compiled as raw regexes.
+ * @returns Array of `GroupSpec` objects with compiled `path` regexes and
+ *   logical group `name` strings.
+ *
+ * @example
+ * textToGroupSpecification("/some/path => G1\n/another/path => G2");
+ * // [
+ * //   { path: /^\/some\/path\//, name: "G1" },
+ * //   { path: /^\/another\/path\//, name: "G2" }
+ * // ]
  */
 export function textToGroupSpecification(input: string): GroupSpec[] {
   if (!input || input.trim() === "") {
@@ -105,7 +124,24 @@ function withinGroup(entity: string, groups: GroupSpec[]): boolean {
 
 /**
  * Maps each entity record to one of the pre-defined architectural boundaries (groups).
- * Entities that don't match any group are filtered out.
+ *
+ * Each record whose `entity` path matches a `GroupSpec` regex is renamed to that
+ * group's logical name. Records that do not match any group are silently filtered
+ * out, so only entities belonging to a known architectural boundary appear in the
+ * result. The first matching group wins when a path could match multiple specs.
+ *
+ * @param commits - Array of entity records, each with at least an `entity` string
+ *   field. All other fields are preserved as-is.
+ * @param groups - Parsed group specifications produced by `textToGroupSpecification`.
+ * @returns A new array of entity records with `entity` replaced by the matched
+ *   group name. Records not matching any group are excluded.
+ *
+ * @example
+ * mapEntitiesToGroups(
+ *   [{ entity: "Top/A", rev: 1 }, { entity: "Bottom/B", rev: 2 }],
+ *   [{ path: /^Top\//, name: "Top" }, { path: /^Bottom\//, name: "infrastructure" }]
+ * );
+ * // [{ entity: "Top", rev: 1 }, { entity: "infrastructure", rev: 2 }]
  */
 export function mapEntitiesToGroups(commits: EntityRecord[], groups: GroupSpec[]): EntityRecord[] {
   return commits
@@ -117,7 +153,22 @@ export function mapEntitiesToGroups(commits: EntityRecord[], groups: GroupSpec[]
 }
 
 /**
- * Entry point: reads a group spec file path, parses it, and maps commits to groups.
+ * Parses a group specification text and maps a list of entity records to architectural groups.
+ *
+ * Convenience entry-point that combines `textToGroupSpecification` and
+ * `mapEntitiesToGroups` into a single call. Entities that do not match any
+ * group are filtered out of the result.
+ *
+ * @param groupSpecText - Multi-line group spec string; each line has the form
+ *   `path => name`. See `textToGroupSpecification` for format details.
+ * @param commits - Array of entity records to remap. Each record must have an
+ *   `entity` string field; all other fields are passed through unchanged.
+ * @returns A new array of entity records with `entity` set to the matching
+ *   group name. Non-matching records are excluded.
+ *
+ * @example
+ * run("/some/path => G1", [{ entity: "some/path/file.ts", rev: 1 }]);
+ * // [{ entity: "G1", rev: 1 }]
  */
 export function run(groupSpecText: string, commits: EntityRecord[]): EntityRecord[] {
   const groups = textToGroupSpecification(groupSpecText);
