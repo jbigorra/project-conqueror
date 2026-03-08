@@ -1,5 +1,9 @@
 import type { VCSEntry } from "../types";
 
+/**
+ * Error thrown when the VCS log format does not contain commit messages, making
+ * a commit-message analysis impossible (e.g. git2 format instead of git format).
+ */
 export class IllegalArgumentError extends Error {
   constructor(message: string) {
     super(message);
@@ -7,10 +11,13 @@ export class IllegalArgumentError extends Error {
   }
 }
 
+/** Options controlling which commit messages are matched. */
 export type CommitMessageOptions = {
+  /** A JavaScript-compatible regular expression string applied to each commit message. */
   expressionToMatch: string;
 };
 
+/** One row of the commit-message frequency analysis: entity and how many times its commit messages matched. */
 export type CommitMessageResult = {
   entity: string;
   matches: number;
@@ -54,6 +61,29 @@ function asMatchingEntityFreqs(entries: VCSEntry[]): CommitMessageResult[] {
     });
 }
 
+/**
+ * Counts how many times each entity appears in commits whose message matches a given pattern.
+ *
+ * Scans every VCS entry for a commit message matching `options.expressionToMatch` (a
+ * JavaScript regex). Each matched entry increments the counter for its entity. Entries
+ * with a missing or sentinel ("-") message are ignored. If the dataset contains no real
+ * messages at all, `IllegalArgumentError` is thrown — this typically indicates a git2 or
+ * other format that omits commit messages. Results are sorted descending by match count;
+ * ties are broken by entity name descending.
+ *
+ * @param entries - VCS log entries. Must include a `message` field for any entity to appear
+ *   in the output; entries without `message` or with `message === "-"` are skipped.
+ * @param options - `{ expressionToMatch }` — regex string to test against each commit message.
+ * @returns Array of `CommitMessageResult` sorted descending by `matches`. Each record
+ *   contains `entity` (file path) and `matches` (number of matching commits).
+ *
+ * @example
+ * byWordFrequency(entries, { expressionToMatch: "change" });
+ * // [
+ * //   { entity: "A", matches: 3 },
+ * //   { entity: "B", matches: 1 },
+ * // ]
+ */
 export function byWordFrequency(
   entries: VCSEntry[],
   options: CommitMessageOptions,
