@@ -162,9 +162,36 @@ function validatedTimePeriod(options: TimeGroupOptions): number {
 }
 
 /**
- * Group VCS entries by time period using a sliding window.
- * The commit ID (rev) is set to the latest date of the window, so that
- * the rest of the analyses treat the faked grouping as belonging to the same changeset.
+ * Groups VCS entries into logical changesets using a sliding time window.
+ *
+ * Commits are first padded into a complete daily time series (days with no
+ * commits get an empty slot). A sliding window of `temporalPeriod` days then
+ * moves across this series one day at a time; every non-empty window becomes
+ * one logical changeset. Within each window, duplicates are removed by entity
+ * (first occurrence wins) and the `rev` field is set to the latest date in
+ * the window, so downstream analyses treat the faked grouping as a single
+ * changeset. An empty `commits` array returns an empty array immediately.
+ *
+ * @param commits - Array of VCS entries, each with `entity`, `rev`, and a
+ *   `date` field in `YYYY-MM-DD` format. Extra fields are not carried through
+ *   to the output.
+ * @param options - Must contain `temporalPeriod`: a string integer (e.g. `"2"`)
+ *   representing the window size in days. Non-integer values throw an error.
+ * @returns A flat array of `{ entity, rev, date }` objects. The `rev` of each
+ *   entry is the latest date string of the window it belongs to.
+ *
+ * @example
+ * byTimePeriod(
+ *   [
+ *     { entity: "A", rev: 1, date: "2022-10-20" },
+ *     { entity: "B", rev: 2, date: "2022-10-20" },
+ *   ],
+ *   { temporalPeriod: "1" }
+ * );
+ * // [
+ * //   { date: "2022-10-20", entity: "A", rev: "2022-10-20" },
+ * //   { date: "2022-10-20", entity: "B", rev: "2022-10-20" }
+ * // ]
  */
 export function byTimePeriod(commits: InputEntry[], options: TimeGroupOptions): OutputEntry[] {
   const timePeriod = validatedTimePeriod(options);
