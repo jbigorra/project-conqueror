@@ -1,6 +1,7 @@
 import type { AnalysisOptions, VCSEntry } from "../types";
 import { asCoChangingModules, couplingFrequencies, moduleByRevs } from "./coupling-algos";
 
+/** One row of the logical-coupling analysis: two entities that tend to change together and their coupling metrics. */
 export type CouplingResult = {
   entity: string;
   coupled: string;
@@ -25,12 +26,31 @@ function entitiesByRevisionFiltered(entries: VCSEntry[], maxChangesetSize: numbe
 }
 
 /**
- * Calculates the degree of logical coupling for all module pairs.
+ * Calculates the degree of logical coupling for all co-changing module pairs.
  *
- * Formula: degree = floor((sharedRevisions / average(revsA, revsB)) * 100)
- * averageRevs = ceil(average(revsA, revsB))
+ * Two entities are logically coupled when they are frequently changed together. For each
+ * pair the coupling degree is `floor((sharedRevisions / average(revsA, revsB)) * 100)`.
+ * Revisions containing more entries than `maxChangesetSize` are excluded from the
+ * analysis because large bulk commits add noise. Pairs below the `minSharedRevs`,
+ * `minRevs`, `minCoupling`, or above `maxCoupling` thresholds are filtered out.
+ * Results are sorted descending by degree; ties are broken by entity name ascending.
  *
- * Returns results sorted by degree descending, then entity name.
+ * @param entries - VCS log entries. Only `rev` and `entity` fields are used.
+ * @param options - Thresholds controlling which pairs are returned:
+ *   `minRevs` (minimum average revision count per entity),
+ *   `minSharedRevs` (minimum co-change count),
+ *   `minCoupling` (minimum degree percentage),
+ *   `maxCoupling` (maximum degree percentage),
+ *   `maxChangesetSize` (revisions with more entries than this are excluded).
+ * @returns Array of `CouplingResult` sorted descending by `degree`. Each record contains
+ *   `entity`, `coupled` (the co-changing partner), `degree` (0–100 integer), and
+ *   `averageRevs` (ceiling of the average revision count across both entities).
+ *
+ * @example
+ * byDegree(entries, { minRevs: 5, minSharedRevs: 5, minCoupling: 30, maxCoupling: 100, maxChangesetSize: 30 });
+ * // [
+ * //   { entity: "A", coupled: "B", degree: 66, averageRevs: 6 },
+ * // ]
  */
 export function byDegree(entries: VCSEntry[], options: AnalysisOptions): CouplingResult[] {
   const { minRevs, minSharedRevs, minCoupling, maxCoupling, maxChangesetSize } = options;
