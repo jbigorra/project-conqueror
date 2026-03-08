@@ -11,6 +11,14 @@ export const FIXTURES = join(__dirname, "../fixtures/log-fixtures");
 
 // HEADERS[analysis]: ordered CSV column names (match JAR output)
 // FIELD_MAP[analysis]: TS field name → CSV header string
+// FLOAT_FIELDS[analysis]: set of CSV header names that must be formatted as floats (e.g. "1.0" not "1")
+const FLOAT_FIELDS: Record<string, Set<string>> = {
+  "main-dev":             new Set(["ownership"]),
+  "main-dev-by-revs":     new Set(["ownership"]),
+  "refactoring-main-dev": new Set(["ownership"]),
+  "fragmentation":        new Set(["fractal-value"]),
+};
+
 const HEADERS: Record<string, string[]> = {
   "authors":              ["entity", "n-authors", "n-revs"],
   "revisions":            ["entity", "n-revs"],
@@ -58,9 +66,16 @@ export function toCSV(rows: unknown[], analysis: string): string {
   // Invert fieldMap: csvHeader → tsField
   const inv: Record<string, string> = {};
   for (const [ts, csv] of Object.entries(fieldMap)) inv[csv] = ts;
+  const floatFields = FLOAT_FIELDS[analysis] ?? new Set<string>();
   const lines = [headers.join(",")];
   for (const row of rows as Record<string, unknown>[]) {
-    lines.push(headers.map(h => String((row as Record<string, unknown>)[inv[h]!] ?? "")).join(","));
+    lines.push(headers.map(h => {
+      const val = (row as Record<string, unknown>)[inv[h]!] ?? "";
+      if (floatFields.has(h) && typeof val === "number") {
+        return Number.isInteger(val) ? val.toFixed(1) : String(val);
+      }
+      return String(val);
+    }).join(","));
   }
   return lines.join("\n") + "\n";
 }
@@ -76,7 +91,7 @@ export async function runTS(
   opts: Partial<AppOptions> & { versionControl: string; analysis: string },
 ): Promise<string> {
   const options: AppOptions = {
-    minRevs: 1, minSharedRevs: 1, minCoupling: 0, maxCoupling: 100, maxChangesetSize: 1000,
+    minRevs: 5, minSharedRevs: 5, minCoupling: 30, maxCoupling: 100, maxChangesetSize: 30,
     ...opts,
   };
   return toCSV(await runAnalysis(logFile, options), opts.analysis);

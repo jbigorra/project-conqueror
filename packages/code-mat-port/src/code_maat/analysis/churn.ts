@@ -350,9 +350,10 @@ export function byRefactoringMainDeveloper(
     const contribList = [...contribs.values()];
 
     const totalRemoved = contribList.reduce((sum, c) => sum + c.deleted, 0);
-    // Pick author with max deleted
+    // Pick author with max deleted; on ties, the last in insertion order wins
+    // (matches Clojure's stable sort + reverse + first behaviour)
     const mainDevContrib = contribList.reduce((best, c) =>
-      c.deleted > best.deleted ? c : best
+      c.deleted >= best.deleted ? c : best
     );
 
     const ownership = asOwnershipRatio(mainDevContrib.deleted, totalRemoved);
