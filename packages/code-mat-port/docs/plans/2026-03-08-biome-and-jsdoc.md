@@ -13,12 +13,14 @@
 ## Task 1: Install and configure Biome
 
 **Files:**
+
 - Modify: `packages/code-mat-port/package.json`
 - Create: `packages/code-mat-port/biome.json`
 
 **Step 1: Add Biome as dev dependency**
 
 Run from `packages/code-mat-port/`:
+
 ```bash
 bun add -d @biomejs/biome
 ```
@@ -26,6 +28,7 @@ bun add -d @biomejs/biome
 **Step 2: Initialise Biome config**
 
 Run:
+
 ```bash
 bunx biome init
 ```
@@ -83,9 +86,11 @@ Open `package.json` and add to the `"scripts"` block:
 ```
 
 The full `"scripts"` block should look like:
+
 ```json
 "scripts": {
   "test": "bun test",
+  "test:no-parity": "bun test tests/code_maat/*",
   "typecheck": "tsc --noEmit",
   "format": "biome format --write src/ tests/",
   "lint": "biome lint --write src/ tests/",
@@ -96,9 +101,11 @@ The full `"scripts"` block should look like:
 **Step 4: Verify Biome works**
 
 Run:
+
 ```bash
 bunx biome --version
 ```
+
 Expected: prints something like `biome 1.9.x`
 
 **Step 5: Commit**
@@ -113,11 +120,13 @@ git commit -m "feat: add biome for formatting and linting"
 ## Task 2: Format and lint all source files, verify tests pass, commit
 
 **Files:**
+
 - Modify: all `src/**/*.ts` and `tests/**/*.ts` (automated)
 
 **Step 1: Run Biome check (format + lint + organize imports) on entire codebase**
 
 Run from `packages/code-mat-port/`:
+
 ```bash
 bun run check
 ```
@@ -127,17 +136,21 @@ This rewrites files in-place. If Biome reports errors it cannot auto-fix, it wil
 **Step 2: Run typecheck to make sure formatting did not break types**
 
 Run:
+
 ```bash
 bun run typecheck
 ```
+
 Expected: no errors (0 diagnostics).
 
 **Step 3: Run all tests**
 
 Run:
+
 ```bash
-bun test
+bun test tests/code_maat/*
 ```
+
 Expected: all 290 tests pass. If any test fails, the formatter likely touched a fixture file. Restore it with `git checkout -- tests/fixtures/` and re-run.
 
 **Step 4: Commit all formatted files**
@@ -152,6 +165,7 @@ git commit -m "style: apply biome formatting and linting to all source files"
 ## Task 3: JSDoc — `src/code_maat/types.ts`
 
 **Files:**
+
 - Modify: `src/code_maat/types.ts`
 
 **Step 1: Open the file and add JSDoc**
@@ -234,6 +248,7 @@ export type AnalysisOptions = {
 ```bash
 bun run typecheck
 ```
+
 Expected: 0 errors.
 
 **Step 3: Run tests**
@@ -241,6 +256,7 @@ Expected: 0 errors.
 ```bash
 bun test
 ```
+
 Expected: all pass.
 
 **Step 4: Commit**
@@ -255,6 +271,7 @@ git commit -m "docs: add JSDoc to types.ts"
 ## Task 4: JSDoc — `src/code_maat/analysis/math.ts`
 
 **Files:**
+
 - Modify: `src/code_maat/analysis/math.ts`
 
 **Step 1: Add JSDoc to every function**
@@ -311,6 +328,7 @@ export function ratioCentiFloatPrecision(value: number): number {
 ```bash
 bun run typecheck && bun test
 ```
+
 Expected: 0 type errors, all tests pass.
 
 **Step 3: Commit**
@@ -325,6 +343,7 @@ git commit -m "docs: add JSDoc to math.ts"
 ## Task 5: JSDoc — `src/code_maat/analysis/authors.ts`
 
 **Files:**
+
 - Modify: `src/code_maat/analysis/authors.ts`
 
 **Step 1: Read the file**
@@ -394,6 +413,7 @@ export function byCount(
 ```bash
 bun run typecheck && bun test
 ```
+
 Expected: 0 errors, all tests pass.
 
 **Step 4: Commit**
@@ -408,6 +428,7 @@ git commit -m "docs: add JSDoc to authors.ts"
 ## Task 6: JSDoc — remaining analysis files (one commit per file)
 
 **Files (do each one separately):**
+
 - `src/code_maat/analysis/churn.ts`
 - `src/code_maat/analysis/code-age.ts`
 - `src/code_maat/analysis/commit-messages.ts`
@@ -447,6 +468,7 @@ Follow this template for each function:
 ```
 
 Rules:
+
 - Every `@param` must have a description (not just the type).
 - `@returns` must describe the shape of the data, not just "the result".
 - `@example` must use realistic values, not `foo`/`bar`.
@@ -459,6 +481,7 @@ Rules:
 ```bash
 bun run typecheck && bun test
 ```
+
 Expected: 0 errors, all tests pass.
 
 **Step D: Commit**
@@ -473,6 +496,7 @@ git commit -m "docs: add JSDoc to <filename>.ts"
 ## Task 7: JSDoc — parser files (one commit per file)
 
 **Files (do each one separately):**
+
 - `src/code_maat/parsers/git.ts`
 - `src/code_maat/parsers/git2.ts`
 - `src/code_maat/parsers/mercurial.ts`
@@ -542,6 +566,7 @@ git commit -m "docs: add JSDoc to <filename>.ts"
 ## Task 8: JSDoc — app files (one commit per file)
 
 **Files (do each one separately):**
+
 - `src/code_maat/app/grouper.ts`
 - `src/code_maat/app/team-mapper.ts`
 - `src/code_maat/app/time-based-grouper.ts`
@@ -573,6 +598,7 @@ git commit -m "docs: add JSDoc to <filename>.ts"
 ## Task 9: JSDoc — remaining files (one commit per file)
 
 **Files (do each one separately):**
+
 - `src/code_maat/dataset/dataset.ts`
 - `src/code_maat/cmd-line.ts`
 - `src/index.ts`
