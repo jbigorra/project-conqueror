@@ -1,7 +1,7 @@
 // tests/parity/git-parity.test.ts
-import { describe, it, expect } from "bun:test";
-import { join } from "path";
-import { runJar, runTS, FIXTURES } from "./helpers";
+import { describe, expect, it } from "bun:test";
+import { join } from "node:path";
+import { FIXTURES, runJar, runTS } from "./helpers";
 
 const LOG = join(FIXTURES, "simple_git.txt");
 const VCS = "git";
@@ -19,27 +19,38 @@ const BASIC = [
   "communication",
 ];
 
-const CHURN = ["abs-churn", "author-churn", "entity-churn", "entity-ownership", "main-dev", "refactoring-main-dev"];
+const CHURN = [
+  "abs-churn",
+  "author-churn",
+  "entity-churn",
+  "entity-ownership",
+  "main-dev",
+  "refactoring-main-dev",
+];
 
 describe("JAR parity — git", () => {
   for (const analysis of BASIC) {
     it(analysis, async () =>
-      expect(await runTS(LOG, { versionControl: VCS, analysis })).toEqual(runJar(LOG, VCS, analysis)),
+      expect(await runTS(LOG, { versionControl: VCS, analysis })).toEqual(
+        runJar(LOG, VCS, analysis),
+      ),
     );
   }
 
   it("age", async () =>
-    expect(await runTS(LOG, { versionControl: VCS, analysis: "age", ageTimeNow: AGE_DATE })).toEqual(
-      runJar(LOG, VCS, "age", ["--age-time-now", AGE_DATE]),
-    ));
+    expect(
+      await runTS(LOG, { versionControl: VCS, analysis: "age", ageTimeNow: AGE_DATE }),
+    ).toEqual(runJar(LOG, VCS, "age", ["--age-time-now", AGE_DATE])));
 
   it("messages", async () =>
-    expect(await runTS(LOG, { versionControl: VCS, analysis: "messages", expressionToMatch: "stat" })).toEqual(
-      runJar(LOG, VCS, "messages", ["--expression-to-match", "stat"]),
-    ));
+    expect(
+      await runTS(LOG, { versionControl: VCS, analysis: "messages", expressionToMatch: "stat" }),
+    ).toEqual(runJar(LOG, VCS, "messages", ["--expression-to-match", "stat"])));
 
   for (const analysis of CHURN) {
     it(`${analysis} (churn)`, async () =>
-      expect(await runTS(LOG, { versionControl: VCS, analysis })).toEqual(runJar(LOG, VCS, analysis)));
+      expect(await runTS(LOG, { versionControl: VCS, analysis })).toEqual(
+        runJar(LOG, VCS, analysis),
+      ));
   }
 });

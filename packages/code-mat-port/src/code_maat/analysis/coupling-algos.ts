@@ -22,7 +22,7 @@ function selections2(items: string[]): [string, string][] {
  */
 function dropMirroredModules(pairs: [string, string][]): [string, string][] {
   const sorted = pairs.map(([a, b]) =>
-    a <= b ? ([a, b] as [string, string]) : ([b, a] as [string, string])
+    a <= b ? ([a, b] as [string, string]) : ([b, a] as [string, string]),
   );
   const seen = new Set<string>();
   const result: [string, string][] = [];
@@ -84,7 +84,7 @@ function dropDuplicates(pairs: [string, string][]): [string, string][] {
  * Returns array of [[entity1, entity2], count] sorted by insertion order.
  */
 export function couplingFrequencies(
-  allCoChanging: [string, string][][]
+  allCoChanging: [string, string][][],
 ): [[string, string], number][] {
   const flat = allCoChanging.flat();
   const nonIdentity = dropDuplicates(flat);
@@ -100,10 +100,7 @@ export function couplingFrequencies(
     }
   }
 
-  return Array.from(counts.entries()).map(([key, count]) => [
-    pairMap.get(key)!,
-    count,
-  ]);
+  return Array.from(counts.entries()).map(([key, count]) => [pairMap.get(key)!, count]);
 }
 
 /**
@@ -115,9 +112,7 @@ export function couplingFrequencies(
  *   (mapcat modules-in-one-rev all-co-changing) -> frequencies
  * where `modules-in-one-rev` is (comp distinct flatten)
  */
-export function moduleByRevs(
-  allCoChanging: [string, string][][]
-): Record<string, number> {
+export function moduleByRevs(allCoChanging: [string, string][][]): Record<string, number> {
   const result: Record<string, number> = {};
 
   for (const revPairs of allCoChanging) {

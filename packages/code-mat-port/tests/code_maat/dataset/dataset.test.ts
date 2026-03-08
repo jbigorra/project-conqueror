@@ -1,6 +1,6 @@
-import { describe, test, expect } from "bun:test";
-import { isEmpty, groupBy, selectColumn, nrows } from "../../../src/code_maat/dataset/dataset";
-import { vcs, singleVcs, emptyVcs } from "../../fixtures/test-data";
+import { describe, expect, test } from "bun:test";
+import { groupBy, isEmpty, nrows, selectColumn } from "../../../src/code_maat/dataset/dataset";
+import { emptyVcs, singleVcs, vcs } from "../../fixtures/test-data";
 
 describe("dataset", () => {
   test("recognizes an empty dataset", () => {
@@ -11,8 +11,8 @@ describe("dataset", () => {
   test("groups by given column", () => {
     const group = groupBy(vcs, "entity");
     expect(Object.keys(group)).toEqual(["A", "B"]);
-    expect(group["A"]).toHaveLength(3);
-    expect(group["B"]).toHaveLength(1);
+    expect(group.A).toHaveLength(3);
+    expect(group.B).toHaveLength(1);
   });
 
   test("selects by given column - multiple rows", () => {

@@ -41,8 +41,8 @@ function plainPathToRegex(path: string): RegExp {
   // Characters to escape: . + * ? ( ) [ ] { } | ^ $
   // We do NOT escape backslash itself – the user's input literal backslash
   // is kept as a literal backslash in the regex.
-  const escaped = path.replace(/[.+*?()\[\]{}|^$\-]/g, "\\$&");
-  return new RegExp("^" + escaped + "/");
+  const escaped = path.replace(/[.+*?()[\]{}|^$]/g, "\\$&");
+  return new RegExp(`^${escaped}/`);
 }
 
 /**
@@ -107,10 +107,7 @@ function withinGroup(entity: string, groups: GroupSpec[]): boolean {
  * Maps each entity record to one of the pre-defined architectural boundaries (groups).
  * Entities that don't match any group are filtered out.
  */
-export function mapEntitiesToGroups(
-  commits: EntityRecord[],
-  groups: GroupSpec[]
-): EntityRecord[] {
+export function mapEntitiesToGroups(commits: EntityRecord[], groups: GroupSpec[]): EntityRecord[] {
   return commits
     .filter((commit) => withinGroup(commit.entity, groups))
     .map((commit) => {

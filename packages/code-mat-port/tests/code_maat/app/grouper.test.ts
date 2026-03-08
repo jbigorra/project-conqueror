@@ -1,8 +1,8 @@
-import { describe, it, expect } from "bun:test";
+import { describe, expect, it } from "bun:test";
 import {
-  textToGroupSpecification,
+  type GroupSpec,
   mapEntitiesToGroups,
-  GroupSpec,
+  textToGroupSpecification,
 } from "../../../src/code_maat/app/grouper";
 
 // Spec strings used for parsing tests
@@ -30,7 +30,7 @@ function comparableGroupSpecFor(text: string): Array<{ path: string; name: strin
 describe("parses-specification", () => {
   it("Single group", () => {
     expect(comparableGroupSpecFor(singleGroupSpec)).toEqual(
-      comparableGroupSpec([{ path: /^\/some\/path\//, name: "G1" }])
+      comparableGroupSpec([{ path: /^\/some\/path\//, name: "G1" }]),
     );
   });
 
@@ -39,7 +39,7 @@ describe("parses-specification", () => {
       comparableGroupSpec([
         { path: /^\/some\/path\//, name: "G1" },
         { path: /^\/another\/path\//, name: "G2" },
-      ])
+      ]),
     );
   });
 
@@ -48,7 +48,7 @@ describe("parses-specification", () => {
       comparableGroupSpec([
         { path: /^\/some\/path_\w+_group1$/, name: "G1" },
         { path: /^\/another\/path_\w+_group2$/, name: "G2" },
-      ])
+      ]),
     );
   });
 
@@ -57,7 +57,7 @@ describe("parses-specification", () => {
       comparableGroupSpec([
         { path: /^\/some\/path\//, name: "G1" },
         { path: /^\/another\/path\/\.*$/, name: "G2" },
-      ])
+      ]),
     );
   });
 
@@ -67,19 +67,19 @@ describe("parses-specification", () => {
 
   it("With backslash", () => {
     expect(comparableGroupSpecFor("/some\\\\path => G1")).toEqual(
-      comparableGroupSpec([{ path: /^\/some\\path\//, name: "G1" }])
+      comparableGroupSpec([{ path: /^\/some\\path\//, name: "G1" }]),
     );
   });
 
   it("With dot in filename", () => {
     expect(comparableGroupSpecFor("/some/path/with.dot => G1")).toEqual(
-      comparableGroupSpec([{ path: /^\/some\/path\/with\.dot\//, name: "G1" }])
+      comparableGroupSpec([{ path: /^\/some\/path\/with\.dot\//, name: "G1" }]),
     );
   });
 
   it("With dash in filename", () => {
     expect(comparableGroupSpecFor("/some/path/with-dash/x => G1")).toEqual(
-      comparableGroupSpec([{ path: /^\/some\/path\/with\-dash\/x\//, name: "G1" }])
+      comparableGroupSpec([{ path: /^\/some\/path\/with-dash\/x\//, name: "G1" }]),
     );
   });
 });

@@ -1,4 +1,4 @@
-import { describe, it, expect } from "bun:test";
+import { describe, expect, it } from "bun:test";
 import { runAnalysis } from "../../../src/code_maat/app/app";
 
 /**
@@ -71,8 +71,6 @@ describe("time-based end-to-end", () => {
   });
 
   it("throws on unsupported time periods", async () => {
-    await expect(
-      runAnalysis(LOG_FILE, OPTIONS_WITH_INVALID_TIME_PERIOD)
-    ).rejects.toThrow();
+    await expect(runAnalysis(LOG_FILE, OPTIONS_WITH_INVALID_TIME_PERIOD)).rejects.toThrow();
   });
 });

@@ -1,4 +1,4 @@
-import { describe, test, expect } from "bun:test";
+import { describe, expect, test } from "bun:test";
 import { parseReadLog } from "../../../src/code_maat/parsers/perforce";
 
 const entry =
@@ -39,7 +39,13 @@ describe("perforce parser", () => {
   test("parses multiple entries to dataset", () => {
     expect(parseReadLog(entries, {})).toEqual([
       { author: "user1", rev: "1108116", date: "2014-12-19", entity: "/Makefile", message: "" },
-      { author: "user2", rev: "1108117", date: "2014-12-19", entity: "/meta/recipes-core/udev/udev-extraconf/mount.blacklist", message: "" },
+      {
+        author: "user2",
+        rev: "1108117",
+        date: "2014-12-19",
+        entity: "/meta/recipes-core/udev/udev-extraconf/mount.blacklist",
+        message: "",
+      },
     ]);
   });
 
@@ -49,7 +55,13 @@ describe("perforce parser", () => {
 
   test("parses entries with multiple job sections (regression issue #10)", () => {
     expect(parseReadLog(entryWithMultipleJobs, {})).toEqual([
-      { author: "lpi001", rev: "399449", date: "2015-02-17", entity: "/fimbul/cerkl.cxx", message: "" },
+      {
+        author: "lpi001",
+        rev: "399449",
+        date: "2015-02-17",
+        entity: "/fimbul/cerkl.cxx",
+        message: "",
+      },
     ]);
   });
 });

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
-import { vcs, optionsWithLowThresholds } from "../../fixtures/test-data";
-import { all, ofModule, byCount } from "../../../src/code_maat/analysis/authors";
+import { all, byCount, ofModule } from "../../../src/code_maat/analysis/authors";
+import { optionsWithLowThresholds, vcs } from "../../fixtures/test-data";
 
 describe("authors analysis", () => {
   describe("all", () => {

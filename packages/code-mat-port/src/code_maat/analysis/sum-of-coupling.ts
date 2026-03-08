@@ -1,4 +1,4 @@
-import type { VCSEntry, AnalysisOptions } from "../types";
+import type { AnalysisOptions, VCSEntry } from "../types";
 
 export type SocResult = {
   entity: string;
@@ -27,7 +27,7 @@ function entitiesByRevision(entries: VCSEntry[]): string[][] {
  */
 function countedEntities(entitiesInRev: string[]): [string, number][] {
   const nCouples = entitiesInRev.length - 1;
-  return entitiesInRev.map(entity => [entity, nCouples]);
+  return entitiesInRev.map((entity) => [entity, nCouples]);
 }
 
 /**
@@ -48,7 +48,7 @@ function entitiesWithCouplingCountByRev(entries: VCSEntry[]): [string, number][]
  */
 export function asSoc(
   entries: VCSEntry[],
-  options: Pick<AnalysisOptions, "minRevs">
+  options: Pick<AnalysisOptions, "minRevs">,
 ): [string, number][] {
   const { minRevs } = options;
 
@@ -73,7 +73,7 @@ export function asSoc(
  */
 export function byDegree(
   entries: VCSEntry[],
-  options: Pick<AnalysisOptions, "minRevs">
+  options: Pick<AnalysisOptions, "minRevs">,
 ): SocResult[] {
   return asSoc(entries, options).map(([entity, soc]) => ({ entity, soc }));
 }

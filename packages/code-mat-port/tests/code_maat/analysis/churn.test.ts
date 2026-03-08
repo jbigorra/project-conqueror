@@ -1,9 +1,9 @@
-import { describe, test, expect } from "bun:test";
+import { describe, expect, test } from "bun:test";
 import {
   absolutesTrend,
+  asOwnership,
   byAuthor,
   byEntity,
-  asOwnership,
   byMainDeveloper,
   byRefactoringMainDeveloper,
 } from "../../../src/code_maat/analysis/churn";
@@ -53,7 +53,7 @@ describe("churn analysis", () => {
   describe("absolutesTrend", () => {
     test("throws error on missing modification info", () => {
       expect(() => absolutesTrend(incomplete, options)).toThrow(
-        "churn analysis: the given VCS data doesn't contain modification metrics"
+        "churn analysis: the given VCS data doesn't contain modification metrics",
       );
     });
 
@@ -67,9 +67,7 @@ describe("churn analysis", () => {
 
     test("binaries are counted as zero churn", () => {
       const result = absolutesTrend(withBinary, options);
-      expect(result).toEqual([
-        { date: "2013-11-10", added: 0, deleted: 0, commits: 1 },
-      ]);
+      expect(result).toEqual([{ date: "2013-11-10", added: 0, deleted: 0, commits: 1 }]);
     });
   });
 

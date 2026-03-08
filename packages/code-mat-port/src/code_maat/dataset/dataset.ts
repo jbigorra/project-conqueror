@@ -4,21 +4,21 @@ export function isEmpty<T>(ds: T[]): boolean {
 
 export function groupBy<T extends Record<string, unknown>>(
   ds: T[],
-  key: keyof T
+  key: keyof T,
 ): Record<string, T[]> {
-  return ds.reduce((acc, row) => {
-    const k = String(row[key]);
-    acc[k] = acc[k] ?? [];
-    acc[k].push(row);
-    return acc;
-  }, {} as Record<string, T[]>);
+  return ds.reduce(
+    (acc, row) => {
+      const k = String(row[key]);
+      acc[k] = acc[k] ?? [];
+      acc[k].push(row);
+      return acc;
+    },
+    {} as Record<string, T[]>,
+  );
 }
 
-export function selectColumn<T extends Record<string, unknown>>(
-  ds: T[],
-  key: keyof T
-): unknown[] {
-  return ds.map(row => row[key]);
+export function selectColumn<T extends Record<string, unknown>>(ds: T[], key: keyof T): unknown[] {
+  return ds.map((row) => row[key]);
 }
 
 export function nrows<T>(ds: T[]): number {
@@ -28,7 +28,7 @@ export function nrows<T>(ds: T[]): number {
 export function orderBy<T extends Record<string, unknown>>(
   ds: T[],
   key: keyof T,
-  direction: "asc" | "desc" = "desc"
+  direction: "asc" | "desc" = "desc",
 ): T[] {
   return [...ds].sort((a, b) => {
     const av = a[key] as number;
@@ -39,7 +39,7 @@ export function orderBy<T extends Record<string, unknown>>(
 
 export function where<T extends Record<string, unknown>>(
   ds: T[],
-  predicate: (row: T) => boolean
+  predicate: (row: T) => boolean,
 ): T[] {
   return ds.filter(predicate);
 }

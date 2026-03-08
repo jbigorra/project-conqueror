@@ -1,4 +1,4 @@
-import type { VCSEntry, AnalysisOptions } from "../types";
+import type { AnalysisOptions, VCSEntry } from "../types";
 
 export function all(ds: VCSEntry[]): Set<string> {
   return new Set(ds.map((r) => r.author));
@@ -30,7 +30,5 @@ export function byCount(
       nAuthors: authors.size,
       nRevs: revs,
     }))
-    .sort((a, b) =>
-      sort === "desc" ? b.nAuthors - a.nAuthors : a.nAuthors - b.nAuthors,
-    );
+    .sort((a, b) => (sort === "desc" ? b.nAuthors - a.nAuthors : a.nAuthors - b.nAuthors));
 }

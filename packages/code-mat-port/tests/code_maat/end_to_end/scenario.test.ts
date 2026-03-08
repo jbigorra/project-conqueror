@@ -10,23 +10,21 @@
  *   Rev 1: XYZ, 2013-02-07  → /Infrastrucure/Network/Connection.cs
  */
 
-import { describe, it, expect, beforeAll } from "bun:test";
-import { readFileSync } from "fs";
-import { join } from "path";
-
+import { beforeAll, describe, expect, it } from "bun:test";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { byCount as authorsByCount } from "../../../src/code_maat/analysis/authors";
+import { byAge } from "../../../src/code_maat/analysis/code-age";
+import { bySharedEntities } from "../../../src/code_maat/analysis/communication";
+import { asRevisionsPerAuthor } from "../../../src/code_maat/analysis/effort";
+import { byRevision } from "../../../src/code_maat/analysis/entities";
+import { byDegree } from "../../../src/code_maat/analysis/logical-coupling";
 import { parseReadLog as gitParseReadLog } from "../../../src/code_maat/parsers/git";
 import { parseReadLog as git2ParseReadLog } from "../../../src/code_maat/parsers/git2";
 import { parseReadLog as hgParseReadLog } from "../../../src/code_maat/parsers/mercurial";
 import { parseReadLog as p4ParseReadLog } from "../../../src/code_maat/parsers/perforce";
 
-import { byCount as authorsByCount } from "../../../src/code_maat/analysis/authors";
-import { byRevision } from "../../../src/code_maat/analysis/entities";
-import { byDegree } from "../../../src/code_maat/analysis/logical-coupling";
-import { asRevisionsPerAuthor } from "../../../src/code_maat/analysis/effort";
-import { bySharedEntities } from "../../../src/code_maat/analysis/communication";
-import { byAge } from "../../../src/code_maat/analysis/code-age";
-
-import type { VCSEntry, AnalysisOptions } from "../../../src/code_maat/types";
+import type { AnalysisOptions, VCSEntry } from "../../../src/code_maat/types";
 
 // ---------------------------------------------------------------------------
 // Load fixture files
@@ -38,10 +36,10 @@ function fixture(name: string): string {
   return readFileSync(join(FIXTURES, name), "utf-8");
 }
 
-const gitLog  = fixture("simple_git.txt");
+const gitLog = fixture("simple_git.txt");
 const git2Log = fixture("simple_git2.txt");
-const hgLog   = fixture("simple_hg.txt");
-const p4Log   = fixture("simple_p4.txt");
+const hgLog = fixture("simple_hg.txt");
+const p4Log = fixture("simple_p4.txt");
 
 // ---------------------------------------------------------------------------
 // Parse each VCS format into VCSEntry[]
@@ -49,16 +47,16 @@ const p4Log   = fixture("simple_p4.txt");
 // with `VCSEntry.rev: string | number`.
 // ---------------------------------------------------------------------------
 
-let gitEntries:  VCSEntry[];
+let gitEntries: VCSEntry[];
 let git2Entries: VCSEntry[];
-let hgEntries:   VCSEntry[];
-let p4Entries:   VCSEntry[];
+let hgEntries: VCSEntry[];
+let p4Entries: VCSEntry[];
 
 beforeAll(() => {
-  gitEntries  = gitParseReadLog(gitLog,   {}) as VCSEntry[];
+  gitEntries = gitParseReadLog(gitLog, {}) as VCSEntry[];
   git2Entries = git2ParseReadLog(git2Log, {}) as VCSEntry[];
-  hgEntries   = hgParseReadLog(hgLog,     {}) as VCSEntry[];
-  p4Entries   = p4ParseReadLog(p4Log,     {}) as VCSEntry[];
+  hgEntries = hgParseReadLog(hgLog, {}) as VCSEntry[];
+  p4Entries = p4ParseReadLog(p4Log, {}) as VCSEntry[];
 });
 
 // ---------------------------------------------------------------------------
@@ -81,27 +79,27 @@ const AGE_REFERENCE_DATE = "2015-03-01";
 // ---------------------------------------------------------------------------
 
 const EXPECTED_AUTHORS = [
-  { entity: "/Infrastrucure/Network/Connection.cs",   nAuthors: 2, nRevs: 2 },
+  { entity: "/Infrastrucure/Network/Connection.cs", nAuthors: 2, nRevs: 2 },
   { entity: "/Presentation/Status/ClientPresenter.cs", nAuthors: 1, nRevs: 1 },
 ];
 
 const EXPECTED_REVISIONS = [
-  { entity: "/Infrastrucure/Network/Connection.cs",   nRevs: 2 },
+  { entity: "/Infrastrucure/Network/Connection.cs", nRevs: 2 },
   { entity: "/Presentation/Status/ClientPresenter.cs", nRevs: 1 },
 ];
 
 const EXPECTED_COUPLING = [
   {
-    entity:     "/Infrastrucure/Network/Connection.cs",
-    coupled:    "/Presentation/Status/ClientPresenter.cs",
-    degree:     66,
+    entity: "/Infrastrucure/Network/Connection.cs",
+    coupled: "/Presentation/Status/ClientPresenter.cs",
+    degree: 66,
     averageRevs: 2,
   },
 ];
 
 const EXPECTED_EFFORT = [
-  { entity: "/Infrastrucure/Network/Connection.cs",   author: "APT", authorRevs: 1, totalRevs: 2 },
-  { entity: "/Infrastrucure/Network/Connection.cs",   author: "XYZ", authorRevs: 1, totalRevs: 2 },
+  { entity: "/Infrastrucure/Network/Connection.cs", author: "APT", authorRevs: 1, totalRevs: 2 },
+  { entity: "/Infrastrucure/Network/Connection.cs", author: "XYZ", authorRevs: 1, totalRevs: 2 },
   { entity: "/Presentation/Status/ClientPresenter.cs", author: "APT", authorRevs: 1, totalRevs: 1 },
 ];
 
@@ -111,7 +109,7 @@ const EXPECTED_COMMUNICATION = [
 ];
 
 const EXPECTED_AGE = [
-  { entity: "/Infrastrucure/Network/Connection.cs",   ageMonths: 24 },
+  { entity: "/Infrastrucure/Network/Connection.cs", ageMonths: 24 },
   { entity: "/Presentation/Status/ClientPresenter.cs", ageMonths: 24 },
 ];
 
@@ -123,10 +121,10 @@ type VCSLabel = "git" | "git2" | "hg" | "p4";
 
 function allEntries(): Array<[VCSLabel, () => VCSEntry[]]> {
   return [
-    ["git",  () => gitEntries],
+    ["git", () => gitEntries],
     ["git2", () => git2Entries],
-    ["hg",   () => hgEntries],
-    ["p4",   () => p4Entries],
+    ["hg", () => hgEntries],
+    ["p4", () => p4Entries],
   ];
 }
 
@@ -211,9 +209,7 @@ import { byWordFrequency } from "../../../src/code_maat/analysis/commit-messages
 describe("git-specific: commit message pattern matching", () => {
   it("counts files in commits matching the pattern", () => {
     const result = byWordFrequency(gitEntries, { expressionToMatch: "stat" });
-    expect(result).toEqual([
-      { entity: "/Infrastrucure/Network/Connection.cs", matches: 1 },
-    ]);
+    expect(result).toEqual([{ entity: "/Infrastrucure/Network/Connection.cs", matches: 1 }]);
   });
 });
 
@@ -225,10 +221,10 @@ const EMPTY = "";
 
 describe("empty-log-files", () => {
   const parsers: Array<[VCSLabel, (text: string) => VCSEntry[]]> = [
-    ["git",  (t) => gitParseReadLog(t,  {}) as VCSEntry[]],
+    ["git", (t) => gitParseReadLog(t, {}) as VCSEntry[]],
     ["git2", (t) => git2ParseReadLog(t, {}) as VCSEntry[]],
-    ["hg",   (t) => hgParseReadLog(t,   {}) as VCSEntry[]],
-    ["p4",   (t) => p4ParseReadLog(t,   {}) as VCSEntry[]],
+    ["hg", (t) => hgParseReadLog(t, {}) as VCSEntry[]],
+    ["p4", (t) => p4ParseReadLog(t, {}) as VCSEntry[]],
   ];
 
   for (const [vcs, parse] of parsers) {

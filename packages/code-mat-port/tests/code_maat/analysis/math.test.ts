@@ -1,4 +1,4 @@
-import { describe, test, expect } from "bun:test";
+import { describe, expect, test } from "bun:test";
 import { ratioCentiFloatPrecision } from "../../../src/code_maat/analysis/math";
 
 describe("math", () => {

@@ -30,7 +30,8 @@ export function parseXml(xmlText: string): SvnLogEntry[] {
   let m: RegExpExecArray | null;
 
   LOGENTRY_RE.lastIndex = 0;
-  while ((m = LOGENTRY_RE.exec(xmlText)) !== null) {
+  m = LOGENTRY_RE.exec(xmlText);
+  while (m !== null) {
     const rev = m[1]!;
     const body = m[2]!;
 
@@ -41,12 +42,14 @@ export function parseXml(xmlText: string): SvnLogEntry[] {
 
     const paths: Array<{ entity: string; action: string }> = [];
     PATH_RE.lastIndex = 0;
-    let pm: RegExpExecArray | null;
-    while ((pm = PATH_RE.exec(body)) !== null) {
+    let pm: RegExpExecArray | null = PATH_RE.exec(body);
+    while (pm !== null) {
       paths.push({ action: pm[1]!, entity: pm[2]!.trim() });
+      pm = PATH_RE.exec(body);
     }
 
     entries.push({ rev, author, date, paths });
+    m = LOGENTRY_RE.exec(xmlText);
   }
 
   return entries;

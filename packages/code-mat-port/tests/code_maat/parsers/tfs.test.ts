@@ -1,4 +1,4 @@
-import { describe, test, expect } from "bun:test";
+import { describe, expect, test } from "bun:test";
 import { parseReadLog } from "../../../src/code_maat/parsers/tfs";
 
 const enUsEntry =

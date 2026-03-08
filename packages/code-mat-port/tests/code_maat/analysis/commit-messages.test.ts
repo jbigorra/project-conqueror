@@ -1,7 +1,10 @@
-import { describe, test, expect } from "bun:test";
-import { byWordFrequency, IllegalArgumentError } from "../../../src/code_maat/analysis/commit-messages";
-import { vcs } from "../../fixtures/test-data";
+import { describe, expect, test } from "bun:test";
+import {
+  byWordFrequency,
+  IllegalArgumentError,
+} from "../../../src/code_maat/analysis/commit-messages";
 import type { VCSEntry } from "../../../src/code_maat/types";
+import { vcs } from "../../fixtures/test-data";
 
 describe("commit-messages analysis", () => {
   describe("identifies matching words", () => {
@@ -31,7 +34,7 @@ describe("commit-messages analysis", () => {
         { author: "apt", entity: "B", rev: 2, message: "-" },
       ];
       expect(() => byWordFrequency(commits, { expressionToMatch: "change" })).toThrow(
-        IllegalArgumentError
+        IllegalArgumentError,
       );
     });
 

@@ -30,7 +30,7 @@ type TimeGroupOptions = {
 
 function dateFromString(s: string): Date {
   // Parse as UTC to avoid timezone shifting
-  return new Date(s + "T00:00:00Z");
+  return new Date(`${s}T00:00:00Z`);
 }
 
 function dateToString(d: Date): string {
@@ -61,9 +61,7 @@ function dailyDatesBetween(start: string, end: string): string[] {
  * Pad commits so every day from first to last commit date has an entry in the map
  * (empty array for days without commits).
  */
-function padCommitsToCompleteTimeSeries(
-  commits: InputEntry[]
-): Map<string, InputEntry[]> {
+function padCommitsToCompleteTimeSeries(commits: InputEntry[]): Map<string, InputEntry[]> {
   const grouped = new Map<string, InputEntry[]>();
   for (const c of commits) {
     const d = c.date!;
@@ -114,14 +112,12 @@ function adjustRevisionTo(newRev: string, commits: InputEntry[]): OutputEntry[] 
  * Combine all commits in a sliding window into a single logical changeset.
  * The revision is set to the latest date in that window.
  */
-function combineCommitsToLogicalChangesets(
-  windows: InputEntry[][]
-): OutputEntry[] {
+function combineCommitsToLogicalChangesets(windows: InputEntry[][]): OutputEntry[] {
   const result: OutputEntry[] = [];
   for (const window of windows) {
     if (window.length === 0) continue;
     const sortedByDate = [...window].sort((a, b) =>
-      a.date! < b.date! ? -1 : a.date! > b.date! ? 1 : 0
+      a.date! < b.date! ? -1 : a.date! > b.date! ? 1 : 0,
     );
     const latestDay = sortedByDate[sortedByDate.length - 1]!.date!;
     const adjusted = adjustRevisionTo(latestDay, window);
@@ -137,11 +133,7 @@ function isEmptyWindow(dayGroups: InputEntry[][]): boolean {
   return dayGroups.every((g) => g.length === 0);
 }
 
-
-function commitsToSlidingWindowSeq(
-  timePeriod: number,
-  commits: InputEntry[]
-): OutputEntry[] {
+function commitsToSlidingWindowSeq(timePeriod: number, commits: InputEntry[]): OutputEntry[] {
   const padded = padCommitsToCompleteTimeSeries(commits);
   const sortedDates = [...padded.keys()].sort();
   const dayArrays = sortedDates.map((d) => padded.get(d)!);
@@ -164,9 +156,7 @@ function commitsToSlidingWindowSeq(
 function validatedTimePeriod(options: TimeGroupOptions): number {
   const { temporalPeriod } = options;
   if (!/^\d+$/.test(temporalPeriod)) {
-    throw new Error(
-      `Invalid time-period: the given value '${temporalPeriod}' is not an integer.`
-    );
+    throw new Error(`Invalid time-period: the given value '${temporalPeriod}' is not an integer.`);
   }
   return parseInt(temporalPeriod, 10);
 }
@@ -176,10 +166,7 @@ function validatedTimePeriod(options: TimeGroupOptions): number {
  * The commit ID (rev) is set to the latest date of the window, so that
  * the rest of the analyses treat the faked grouping as belonging to the same changeset.
  */
-export function byTimePeriod(
-  commits: InputEntry[],
-  options: TimeGroupOptions
-): OutputEntry[] {
+export function byTimePeriod(commits: InputEntry[], options: TimeGroupOptions): OutputEntry[] {
   const timePeriod = validatedTimePeriod(options);
   if (commits.length === 0) return [];
   return commitsToSlidingWindowSeq(timePeriod, commits);

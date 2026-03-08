@@ -50,12 +50,12 @@ export type RefactoringMainDeveloperEntry = {
 
 function throwOnMissingData(entries: VCSEntry[]): void {
   const hasMissingData = entries.some(
-    e => e.locAdded === undefined || e.locDeleted === undefined
+    (e) => e.locAdded === undefined || e.locDeleted === undefined,
   );
   if (hasMissingData) {
     throw new Error(
       "churn analysis: the given VCS data doesn't contain modification metrics. " +
-        "Check the code-maat docs for supported VCS and correct log format."
+        "Check the code-maat docs for supported VCS and correct log format.",
     );
   }
 }
@@ -72,18 +72,14 @@ function asInt(v: string): number {
  * Count distinct revisions in a group of entries.
  */
 function distinctRevisionCount(entries: VCSEntry[]): number {
-  return new Set(entries.map(e => e.rev)).size;
+  return new Set(entries.map((e) => e.rev)).size;
 }
-
 
 /**
  * Calculates the absolute code churn measures per date.
  * Sorted ascending by date.
  */
-export function absolutesTrend(
-  entries: VCSEntry[],
-  _options: ChurnOptions
-): AbsolutesTrendEntry[] {
+export function absolutesTrend(entries: VCSEntry[], _options: ChurnOptions): AbsolutesTrendEntry[] {
   throwOnMissingData(entries);
 
   const groups = new Map<string, VCSEntry[]>();
@@ -95,14 +91,8 @@ export function absolutesTrend(
 
   const result: AbsolutesTrendEntry[] = [];
   for (const [date, groupEntries] of groups) {
-    const added = groupEntries.reduce(
-      (sum, e) => sum + asInt(e.locAdded!),
-      0
-    );
-    const deleted = groupEntries.reduce(
-      (sum, e) => sum + asInt(e.locDeleted!),
-      0
-    );
+    const added = groupEntries.reduce((sum, e) => sum + asInt(e.locAdded!), 0);
+    const deleted = groupEntries.reduce((sum, e) => sum + asInt(e.locDeleted!), 0);
     const commits = distinctRevisionCount(groupEntries);
     result.push({ date, added, deleted, commits });
   }
@@ -122,10 +112,7 @@ export function absolutesTrend(
  * Sums the total churn for each contributing author.
  * Sorted ascending by author, then added.
  */
-export function byAuthor(
-  entries: VCSEntry[],
-  _options: ChurnOptions
-): AuthorChurnEntry[] {
+export function byAuthor(entries: VCSEntry[], _options: ChurnOptions): AuthorChurnEntry[] {
   throwOnMissingData(entries);
 
   const groups = new Map<string, VCSEntry[]>();
@@ -137,14 +124,8 @@ export function byAuthor(
 
   const result: AuthorChurnEntry[] = [];
   for (const [author, groupEntries] of groups) {
-    const added = groupEntries.reduce(
-      (sum, e) => sum + asInt(e.locAdded!),
-      0
-    );
-    const deleted = groupEntries.reduce(
-      (sum, e) => sum + asInt(e.locDeleted!),
-      0
-    );
+    const added = groupEntries.reduce((sum, e) => sum + asInt(e.locAdded!), 0);
+    const deleted = groupEntries.reduce((sum, e) => sum + asInt(e.locDeleted!), 0);
     const commits = distinctRevisionCount(groupEntries);
     result.push({ author, added, deleted, commits });
   }
@@ -160,10 +141,7 @@ export function byAuthor(
  * Returns the absolute churn of each entity.
  * Sorted descending by lines added.
  */
-export function byEntity(
-  entries: VCSEntry[],
-  _options: ChurnOptions
-): EntityChurnEntry[] {
+export function byEntity(entries: VCSEntry[], _options: ChurnOptions): EntityChurnEntry[] {
   throwOnMissingData(entries);
 
   const groups = new Map<string, VCSEntry[]>();
@@ -175,14 +153,8 @@ export function byEntity(
 
   const result: EntityChurnEntry[] = [];
   for (const [entity, groupEntries] of groups) {
-    const added = groupEntries.reduce(
-      (sum, e) => sum + asInt(e.locAdded!),
-      0
-    );
-    const deleted = groupEntries.reduce(
-      (sum, e) => sum + asInt(e.locDeleted!),
-      0
-    );
+    const added = groupEntries.reduce((sum, e) => sum + asInt(e.locAdded!), 0);
+    const deleted = groupEntries.reduce((sum, e) => sum + asInt(e.locDeleted!), 0);
     const commits = distinctRevisionCount(groupEntries);
     result.push({ entity, added, deleted, commits });
   }
@@ -195,10 +167,7 @@ export function byEntity(
  * Returns ownership of each module by each author (churn contribution).
  * Sorted ascending by entity, then author.
  */
-export function asOwnership(
-  entries: VCSEntry[],
-  _options: ChurnOptions
-): OwnershipEntry[] {
+export function asOwnership(entries: VCSEntry[], _options: ChurnOptions): OwnershipEntry[] {
   throwOnMissingData(entries);
 
   // Group by entity
@@ -221,14 +190,8 @@ export function asOwnership(
     }
 
     for (const [author, authorEntries] of authorGroups) {
-      const added = authorEntries.reduce(
-        (sum, e) => sum + asInt(e.locAdded!),
-        0
-      );
-      const deleted = authorEntries.reduce(
-        (sum, e) => sum + asInt(e.locDeleted!),
-        0
-      );
+      const added = authorEntries.reduce((sum, e) => sum + asInt(e.locAdded!), 0);
+      const deleted = authorEntries.reduce((sum, e) => sum + asInt(e.locDeleted!), 0);
       result.push({ entity, author, added, deleted });
     }
   }
@@ -257,14 +220,8 @@ function getAuthorContribs(entries: VCSEntry[]): Map<string, AuthorContrib> {
 
   const contribs = new Map<string, AuthorContrib>();
   for (const [author, authorEntries] of authorGroups) {
-    const added = authorEntries.reduce(
-      (sum, e) => sum + asInt(e.locAdded!),
-      0
-    );
-    const deleted = authorEntries.reduce(
-      (sum, e) => sum + asInt(e.locDeleted!),
-      0
-    );
+    const added = authorEntries.reduce((sum, e) => sum + asInt(e.locAdded!), 0);
+    const deleted = authorEntries.reduce((sum, e) => sum + asInt(e.locDeleted!), 0);
     contribs.set(author, { author, added, deleted });
   }
   return contribs;
@@ -280,10 +237,7 @@ function asOwnershipRatio(own: number, total: number): number {
  * Main developer = the one who contributed most lines of code (added).
  * Sorted ascending by entity.
  */
-export function byMainDeveloper(
-  entries: VCSEntry[],
-  _options: ChurnOptions
-): MainDeveloperEntry[] {
+export function byMainDeveloper(entries: VCSEntry[], _options: ChurnOptions): MainDeveloperEntry[] {
   throwOnMissingData(entries);
 
   // Group by entity
@@ -302,9 +256,7 @@ export function byMainDeveloper(
 
     const totalAdded = contribList.reduce((sum, c) => sum + c.added, 0);
     // Pick author with max added
-    const mainDevContrib = contribList.reduce((best, c) =>
-      c.added > best.added ? c : best
-    );
+    const mainDevContrib = contribList.reduce((best, c) => (c.added > best.added ? c : best));
 
     const ownership = asOwnershipRatio(mainDevContrib.added, totalAdded);
 
@@ -331,7 +283,7 @@ export function byMainDeveloper(
  */
 export function byRefactoringMainDeveloper(
   entries: VCSEntry[],
-  _options: ChurnOptions
+  _options: ChurnOptions,
 ): RefactoringMainDeveloperEntry[] {
   throwOnMissingData(entries);
 
@@ -352,9 +304,7 @@ export function byRefactoringMainDeveloper(
     const totalRemoved = contribList.reduce((sum, c) => sum + c.deleted, 0);
     // Pick author with max deleted; on ties, the last in insertion order wins
     // (matches Clojure's stable sort + reverse + first behaviour)
-    const mainDevContrib = contribList.reduce((best, c) =>
-      c.deleted >= best.deleted ? c : best
-    );
+    const mainDevContrib = contribList.reduce((best, c) => (c.deleted >= best.deleted ? c : best));
 
     const ownership = asOwnershipRatio(mainDevContrib.deleted, totalRemoved);
 

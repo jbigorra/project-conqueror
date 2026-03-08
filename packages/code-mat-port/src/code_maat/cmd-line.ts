@@ -101,7 +101,7 @@ export function parseArgs(args: string[]): ParsedArgs {
           errors.push(`Missing value for ${flag}`);
         } else {
           const num = parseInt(val, 10);
-          if (isNaN(num)) {
+          if (Number.isNaN(num)) {
             errors.push(`Invalid integer for ${flag}: ${val}`);
           } else {
             options.rows = num;
@@ -146,7 +146,7 @@ export function parseArgs(args: string[]): ParsedArgs {
           errors.push(`Missing value for ${flag}`);
         } else {
           const num = parseInt(val, 10);
-          if (isNaN(num)) {
+          if (Number.isNaN(num)) {
             errors.push(`Invalid integer for ${flag}: ${val}`);
           } else {
             options.minRevs = num;
@@ -161,7 +161,7 @@ export function parseArgs(args: string[]): ParsedArgs {
           errors.push(`Missing value for ${flag}`);
         } else {
           const num = parseInt(val, 10);
-          if (isNaN(num)) {
+          if (Number.isNaN(num)) {
             errors.push(`Invalid integer for ${flag}: ${val}`);
           } else {
             options.minSharedRevs = num;
@@ -176,7 +176,7 @@ export function parseArgs(args: string[]): ParsedArgs {
           errors.push(`Missing value for ${flag}`);
         } else {
           const num = parseInt(val, 10);
-          if (isNaN(num)) {
+          if (Number.isNaN(num)) {
             errors.push(`Invalid integer for ${flag}: ${val}`);
           } else {
             options.minCoupling = num;
@@ -191,7 +191,7 @@ export function parseArgs(args: string[]): ParsedArgs {
           errors.push(`Missing value for ${flag}`);
         } else {
           const num = parseInt(val, 10);
-          if (isNaN(num)) {
+          if (Number.isNaN(num)) {
             errors.push(`Invalid integer for ${flag}: ${val}`);
           } else {
             options.maxCoupling = num;
@@ -206,7 +206,7 @@ export function parseArgs(args: string[]): ParsedArgs {
           errors.push(`Missing value for ${flag}`);
         } else {
           const num = parseInt(val, 10);
-          if (isNaN(num)) {
+          if (Number.isNaN(num)) {
             errors.push(`Invalid integer for ${flag}: ${val}`);
           } else {
             options.maxChangesetSize = num;

@@ -1,5 +1,5 @@
-import { describe, test, expect } from "bun:test";
-import { parseXml, asRows, parseLog, parseReadLog } from "../../../src/code_maat/parsers/svn";
+import { describe, expect, test } from "bun:test";
+import { asRows, parseLog, parseReadLog, parseXml } from "../../../src/code_maat/parsers/svn";
 
 const svnLog = `<?xml version='1.0'?>
 <log>
@@ -74,8 +74,8 @@ describe("svn parser", () => {
   test("builds complete modification history from log", () => {
     const modifications = parseLog(svnLog);
     expect(modifications.length).toBe(3);
-    expect(modifications.map(m => m.author)).toEqual(["APT", "APT", "XYZ"]);
-    expect(modifications.map(m => m.entity)).toEqual([
+    expect(modifications.map((m) => m.author)).toEqual(["APT", "APT", "XYZ"]);
+    expect(modifications.map((m) => m.entity)).toEqual([
       "/Infrastrucure/Network/Connection.cs",
       "/Presentation/Status/ClientPresenter.cs",
       "/Infrastrucure/Network/Connection.cs",
