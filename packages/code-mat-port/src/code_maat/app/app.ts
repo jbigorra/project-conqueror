@@ -60,6 +60,8 @@ export type AppOptions = AnalysisOptions & {
  * read synchronously via `Bun.file`; all other parsers are async file readers.
  * Throws a descriptive error for unknown `versionControl` values.
  *
+ * Requires the Bun runtime — all parsers use `Bun.file` for disk I/O.
+ *
  * @param logFilePath - Absolute path to the VCS log file on disk.
  * @param options - Must contain a valid `versionControl` value.
  * @returns A promise that resolves to an array of parsed `VCSEntry` objects.
