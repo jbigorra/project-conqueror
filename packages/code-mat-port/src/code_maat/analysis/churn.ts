@@ -4,6 +4,7 @@ import { ratioCentiFloatPrecision } from "./math";
 // Options type for churn analysis - can be extended
 type ChurnOptions = Record<string, unknown>;
 
+/** One row of the absolutes-trend analysis: aggregated churn figures for a single date. */
 export type AbsolutesTrendEntry = {
   date: string;
   added: number;
@@ -11,6 +12,7 @@ export type AbsolutesTrendEntry = {
   commits: number;
 };
 
+/** One row of the by-author churn analysis: total lines added/deleted by a single author. */
 export type AuthorChurnEntry = {
   author: string;
   added: number;
@@ -18,6 +20,7 @@ export type AuthorChurnEntry = {
   commits: number;
 };
 
+/** One row of the by-entity churn analysis: total lines added/deleted in a single entity. */
 export type EntityChurnEntry = {
   entity: string;
   added: number;
@@ -25,6 +28,7 @@ export type EntityChurnEntry = {
   commits: number;
 };
 
+/** One row of the ownership analysis: lines added/deleted by one author for one entity. */
 export type OwnershipEntry = {
   entity: string;
   author: string;
@@ -32,6 +36,7 @@ export type OwnershipEntry = {
   deleted: number;
 };
 
+/** One row of the main-developer analysis: the author who added most lines to an entity. */
 export type MainDeveloperEntry = {
   entity: string;
   mainDev: string;
@@ -40,6 +45,7 @@ export type MainDeveloperEntry = {
   ownership: number;
 };
 
+/** One row of the refactoring-main-developer analysis: the author who removed most lines from an entity. */
 export type RefactoringMainDeveloperEntry = {
   entity: string;
   mainDev: string;
@@ -76,8 +82,25 @@ function distinctRevisionCount(entries: VCSEntry[]): number {
 }
 
 /**
- * Calculates the absolute code churn measures per date.
- * Sorted ascending by date.
+ * Calculates the absolute code churn measures grouped by date.
+ *
+ * For each unique date in the log, sums up all lines added and deleted across every
+ * entity touched on that day and counts distinct revisions (commits). Binary files
+ * that report "-" for loc values are counted as zero. Results are sorted ascending
+ * by date; ties are broken by lines added, then lines deleted.
+ *
+ * @param entries - VCS log entries. Every entry must have `locAdded` and `locDeleted`
+ *   set, otherwise an error is thrown.
+ * @param _options - Unused options placeholder for API consistency.
+ * @returns Array of `AbsolutesTrendEntry` sorted ascending by date. Each record has
+ *   `date` (YYYY-MM-DD), `added`, `deleted` (total loc), and `commits` (distinct revisions).
+ *
+ * @example
+ * absolutesTrend(entries, {});
+ * // [
+ * //   { date: "2013-11-10", added: 11, deleted: 2, commits: 1 },
+ * //   { date: "2013-11-11", added: 22, deleted: 2, commits: 2 },
+ * // ]
  */
 export function absolutesTrend(entries: VCSEntry[], _options: ChurnOptions): AbsolutesTrendEntry[] {
   throwOnMissingData(entries);
@@ -109,8 +132,23 @@ export function absolutesTrend(entries: VCSEntry[], _options: ChurnOptions): Abs
 }
 
 /**
- * Sums the total churn for each contributing author.
- * Sorted ascending by author, then added.
+ * Sums the total code churn contributed by each author across all entities.
+ *
+ * Groups entries by author, then sums lines added and deleted. Distinct revisions
+ * (commits) per author are counted with deduplication. Binary files ("-") count as
+ * zero. Throws if any entry is missing `locAdded` or `locDeleted`.
+ *
+ * @param entries - VCS log entries with churn data (`locAdded`, `locDeleted` required).
+ * @param _options - Unused options placeholder for API consistency.
+ * @returns Array of `AuthorChurnEntry` sorted ascending by author name, then by lines added.
+ *   Each record contains `author`, `added`, `deleted`, and `commits`.
+ *
+ * @example
+ * byAuthor(entries, {});
+ * // [
+ * //   { author: "at", added: 13, deleted: 2, commits: 2 },
+ * //   { author: "ta", added: 20, deleted: 2, commits: 1 },
+ * // ]
  */
 export function byAuthor(entries: VCSEntry[], _options: ChurnOptions): AuthorChurnEntry[] {
   throwOnMissingData(entries);
@@ -138,8 +176,23 @@ export function byAuthor(entries: VCSEntry[], _options: ChurnOptions): AuthorChu
 }
 
 /**
- * Returns the absolute churn of each entity.
- * Sorted descending by lines added.
+ * Returns the absolute code churn for each entity (file/module).
+ *
+ * Groups all entries by entity and sums lines added and deleted across every
+ * revision that touched it. Commit count is the number of distinct revisions.
+ * Binary files ("-") are counted as zero churn. Throws if churn data is absent.
+ *
+ * @param entries - VCS log entries with `locAdded` and `locDeleted` fields.
+ * @param _options - Unused options placeholder for API consistency.
+ * @returns Array of `EntityChurnEntry` sorted descending by lines added. Each record
+ *   contains `entity`, `added`, `deleted`, and `commits`.
+ *
+ * @example
+ * byEntity(entries, {});
+ * // [
+ * //   { entity: "B", added: 23, deleted: 3, commits: 2 },
+ * //   { entity: "A", added: 10, deleted: 1, commits: 1 },
+ * // ]
  */
 export function byEntity(entries: VCSEntry[], _options: ChurnOptions): EntityChurnEntry[] {
   throwOnMissingData(entries);
@@ -164,8 +217,24 @@ export function byEntity(entries: VCSEntry[], _options: ChurnOptions): EntityChu
 }
 
 /**
- * Returns ownership of each module by each author (churn contribution).
- * Sorted ascending by entity, then author.
+ * Returns the churn contribution (ownership) broken down by entity and author.
+ *
+ * For each entity, groups entries by author and sums the lines each author added
+ * and deleted. This allows computing each author's share of work on a given module.
+ * Throws if churn data is absent. Insertion order within an entity is preserved;
+ * the outer sort is ascending by entity name.
+ *
+ * @param entries - VCS log entries with `locAdded` and `locDeleted` fields.
+ * @param _options - Unused options placeholder for API consistency.
+ * @returns Array of `OwnershipEntry` sorted ascending by entity. Each record contains
+ *   `entity`, `author`, `added`, and `deleted`.
+ *
+ * @example
+ * asOwnership(entries, {});
+ * // [
+ * //   { entity: "A", author: "at", added: 12, deleted: 6 },
+ * //   { entity: "A", author: "xy", added: 15, deleted: 3 },
+ * // ]
  */
 export function asOwnership(entries: VCSEntry[], _options: ChurnOptions): OwnershipEntry[] {
   throwOnMissingData(entries);
@@ -233,9 +302,22 @@ function asOwnershipRatio(own: number, total: number): number {
 }
 
 /**
- * Identifies the main developer of each entity.
- * Main developer = the one who contributed most lines of code (added).
- * Sorted ascending by entity.
+ * Identifies the main developer of each entity based on lines of code added.
+ *
+ * The main developer is the author with the highest `locAdded` total for that entity.
+ * An `ownership` ratio (0–1, two decimal places) expresses their share of total lines
+ * added. Throws if churn data is absent. Sorted ascending by entity name.
+ *
+ * @param entries - VCS log entries with `locAdded` and `locDeleted` fields.
+ * @param _options - Unused options placeholder for API consistency.
+ * @returns Array of `MainDeveloperEntry` sorted ascending by entity. Each record contains
+ *   `entity`, `mainDev` (author name), `added` (their lines), `totalAdded`, and `ownership`.
+ *
+ * @example
+ * byMainDeveloper(entries, {});
+ * // [
+ * //   { entity: "A", mainDev: "xy", added: 15, totalAdded: 27, ownership: 0.56 },
+ * // ]
  */
 export function byMainDeveloper(entries: VCSEntry[], _options: ChurnOptions): MainDeveloperEntry[] {
   throwOnMissingData(entries);
@@ -277,9 +359,25 @@ export function byMainDeveloper(entries: VCSEntry[], _options: ChurnOptions): Ma
 }
 
 /**
- * Identifies the main developer of each entity by lines removed (refactoring perspective).
- * Main developer = the one who removed most lines.
- * Sorted ascending by entity.
+ * Identifies the main refactoring developer of each entity based on lines of code removed.
+ *
+ * The refactoring main developer is the author with the highest `locDeleted` total for
+ * that entity. When two authors have an equal deletion count, the last one encountered
+ * in insertion order wins (mirrors Clojure's stable sort + reverse + first behaviour).
+ * An `ownership` ratio (0–1, two decimal places) expresses their share of total lines
+ * removed. Throws if churn data is absent. Sorted ascending by entity name.
+ *
+ * @param entries - VCS log entries with `locAdded` and `locDeleted` fields.
+ * @param _options - Unused options placeholder for API consistency.
+ * @returns Array of `RefactoringMainDeveloperEntry` sorted ascending by entity. Each record
+ *   contains `entity`, `mainDev` (author name), `removed` (their deleted lines),
+ *   `totalRemoved`, and `ownership`.
+ *
+ * @example
+ * byRefactoringMainDeveloper(entries, {});
+ * // [
+ * //   { entity: "A", mainDev: "xy", removed: 3, totalRemoved: 9, ownership: 0.33 },
+ * // ]
  */
 export function byRefactoringMainDeveloper(
   entries: VCSEntry[],
