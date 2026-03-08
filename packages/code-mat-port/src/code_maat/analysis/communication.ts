@@ -1,6 +1,10 @@
 import type { VCSEntry } from "../types";
 import { asPercentage } from "./math";
 
+/**
+ * One row of the communication analysis: the coupling strength between two authors
+ * who co-modified at least one shared entity.
+ */
 export type CommunicationRow = {
   author: string;
   peer: string;
@@ -68,6 +72,29 @@ function selfCount(author: string, freqs: Map<string, number>): number {
   return freqs.get(pairKey(author, author)) ?? 0;
 }
 
+/**
+ * Computes the communication coupling strength between every pair of authors who
+ * co-modified at least one shared entity.
+ *
+ * For each ordered author pair (A, B) where A ≠ B, counts the number of entities
+ * both touched (`shared`), computes an `average` baseline as the ceiling of
+ * (A's total entities + B's total entities) / 2, and derives a `strength` percentage
+ * as floor(shared / average * 100). Self-pairs are excluded. Results are sorted
+ * descending by strength, then by author name descending, then by peer name descending.
+ *
+ * @param entries - VCS log entries. Only `entity` and `author` fields are required.
+ * @returns Array of `CommunicationRow` sorted descending by `strength`. Each record
+ *   contains `author`, `peer`, `shared` (co-modified entities), `average` (baseline
+ *   entity count), and `strength` (coupling percentage 0–100).
+ *
+ * @example
+ * bySharedEntities(entries);
+ * // [
+ * //   { author: "jt", peer: "at", shared: 2, average: 2, strength: 100 },
+ * //   { author: "at", peer: "jt", shared: 2, average: 2, strength: 100 },
+ * //   { author: "jt", peer: "ap", shared: 1, average: 2, strength: 50 },
+ * // ]
+ */
 export function bySharedEntities(entries: VCSEntry[]): CommunicationRow[] {
   const freqs = computeFrequencies(entries);
 
