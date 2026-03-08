@@ -61,9 +61,21 @@ function asCoChangingModulesForRevision(entities: string[]): [string, string][] 
 }
 
 /**
- * Groups entries by revision and returns all co-changing module pairs for each revision.
- * Identity pairs (e.g. ["A","A"]) are kept — they're used to compute total revision counts.
- * Mirrors `co-changing-by-revision` in Clojure.
+ * Groups VCS entries by revision and returns all co-changing module pairs for each revision.
+ *
+ * For every revision, the entities touched are collected and all 2-element selections
+ * (with repetition) are generated, sorted alphabetically, and de-duplicated. Identity
+ * pairs such as `["A","A"]` are intentionally kept because they are used downstream to
+ * reconstruct how many revisions each module appeared in (see `moduleByRevs`). Mirrors
+ * `co-changing-by-revision` in Clojure.
+ *
+ * @param entries - VCS log entries. Only `rev` and `entity` fields are used.
+ * @returns A 2-D array where each inner array is the list of sorted-unique pairs for one
+ *   revision. E.g. for entities `["A","B"]`, the inner array is `[["A","A"],["A","B"],["B","B"]]`.
+ *
+ * @example
+ * asCoChangingModules([{ entity: "A", rev: 1, author: "a" }, { entity: "B", rev: 1, author: "a" }]);
+ * // [ [["A","A"], ["A","B"], ["B","B"]] ]
  */
 export function asCoChangingModules(entries: VCSEntry[]): [string, string][][] {
   const revGroups = entitiesByRevision(entries);
@@ -79,9 +91,23 @@ function dropDuplicates(pairs: [string, string][]): [string, string][] {
 }
 
 /**
- * Returns the count of how many times each non-identity pair co-changed across all revisions.
- * Input is the output of `asCoChangingModules` (or co-changing-by-revision).
- * Returns array of [[entity1, entity2], count] sorted by insertion order.
+ * Counts how many times each non-identity entity pair co-changed across all revisions.
+ *
+ * Flattens the 2-D co-changing pairs structure produced by `asCoChangingModules`, strips
+ * identity pairs (where both elements are equal), then tallies occurrences of each
+ * remaining pair. Insertion order within the output is stable and matches the order
+ * pairs are first encountered. Used as an intermediate step before computing coupling
+ * degree in `logical-coupling.ts`.
+ *
+ * @param allCoChanging - Output of `asCoChangingModules`: a 2-D array of pair lists, one
+ *   inner array per revision. Identity pairs (e.g. `["A","A"]`) present in the input are
+ *   filtered out before counting.
+ * @returns Array of `[[entity1, entity2], count]` tuples in insertion order. Each tuple
+ *   records a distinct co-changed pair and the number of revisions they appeared together.
+ *
+ * @example
+ * couplingFrequencies([ [["A","A"],["A","B"],["B","B"]], [["A","A"],["A","B"],["B","B"]] ]);
+ * // [ [["A","B"], 2] ]
  */
 export function couplingFrequencies(
   allCoChanging: [string, string][][],
@@ -104,13 +130,22 @@ export function couplingFrequencies(
 }
 
 /**
- * Returns a map of entity -> total number of revisions it appeared in.
- * Uses the identity pairs in co-changing data to reconstruct which modules
- * were in each revision, then counts per module.
+ * Returns a map of entity to the total number of revisions it appeared in.
  *
- * Mirrors `module-by-revs` in Clojure:
- *   (mapcat modules-in-one-rev all-co-changing) -> frequencies
- * where `modules-in-one-rev` is (comp distinct flatten)
+ * Reconstructs per-revision entity sets by flattening each inner pair list and
+ * de-duplicating. Each entity is then incremented once per revision. The identity
+ * pairs kept by `asCoChangingModules` are what make this reconstruction possible —
+ * they encode which modules were present in each revision. Mirrors `module-by-revs`
+ * in Clojure (`(mapcat (comp distinct flatten) all-co-changing)` → frequencies).
+ *
+ * @param allCoChanging - Output of `asCoChangingModules`: a 2-D array of pair lists, one
+ *   inner array per revision, including identity pairs.
+ * @returns A plain object mapping each entity name to its total revision count.
+ *   E.g. `{ "A": 2, "B": 2, "C": 1 }`.
+ *
+ * @example
+ * moduleByRevs([ [["A","A"],["A","B"],["B","B"]] ]);
+ * // { A: 1, B: 1 }
  */
 export function moduleByRevs(allCoChanging: [string, string][][]): Record<string, number> {
   const result: Record<string, number> = {};
