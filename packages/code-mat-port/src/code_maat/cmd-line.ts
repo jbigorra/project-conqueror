@@ -1,26 +1,59 @@
+/**
+ * Configuration options that control VCS log parsing and analysis behaviour.
+ *
+ * All numeric thresholds mirror the original code-maat CLI flags and are
+ * used by the analysis algorithms to filter out low-signal data.
+ */
 export interface CliOptions {
+  /** Path to the VCS log file to analyse. */
   log?: string;
+  /** VCS type: one of `"svn"`, `"git"`, `"git2"`, `"hg"`, `"p4"`, or `"tfs"`. */
   versionControl?: string;
+  /** The analysis to run (e.g. `"authors"`, `"coupling"`, `"churn"`). */
   analysis: string;
+  /** Character encoding of the log file when it differs from UTF-8. */
   inputEncoding?: string;
+  /** Maximum number of result rows to emit. */
   rows?: number;
+  /** Path to write the analysis output file. */
   outfile?: string;
+  /** Path to a layer-grouping definition file. */
   group?: string;
+  /** Path to a CSV file mapping individual authors to teams. */
   teamMapFile?: string;
+  /** Minimum number of revisions an entity must have to be included. */
   minRevs: number;
+  /** Minimum number of revisions two entities must share to be considered coupled. */
   minSharedRevs: number;
+  /** Minimum coupling percentage (0–100) to include a pair in coupling output. */
   minCoupling: number;
+  /** Maximum coupling percentage (0–100) to include a pair in coupling output. */
   maxCoupling: number;
+  /** Ignore changesets larger than this size when computing coupling. */
   maxChangesetSize: number;
+  /** Regex string to match against commit messages. */
   expressionToMatch?: string;
+  /** Rolling temporal period for time-based coupling analyses (e.g. `"30"`). */
   temporalPeriod?: string;
+  /** Reference date (`YYYY-MM-DD`) used as "now" for code-age analysis. */
   ageTimeNow?: string;
+  /** When `true`, analysis output includes additional detail columns. */
   verboseResults: boolean;
+  /** When `true`, `parseArgs` was called with `--help` / `-h`. */
   help: boolean;
 }
 
+/**
+ * The result returned by {@link parseArgs}.
+ *
+ * `options` always holds a fully-populated `CliOptions` object (defaults
+ * filled in).  `errors` is `null` when parsing succeeded, or an array of
+ * human-readable error messages when one or more flags were invalid.
+ */
 export interface ParsedArgs {
+  /** Parsed CLI options with defaults applied. */
   options: CliOptions;
+  /** Validation errors, or `null` if parsing was clean. */
   errors: string[] | null;
 }
 
@@ -35,6 +68,25 @@ const DEFAULT_OPTIONS: CliOptions = {
   help: false,
 };
 
+/**
+ * Parses a raw array of CLI argument strings into structured {@link CliOptions}.
+ *
+ * Accepts both short flags (`-l`, `-a`, …) and long flags (`--log`, `--analysis`, …).
+ * Individual elements may contain embedded spaces; the function splits them
+ * internally so callers can pass either pre-split or unsplit argument strings.
+ * Unknown flags are collected as errors rather than thrown.
+ *
+ * @param args - Raw CLI argument strings, e.g. `["-l", "git.log", "-a", "coupling"]`.
+ * @returns A {@link ParsedArgs} object with the resolved options and any
+ *   validation errors (`null` when none occurred).
+ *
+ * @example
+ * const { options, errors } = parseArgs(["-l", "git.log", "-c", "git", "-a", "coupling"]);
+ * // errors === null
+ * // options.log === "git.log"
+ * // options.versionControl === "git"
+ * // options.analysis === "coupling"
+ */
 export function parseArgs(args: string[]): ParsedArgs {
   const options: CliOptions = { ...DEFAULT_OPTIONS };
   const errors: string[] = [];
@@ -268,6 +320,15 @@ export function parseArgs(args: string[]): ParsedArgs {
   };
 }
 
+/**
+ * Full usage/help text that mirrors the original code-maat CLI help output.
+ *
+ * Print this string to stdout when `CliOptions.help` is `true`.
+ *
+ * @example
+ * const { options } = parseArgs(process.argv.slice(2));
+ * if (options.help) console.log(USAGE);
+ */
 export const USAGE = `This is Code Maat, a program used to collect statistics from a VCS.
 Version: 1.0.5
 
