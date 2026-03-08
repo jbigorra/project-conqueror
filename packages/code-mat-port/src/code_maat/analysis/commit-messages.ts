@@ -27,7 +27,7 @@ function ensureSupportedVcs(entries: VCSEntry[]): VCSEntry[] {
   if (hasNoRealMessages(entries)) {
     throw new IllegalArgumentError(
       "Wrong version-control format. Cannot do a messages analysis without commit messages. " +
-        "Look at the difference between the git and git2 formats in the docs."
+        "Look at the difference between the git and git2 formats in the docs.",
     );
   }
   return entries;
@@ -56,7 +56,7 @@ function asMatchingEntityFreqs(entries: VCSEntry[]): CommitMessageResult[] {
 
 export function byWordFrequency(
   entries: VCSEntry[],
-  options: CommitMessageOptions
+  options: CommitMessageOptions,
 ): CommitMessageResult[] {
   const validated = ensureSupportedVcs(entries);
   const pattern = buildMatchExpr(options);

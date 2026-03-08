@@ -1,4 +1,4 @@
-import { describe, it, expect } from "bun:test";
+import { describe, expect, it } from "bun:test";
 import { byTimePeriod } from "../../../src/code_maat/app/time-based-grouper";
 
 describe("time-based-grouper", () => {
@@ -62,9 +62,7 @@ describe("time-based-grouper", () => {
     it("works on a single commit", () => {
       const inputCommits = [{ entity: "B", rev: 3, date: "2022-10-19" }];
       const result = byTimePeriod(inputCommits, { temporalPeriod: "1" });
-      expect(result).toEqual([
-        { date: "2022-10-19", entity: "B", rev: "2022-10-19" },
-      ]);
+      expect(result).toEqual([{ date: "2022-10-19", entity: "B", rev: "2022-10-19" }]);
     });
   });
 });

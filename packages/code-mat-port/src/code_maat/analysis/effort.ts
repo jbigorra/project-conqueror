@@ -97,16 +97,14 @@ export function asEntityFragmentation(
 ): EntityFragmentation[] {
   const entityAuthorRevs = computeEntityAuthorRevs(entries);
 
-  const result: EntityFragmentation[] = entityAuthorRevs.map(
-    ({ entity, authorRevs }) => {
-      const totalRevs = authorRevs[0]!.totalRevs;
-      const sumOfSquares = authorRevs.reduce((acc, { revs }) => {
-        return acc + Math.pow(revs / totalRevs, 2);
-      }, 0);
-      const fractalValue = ratioToCentiFloatPrecision(1 - sumOfSquares);
-      return { entity, fractalValue, totalRevs };
-    },
-  );
+  const result: EntityFragmentation[] = entityAuthorRevs.map(({ entity, authorRevs }) => {
+    const totalRevs = authorRevs[0]!.totalRevs;
+    const sumOfSquares = authorRevs.reduce((acc, { revs }) => {
+      return acc + (revs / totalRevs) ** 2;
+    }, 0);
+    const fractalValue = ratioToCentiFloatPrecision(1 - sumOfSquares);
+    return { entity, fractalValue, totalRevs };
+  });
 
   // Sort by fractalValue descending, then totalRevs descending
   result.sort((a, b) => {
@@ -125,22 +123,18 @@ export function asMainDeveloperByRevisions(
 ): MainDeveloper[] {
   const entityAuthorRevs = computeEntityAuthorRevs(entries);
 
-  const result: MainDeveloper[] = entityAuthorRevs.map(
-    ({ entity, authorRevs }) => {
-      const sorted = [...authorRevs].sort((a, b) => b.revs - a.revs);
-      const mainAuthor = sorted[0]!;
-      const ownership = ratioToCentiFloatPrecision(
-        mainAuthor.revs / mainAuthor.totalRevs,
-      );
-      return {
-        entity,
-        mainDev: mainAuthor.author,
-        added: mainAuthor.revs,
-        totalAdded: mainAuthor.totalRevs,
-        ownership,
-      };
-    },
-  );
+  const result: MainDeveloper[] = entityAuthorRevs.map(({ entity, authorRevs }) => {
+    const sorted = [...authorRevs].sort((a, b) => b.revs - a.revs);
+    const mainAuthor = sorted[0]!;
+    const ownership = ratioToCentiFloatPrecision(mainAuthor.revs / mainAuthor.totalRevs);
+    return {
+      entity,
+      mainDev: mainAuthor.author,
+      added: mainAuthor.revs,
+      totalAdded: mainAuthor.totalRevs,
+      ownership,
+    };
+  });
 
   // Sort by entity ascending
   result.sort((a, b) => a.entity.localeCompare(b.entity));

@@ -44,6 +44,11 @@ export function parseReadLog(text: string, _options: Record<string, unknown>): P
   return result;
 }
 
-export function parseLog(filePath: string, options: Record<string, unknown>): Promise<ParsedEntry[]> {
-  return Bun.file(filePath).text().then(text => parseReadLog(text, options));
+export function parseLog(
+  filePath: string,
+  options: Record<string, unknown>,
+): Promise<ParsedEntry[]> {
+  return Bun.file(filePath)
+    .text()
+    .then((text) => parseReadLog(text, options));
 }

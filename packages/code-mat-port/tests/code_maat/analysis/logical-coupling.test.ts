@@ -1,10 +1,8 @@
-import { describe, it, expect } from "bun:test";
+import { describe, expect, it } from "bun:test";
 import { byDegree } from "../../../src/code_maat/analysis/logical-coupling";
-import type { VCSEntry, AnalysisOptions } from "../../../src/code_maat/types";
+import type { AnalysisOptions, VCSEntry } from "../../../src/code_maat/types";
 
-const singleEntityCommit: VCSEntry[] = [
-  { author: "a", entity: "This/is/a/single/entity", rev: 1 },
-];
+const singleEntityCommit: VCSEntry[] = [{ author: "a", entity: "This/is/a/single/entity", rev: 1 }];
 
 const oneRevision: VCSEntry[] = [
   { author: "a", entity: "A", rev: 1 },
@@ -50,9 +48,7 @@ describe("logical-coupling", () => {
         minCoupling: 80,
       };
       const result = byDegree(coupled, strictOptions);
-      expect(result).toEqual([
-        { entity: "A", coupled: "B", degree: 100, averageRevs: 2 },
-      ]);
+      expect(result).toEqual([{ entity: "A", coupled: "B", degree: 100, averageRevs: 2 }]);
     });
 
     it("filters out pairs below minSharedRevs threshold", () => {
@@ -61,9 +57,7 @@ describe("logical-coupling", () => {
         minSharedRevs: 2,
       };
       const result = byDegree(coupled, strictOptions);
-      expect(result).toEqual([
-        { entity: "A", coupled: "B", degree: 100, averageRevs: 2 },
-      ]);
+      expect(result).toEqual([{ entity: "A", coupled: "B", degree: 100, averageRevs: 2 }]);
     });
 
     it("filters out revisions exceeding maxChangesetSize", () => {
@@ -76,9 +70,7 @@ describe("logical-coupling", () => {
       // Only rev2 remains: A and B co-changed once
       // A has 1 rev, B has 1 rev, degree = 1/avg(1,1) = 100%
       const result = byDegree(coupled, strictOptions);
-      expect(result).toEqual([
-        { entity: "A", coupled: "B", degree: 100, averageRevs: 1 },
-      ]);
+      expect(result).toEqual([{ entity: "A", coupled: "B", degree: 100, averageRevs: 1 }]);
     });
 
     it("returns empty for one revision with no filtering", () => {
@@ -92,7 +84,7 @@ describe("logical-coupling", () => {
 
     it("sorts results by degree descending", () => {
       const result = byDegree(coupled, defaultOptions);
-      const degrees = result.map(r => r.degree);
+      const degrees = result.map((r) => r.degree);
       expect(degrees).toEqual([...degrees].sort((a, b) => b - a));
     });
   });

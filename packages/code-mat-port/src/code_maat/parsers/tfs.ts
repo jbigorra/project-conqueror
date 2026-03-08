@@ -20,12 +20,21 @@ const POLICY_HEADER = /^Policy Warnings:/;
 // Item line: "  add $/path" or "  edit $/path/to/file"
 const ITEM_LINE = /^\s+\S[\s\S]*?\$(.+)$/;
 // Comment line: 2-space indent
-const COMMENT_LINE = /^  (.+)$/;
+const COMMENT_LINE = /^ {2}(.+)$/;
 
 const MONTH_MAP: Record<string, string> = {
-  January: "01", February: "02", March: "03", April: "04",
-  May: "05", June: "06", July: "07", August: "08",
-  September: "09", October: "10", November: "11", December: "12",
+  January: "01",
+  February: "02",
+  March: "03",
+  April: "04",
+  May: "05",
+  June: "06",
+  July: "07",
+  August: "08",
+  September: "09",
+  October: "10",
+  November: "11",
+  December: "12",
 };
 
 // Parses EN-US format: "Thursday, July 23, 2015 4:34:31 PM"
@@ -61,7 +70,11 @@ export function parseReadLog(text: string, _options: Record<string, unknown> = {
   }
 
   function reset() {
-    rev = ""; author = ""; date = ""; messageLines = []; entities = [];
+    rev = "";
+    author = "";
+    date = "";
+    messageLines = [];
+    entities = [];
   }
 
   for (const rawLine of lines) {
@@ -76,36 +89,61 @@ export function parseReadLog(text: string, _options: Record<string, unknown> = {
 
     if (state === "HEADER") {
       const cm = trimmed.match(CHANGESET);
-      if (cm) { rev = cm[1]!; continue; }
+      if (cm) {
+        rev = cm[1]!;
+        continue;
+      }
 
       const um = trimmed.match(USER);
-      if (um) { author = um[1]!; continue; }
+      if (um) {
+        author = um[1]!;
+        continue;
+      }
 
       if (PROXY.test(trimmed)) continue;
 
       const dm = trimmed.match(DATE_LINE);
-      if (dm) { date = parseDate(dm[1]!); continue; }
+      if (dm) {
+        date = parseDate(dm[1]!);
+        continue;
+      }
 
-      if (COMMENT_HEADER.test(trimmed)) { state = "COMMENT"; continue; }
+      if (COMMENT_HEADER.test(trimmed)) {
+        state = "COMMENT";
+        continue;
+      }
       // blank line or other header lines → skip
       continue;
     }
 
     if (state === "COMMENT") {
-      if (ITEMS_HEADER.test(trimmed)) { state = "ITEMS"; continue; }
+      if (ITEMS_HEADER.test(trimmed)) {
+        state = "ITEMS";
+        continue;
+      }
       if (!trimmed) continue; // blank line within comment
       const lm = rawLine.match(COMMENT_LINE);
-      if (lm) { messageLines.push(lm[1]!); continue; }
+      if (lm) {
+        messageLines.push(lm[1]!);
+        continue;
+      }
       continue;
     }
 
     if (state === "ITEMS") {
-      if (NOTES_HEADER.test(trimmed)) { state = "SKIP"; continue; }
-      if (POLICY_HEADER.test(trimmed)) { state = "SKIP"; continue; }
+      if (NOTES_HEADER.test(trimmed)) {
+        state = "SKIP";
+        continue;
+      }
+      if (POLICY_HEADER.test(trimmed)) {
+        state = "SKIP";
+        continue;
+      }
       if (!trimmed) continue;
       const im = rawLine.match(ITEM_LINE);
-      if (im) { entities.push(im[1]!); continue; }
-      continue;
+      if (im) {
+        entities.push(im[1]!);
+      }
     }
 
     // state === "SKIP" or "IDLE": do nothing
@@ -116,5 +154,7 @@ export function parseReadLog(text: string, _options: Record<string, unknown> = {
 }
 
 export function parseLog(filePath: string, options: Record<string, unknown>): Promise<TfsEntry[]> {
-  return Bun.file(filePath).text().then(text => parseReadLog(text, options));
+  return Bun.file(filePath)
+    .text()
+    .then((text) => parseReadLog(text, options));
 }

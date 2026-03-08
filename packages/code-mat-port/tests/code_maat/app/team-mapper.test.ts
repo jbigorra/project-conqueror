@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { run, fileToAuthorTeamLookup } from "../../../src/code_maat/app/team-mapper";
+import { fileToAuthorTeamLookup, run } from "../../../src/code_maat/app/team-mapper";
 import type { VCSEntry } from "../../../src/code_maat/types";
 
 const commits: VCSEntry[] = [

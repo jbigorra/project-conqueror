@@ -1,7 +1,7 @@
-import { describe, it, expect } from "bun:test";
+import { describe, expect, it } from "bun:test";
 import { asSoc, byDegree } from "../../../src/code_maat/analysis/sum-of-coupling";
-import { optionsWithLowThresholds } from "../../fixtures/test-data";
 import type { VCSEntry } from "../../../src/code_maat/types";
+import { optionsWithLowThresholds } from "../../fixtures/test-data";
 
 // Mirrors the Clojure test data:
 // (def coupled [{:entity "A" :rev 1} {:entity "B" :rev 1} {:entity "C" :rev 1}

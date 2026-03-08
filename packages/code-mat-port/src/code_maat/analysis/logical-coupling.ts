@@ -1,9 +1,5 @@
-import type { VCSEntry, AnalysisOptions } from "../types";
-import {
-  asCoChangingModules,
-  couplingFrequencies,
-  moduleByRevs,
-} from "./coupling-algos";
+import type { AnalysisOptions, VCSEntry } from "../types";
+import { asCoChangingModules, couplingFrequencies, moduleByRevs } from "./coupling-algos";
 
 export type CouplingResult = {
   entity: string;
@@ -16,10 +12,7 @@ export type CouplingResult = {
  * Groups entries by revision and returns entity groups, filtered by maxChangesetSize.
  * This mirrors co-changing-by-revision in coupling_algos.clj.
  */
-function entitiesByRevisionFiltered(
-  entries: VCSEntry[],
-  maxChangesetSize: number
-): VCSEntry[][] {
+function entitiesByRevisionFiltered(entries: VCSEntry[], maxChangesetSize: number): VCSEntry[][] {
   const byRev = new Map<string | number, VCSEntry[]>();
   for (const entry of entries) {
     const key = entry.rev;
@@ -28,9 +21,7 @@ function entitiesByRevisionFiltered(
     }
     byRev.get(key)!.push(entry);
   }
-  return Array.from(byRev.values()).filter(
-    group => group.length <= maxChangesetSize
-  );
+  return Array.from(byRev.values()).filter((group) => group.length <= maxChangesetSize);
 }
 
 /**
@@ -41,12 +32,8 @@ function entitiesByRevisionFiltered(
  *
  * Returns results sorted by degree descending, then entity name.
  */
-export function byDegree(
-  entries: VCSEntry[],
-  options: AnalysisOptions
-): CouplingResult[] {
-  const { minRevs, minSharedRevs, minCoupling, maxCoupling, maxChangesetSize } =
-    options;
+export function byDegree(entries: VCSEntry[], options: AnalysisOptions): CouplingResult[] {
+  const { minRevs, minSharedRevs, minCoupling, maxCoupling, maxChangesetSize } = options;
 
   // Filter revisions by changeset size, then compute co-changing pairs
   const filteredGroups = entitiesByRevisionFiltered(entries, maxChangesetSize);

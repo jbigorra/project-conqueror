@@ -1,13 +1,13 @@
-import type { VCSEntry, AnalysisOptions } from "../types";
+import type { AnalysisOptions, VCSEntry } from "../types";
 
 export type EntityRevCount = { entity: string; nRevs: number };
 
 export function all(entries: VCSEntry[]): string[] {
-  return [...new Set(entries.map(e => e.entity))];
+  return [...new Set(entries.map((e) => e.entity))];
 }
 
 export function allRevisions(entries: VCSEntry[]): (string | number)[] {
-  return [...new Set(entries.map(e => e.rev))];
+  return [...new Set(entries.map((e) => e.rev))];
 }
 
 export function byRevision(entries: VCSEntry[], _options: AnalysisOptions): EntityRevCount[] {
@@ -21,5 +21,5 @@ export function byRevision(entries: VCSEntry[], _options: AnalysisOptions): Enti
 }
 
 export function revisionsOf(entity: string, byRevisionDs: EntityRevCount[]): number {
-  return byRevisionDs.find(e => e.entity === entity)?.nRevs ?? 0;
+  return byRevisionDs.find((e) => e.entity === entity)?.nRevs ?? 0;
 }

@@ -35,13 +35,22 @@ export function parseReadLog(text: string, _options: Record<string, unknown>): P
     }
 
     if (state === "MESSAGE" || state === "JOBS") {
-      if (line === "Affected files ...") { state = "FILES"; continue; }
-      if (line.startsWith("Jobs fixed ...")) { state = "JOBS"; continue; }
+      if (line === "Affected files ...") {
+        state = "FILES";
+        continue;
+      }
+      if (line.startsWith("Jobs fixed ...")) {
+        state = "JOBS";
+        continue;
+      }
       continue; // skip message/job lines
     }
 
     if (state === "FILES") {
-      if (!line.trim()) { state = "HEADER"; continue; }
+      if (!line.trim()) {
+        state = "HEADER";
+        continue;
+      }
       const fileMatch = line.match(FILE_LINE);
       if (fileMatch) {
         result.push({
@@ -58,6 +67,11 @@ export function parseReadLog(text: string, _options: Record<string, unknown>): P
   return result;
 }
 
-export function parseLog(filePath: string, options: Record<string, unknown>): Promise<PerforceEntry[]> {
-  return Bun.file(filePath).text().then(text => parseReadLog(text, options));
+export function parseLog(
+  filePath: string,
+  options: Record<string, unknown>,
+): Promise<PerforceEntry[]> {
+  return Bun.file(filePath)
+    .text()
+    .then((text) => parseReadLog(text, options));
 }

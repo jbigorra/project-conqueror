@@ -1,5 +1,5 @@
-import { describe, it, expect } from "bun:test";
-import { parseArgs, CliOptions } from "../../../src/code_maat/cmd-line";
+import { describe, expect, it } from "bun:test";
+import { parseArgs } from "../../../src/code_maat/cmd-line";
 
 describe("test-argument-parsing", () => {
   describe("simple cmd line parsing", () => {
@@ -230,14 +230,22 @@ describe("test-argument-parsing", () => {
   describe("combined flags", () => {
     it("parses multiple flags together without errors", () => {
       const parsed = parseArgs([
-        "-l", "my.log",
-        "-c", "git",
-        "-a", "coupling",
-        "-i", "20",
-        "-x", "90",
-        "-s", "10",
-        "-n", "2",
-        "-m", "3",
+        "-l",
+        "my.log",
+        "-c",
+        "git",
+        "-a",
+        "coupling",
+        "-i",
+        "20",
+        "-x",
+        "90",
+        "-s",
+        "10",
+        "-n",
+        "2",
+        "-m",
+        "3",
       ]);
       expect(parsed.errors).toBeNull();
       expect(parsed.options.log).toBe("my.log");

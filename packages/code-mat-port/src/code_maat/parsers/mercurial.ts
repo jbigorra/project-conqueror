@@ -43,6 +43,11 @@ export function parseReadLog(text: string, _options: Record<string, unknown>): M
   return result;
 }
 
-export function parseLog(filePath: string, options: Record<string, unknown>): Promise<MercurialEntry[]> {
-  return Bun.file(filePath).text().then(text => parseReadLog(text, options));
+export function parseLog(
+  filePath: string,
+  options: Record<string, unknown>,
+): Promise<MercurialEntry[]> {
+  return Bun.file(filePath)
+    .text()
+    .then((text) => parseReadLog(text, options));
 }

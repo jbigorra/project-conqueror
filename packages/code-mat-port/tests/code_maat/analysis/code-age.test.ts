@@ -1,4 +1,4 @@
-import { describe, test, expect } from "bun:test";
+import { describe, expect, test } from "bun:test";
 import { byAge } from "../../../src/code_maat/analysis/code-age";
 import type { VCSEntry } from "../../../src/code_maat/types";
 

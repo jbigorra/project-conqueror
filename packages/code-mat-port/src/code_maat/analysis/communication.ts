@@ -11,7 +11,7 @@ export type CommunicationRow = {
 
 // Get distinct authors for a list of entries (all touching the same entity)
 function authorsOf(entries: VCSEntry[]): string[] {
-  return [...new Set(entries.map(e => e.author))];
+  return [...new Set(entries.map((e) => e.author))];
 }
 
 // Generate all 2-element selections with repetition from an array.

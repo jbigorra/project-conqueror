@@ -1,8 +1,8 @@
-import { describe, test, expect } from "bun:test";
+import { describe, expect, test } from "bun:test";
 import {
-  asRevisionsPerAuthor,
   asEntityFragmentation,
   asMainDeveloperByRevisions,
+  asRevisionsPerAuthor,
 } from "../../../src/code_maat/analysis/effort";
 import type { VCSEntry } from "../../../src/code_maat/types";
 

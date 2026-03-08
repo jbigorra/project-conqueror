@@ -1,6 +1,6 @@
-import { describe, test, expect } from "bun:test";
+import { describe, expect, test } from "bun:test";
 import { all, byRevision, revisionsOf } from "../../../src/code_maat/analysis/entities";
-import { vcs, optionsWithLowThresholds } from "../../fixtures/test-data";
+import { optionsWithLowThresholds, vcs } from "../../fixtures/test-data";
 
 describe("entities analysis", () => {
   test("deduces all modified entities", () => {

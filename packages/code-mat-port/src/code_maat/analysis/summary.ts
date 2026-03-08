@@ -1,6 +1,6 @@
 import type { VCSEntry } from "../types";
-import { all as allEntities, allRevisions } from "./entities";
 import { all as allAuthors } from "./authors";
+import { all as allEntities, allRevisions } from "./entities";
 
 export type SummaryRow = { statistic: string; value: number };
 
