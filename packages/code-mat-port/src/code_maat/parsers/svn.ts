@@ -25,6 +25,21 @@ function parseSvnDate(dateStr: string): string {
   return m[1]!;
 }
 
+/**
+ * Parses SVN XML log text into structured log entries.
+ *
+ * Performs regex-based XML parsing on the predictable SVN log format produced by
+ * `svn log --xml --verbose`. Each `SvnLogEntry` groups all file paths changed in
+ * a single revision under one object.
+ *
+ * @param xmlText - Raw XML text from `svn log --xml --verbose`.
+ * @returns Array of `SvnLogEntry` objects, one per SVN revision.
+ *
+ * @example
+ * const text = await Bun.file("tests/fixtures/log-fixtures/statsvn.log").text();
+ * parseXml(text);
+ * // [{ rev: "406", author: "benoitx", date: "2010-04-11", paths: [{ entity: "/trunk/statsvn/site/changes.xml", action: "M" }, ...] }, ...]
+ */
 export function parseXml(xmlText: string): SvnLogEntry[] {
   const entries: SvnLogEntry[] = [];
   let m: RegExpExecArray | null;
@@ -55,6 +70,16 @@ export function parseXml(xmlText: string): SvnLogEntry[] {
   return entries;
 }
 
+/**
+ * Flattens a single `SvnLogEntry` into one `SvnEntry` row per changed file path.
+ *
+ * @param logEntry - A structured SVN log entry for one revision.
+ * @returns Array of `SvnEntry` objects, one per file path in the revision.
+ *
+ * @example
+ * asRows({ rev: "406", author: "benoitx", date: "2010-04-11", paths: [{ entity: "/trunk/statsvn/site/changes.xml", action: "M" }] });
+ * // [{ entity: "/trunk/statsvn/site/changes.xml", date: "2010-04-11", author: "benoitx", action: "M", rev: "406" }]
+ */
 export function asRows(logEntry: SvnLogEntry): SvnEntry[] {
   return logEntry.paths.map(({ entity, action }) => ({
     entity,
@@ -65,10 +90,40 @@ export function asRows(logEntry: SvnLogEntry): SvnEntry[] {
   }));
 }
 
+/**
+ * Parses an SVN XML log string into an array of flat VCS entries.
+ *
+ * Combines {@link parseXml} and {@link asRows} to produce one entry per
+ * (revision × file) pair. This is the primary entry point for SVN log parsing.
+ *
+ * @param xmlText - Raw XML text from `svn log --xml --verbose`.
+ * @param _options - Reserved for future use; pass `{}`.
+ * @returns Array of `SvnEntry` objects, one per (revision × file) pair.
+ *
+ * @example
+ * const text = await Bun.file("tests/fixtures/log-fixtures/statsvn.log").text();
+ * parseLog(text, {});
+ * // [{ author: "benoitx", entity: "/trunk/statsvn/site/changes.xml", rev: "406", date: "2010-04-11", action: "M" }, ...]
+ */
 export function parseLog(xmlText: string, _options: Record<string, unknown> = {}): SvnEntry[] {
   return parseXml(xmlText).flatMap(asRows);
 }
 
+/**
+ * Parses an SVN XML log string into an array of flat VCS entries.
+ *
+ * Guard wrapper around {@link parseLog} that returns an empty array for blank input.
+ * Prefer this function when reading log text from an unknown source.
+ *
+ * @param text - Raw XML text from `svn log --xml --verbose`.
+ * @param options - Reserved for future use; pass `{}`.
+ * @returns Array of `SvnEntry` objects, one per (revision × file) pair.
+ *
+ * @example
+ * const text = await Bun.file("tests/fixtures/log-fixtures/statsvn.log").text();
+ * parseReadLog(text, {});
+ * // [{ author: "benoitx", entity: "/trunk/statsvn/site/changes.xml", rev: "406", date: "2010-04-11", action: "M" }, ...]
+ */
 export function parseReadLog(text: string, options: Record<string, unknown> = {}): SvnEntry[] {
   if (!text.trim()) return [];
   return parseLog(text, options);
