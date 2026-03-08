@@ -18,6 +18,7 @@
   },
   "scripts": {
     "test": "bun test",
+    "test:no-parity": "bun test tests/code_maat/*",
     "typecheck": "tsc --noEmit",
     "format": "biome format --write src/ tests/",
     "lint": "biome lint --write src/ tests/",
