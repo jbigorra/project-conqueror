@@ -1,5 +1,6 @@
 import type { VCSEntry } from "../types";
 
+/** One row of the revisions-per-author analysis: how many revisions an author contributed to an entity. */
 export type RevisionPerAuthor = {
   entity: string;
   author: string;
@@ -7,12 +8,14 @@ export type RevisionPerAuthor = {
   totalRevs: number;
 };
 
+/** One row of the fragmentation analysis: the fractal value (fragmentation index) for an entity. */
 export type EntityFragmentation = {
   entity: string;
   fractalValue: number;
   totalRevs: number;
 };
 
+/** One row of the main-developer-by-revisions analysis: the author who committed most to an entity. */
 export type MainDeveloper = {
   entity: string;
   mainDev: string;
@@ -71,6 +74,26 @@ function computeEntityAuthorRevs(entries: VCSEntry[]): EntityAuthorRevs[] {
   return result;
 }
 
+/**
+ * Returns the revision contribution of each author for every entity in the dataset.
+ *
+ * Groups entries first by entity, then by author, and counts how many revisions each
+ * author committed to that entity. The `totalRevs` field is the total number of revisions
+ * for that entity (all authors combined). Sorting is ascending by entity name; within
+ * each entity, authors are ordered descending by revision count.
+ *
+ * @param entries - VCS log entries. Only `entity`, `author`, and `rev` fields are used.
+ * @param _options - Unused options placeholder for API consistency.
+ * @returns Array of `RevisionPerAuthor` sorted ascending by entity, then descending by
+ *   `authorRevs`. Each record contains `entity`, `author`, `authorRevs`, and `totalRevs`.
+ *
+ * @example
+ * asRevisionsPerAuthor(entries, {});
+ * // [
+ * //   { entity: "A", author: "at", authorRevs: 5, totalRevs: 6 },
+ * //   { entity: "A", author: "jt", authorRevs: 1, totalRevs: 6 },
+ * // ]
+ */
 export function asRevisionsPerAuthor(
   entries: VCSEntry[],
   _options: Record<string, unknown>,
@@ -91,6 +114,27 @@ export function asRevisionsPerAuthor(
   return flat;
 }
 
+/**
+ * Computes the fragmentation (fractal value) of each entity using an effort-based Herfindahl index.
+ *
+ * The fractal value for an entity is `1 - sum((authorRevs/totalRevs)^2)` over all
+ * authors. A value of 0 means a single author owns all commits; values approaching 1
+ * indicate effort spread across many authors equally. Results are sorted descending by
+ * fractal value; ties are broken by total revision count descending. Values are rounded
+ * to two decimal places.
+ *
+ * @param entries - VCS log entries. Only `entity`, `author`, and `rev` fields are used.
+ * @param _options - Unused options placeholder for API consistency.
+ * @returns Array of `EntityFragmentation` sorted descending by `fractalValue`. Each record
+ *   contains `entity`, `fractalValue` (0–1, two decimal places), and `totalRevs`.
+ *
+ * @example
+ * asEntityFragmentation(entries, {});
+ * // [
+ * //   { entity: "A", fractalValue: 0.5, totalRevs: 4 },
+ * //   { entity: "B", fractalValue: 0,   totalRevs: 3 },
+ * // ]
+ */
 export function asEntityFragmentation(
   entries: VCSEntry[],
   _options: Record<string, unknown>,
@@ -117,6 +161,27 @@ export function asEntityFragmentation(
   return result;
 }
 
+/**
+ * Identifies the main developer of each entity measured by number of revisions committed.
+ *
+ * For each entity, the author with the most commits is designated the main developer.
+ * The `ownership` ratio (0–1, two decimal places) is their revision share relative to
+ * the entity's total revision count. Unlike the churn-based version (`byMainDeveloper` in
+ * `churn.ts`), this analysis uses commit count rather than lines added. Results are
+ * sorted ascending by entity name.
+ *
+ * @param entries - VCS log entries. Only `entity`, `author`, and `rev` fields are used.
+ * @param _options - Unused options placeholder for API consistency.
+ * @returns Array of `MainDeveloper` sorted ascending by entity. Each record contains
+ *   `entity`, `mainDev` (author name), `added` (their revision count), `totalAdded`
+ *   (total revisions for the entity), and `ownership` (ratio, two decimal places).
+ *
+ * @example
+ * asMainDeveloperByRevisions(entries, {});
+ * // [
+ * //   { entity: "A", mainDev: "at", added: 5, totalAdded: 6, ownership: 0.83 },
+ * // ]
+ */
 export function asMainDeveloperByRevisions(
   entries: VCSEntry[],
   _options: Record<string, unknown>,
