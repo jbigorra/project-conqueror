@@ -1,6 +1,7 @@
 export * from "./code_maat/types";
 export * as math from "./code_maat/analysis/math";
 export * as entities from "./code_maat/analysis/entities";
+export * as summary from "./code_maat/analysis/summary";
 export * as authors from "./code_maat/analysis/authors";
 export * as churn from "./code_maat/analysis/churn";
 export * as codeAge from "./code_maat/analysis/code-age";
