@@ -13,6 +13,64 @@ const FILE_LINE = /^\.\.\.\s+\/\/[^/]+\/[^/]+([^#]+)#.+$/;
 
 type State = "HEADER" | "MESSAGE" | "JOBS" | "FILES";
 
+type ChangeContext = {
+  author: string;
+  rev: string;
+  date: string;
+};
+
+function getCapture(match: RegExpMatchArray, index: number, context: string): string {
+  const value = match[index];
+  if (value === undefined) {
+    throw new Error(`Malformed Perforce log: missing ${context}`);
+  }
+  return value;
+}
+
+function parseChangeContext(line: string): ChangeContext | null {
+  const headerMatch = line.match(CHANGE_HEADER);
+  if (!headerMatch) return null;
+
+  const rev = getCapture(headerMatch, 1, "revision");
+  const author = getCapture(headerMatch, 2, "author");
+  const year = getCapture(headerMatch, 3, "year");
+  const month = getCapture(headerMatch, 4, "month");
+  const day = getCapture(headerMatch, 5, "day");
+
+  return {
+    author,
+    rev,
+    date: `${year}-${month}-${day}`,
+  };
+}
+
+function nextParseState(line: string, currentState: State): State {
+  if (line === "Affected files ...") {
+    return "FILES";
+  }
+
+  if (line.startsWith("Jobs fixed ...")) {
+    return "JOBS";
+  }
+
+  return currentState;
+}
+
+function parseFileEntry(line: string, change: ChangeContext | null): PerforceEntry | null {
+  if (!change) return null;
+
+  const fileMatch = line.match(FILE_LINE);
+  if (!fileMatch) return null;
+
+  return {
+    author: change.author,
+    rev: change.rev,
+    date: change.date,
+    entity: getCapture(fileMatch, 1, "entity"),
+    message: "",
+  };
+}
+
 /**
  * Parses a Perforce log string into an array of VCS entries.
  *
@@ -31,50 +89,34 @@ type State = "HEADER" | "MESSAGE" | "JOBS" | "FILES";
 export function parseReadLog(text: string, _options: Record<string, unknown>): PerforceEntry[] {
   if (!text.trim()) return [];
 
-  const lines = text.split("\n");
   const result: PerforceEntry[] = [];
 
   let state: State = "HEADER";
-  let currentRev = "";
-  let currentAuthor = "";
-  let currentDate = "";
+  let currentChange: ChangeContext | null = null;
 
-  for (const line of lines) {
-    const headerMatch = line.match(CHANGE_HEADER);
-    if (headerMatch) {
-      currentRev = headerMatch[1]!;
-      currentAuthor = headerMatch[2]!;
-      currentDate = `${headerMatch[3]!}-${headerMatch[4]!}-${headerMatch[5]!}`;
+  for (const line of text.split("\n")) {
+    const header = parseChangeContext(line);
+    if (header) {
+      currentChange = header;
       state = "MESSAGE";
       continue;
     }
 
     if (state === "MESSAGE" || state === "JOBS") {
-      if (line === "Affected files ...") {
-        state = "FILES";
-        continue;
-      }
-      if (line.startsWith("Jobs fixed ...")) {
-        state = "JOBS";
-        continue;
-      }
+      state = nextParseState(line, state);
       continue; // skip message/job lines
     }
 
     if (state === "FILES") {
       if (!line.trim()) {
         state = "HEADER";
+        currentChange = null;
         continue;
       }
-      const fileMatch = line.match(FILE_LINE);
-      if (fileMatch) {
-        result.push({
-          author: currentAuthor,
-          rev: currentRev,
-          date: currentDate,
-          entity: fileMatch[1]!,
-          message: "",
-        });
+
+      const fileEntry = parseFileEntry(line, currentChange);
+      if (fileEntry) {
+        result.push(fileEntry);
       }
     }
   }

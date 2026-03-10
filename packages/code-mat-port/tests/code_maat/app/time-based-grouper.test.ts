@@ -64,5 +64,13 @@ describe("time-based-grouper", () => {
       const result = byTimePeriod(inputCommits, { temporalPeriod: "1" });
       expect(result).toEqual([{ date: "2022-10-19", entity: "B", rev: "2022-10-19" }]);
     });
+
+    it("rejects non-positive temporal periods", () => {
+      const inputCommits = [{ entity: "B", rev: 3, date: "2022-10-19" }];
+
+      expect(() => byTimePeriod(inputCommits, { temporalPeriod: "0" })).toThrow(
+        "Invalid time-period",
+      );
+    });
   });
 });

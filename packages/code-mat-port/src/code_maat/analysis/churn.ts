@@ -74,6 +74,53 @@ function asInt(v: string): number {
   return parseInt(v, 10);
 }
 
+function locMetrics(entry: VCSEntry): { locAdded: string; locDeleted: string } {
+  if (entry.locAdded === undefined || entry.locDeleted === undefined) {
+    throw new Error(
+      "churn analysis: the given VCS data doesn't contain modification metrics. " +
+        "Check the code-maat docs for supported VCS and correct log format.",
+    );
+  }
+
+  return {
+    locAdded: entry.locAdded,
+    locDeleted: entry.locDeleted,
+  };
+}
+
+function groupEntriesBy<K>(
+  entries: VCSEntry[],
+  keySelector: (entry: VCSEntry) => K | undefined,
+): Map<K, VCSEntry[]> {
+  const groups = new Map<K, VCSEntry[]>();
+
+  for (const entry of entries) {
+    const key = keySelector(entry);
+    if (key === undefined) continue;
+
+    const existing = groups.get(key);
+    if (existing) {
+      existing.push(entry);
+    } else {
+      groups.set(key, [entry]);
+    }
+  }
+
+  return groups;
+}
+
+function sumLoc(entries: VCSEntry[], metric: "locAdded" | "locDeleted"): number {
+  return entries.reduce((sum, entry) => sum + asInt(locMetrics(entry)[metric]), 0);
+}
+
+function churnSummary(entries: VCSEntry[]): { added: number; deleted: number; commits: number } {
+  return {
+    added: sumLoc(entries, "locAdded"),
+    deleted: sumLoc(entries, "locDeleted"),
+    commits: distinctRevisionCount(entries),
+  };
+}
+
 /**
  * Count distinct revisions in a group of entries.
  */
@@ -105,20 +152,10 @@ function distinctRevisionCount(entries: VCSEntry[]): number {
 export function absolutesTrend(entries: VCSEntry[], _options: ChurnOptions): AbsolutesTrendEntry[] {
   throwOnMissingData(entries);
 
-  const groups = new Map<string, VCSEntry[]>();
-  for (const entry of entries) {
-    const date = entry.date!;
-    if (!groups.has(date)) groups.set(date, []);
-    groups.get(date)!.push(entry);
-  }
-
-  const result: AbsolutesTrendEntry[] = [];
-  for (const [date, groupEntries] of groups) {
-    const added = groupEntries.reduce((sum, e) => sum + asInt(e.locAdded!), 0);
-    const deleted = groupEntries.reduce((sum, e) => sum + asInt(e.locDeleted!), 0);
-    const commits = distinctRevisionCount(groupEntries);
-    result.push({ date, added, deleted, commits });
-  }
+  const result = [...groupEntriesBy(entries, (entry) => entry.date)].map(([date, groupEntries]) => ({
+    date,
+    ...churnSummary(groupEntries),
+  }));
 
   return result.sort((a, b) => {
     if (a.date < b.date) return -1;
@@ -153,20 +190,10 @@ export function absolutesTrend(entries: VCSEntry[], _options: ChurnOptions): Abs
 export function byAuthor(entries: VCSEntry[], _options: ChurnOptions): AuthorChurnEntry[] {
   throwOnMissingData(entries);
 
-  const groups = new Map<string, VCSEntry[]>();
-  for (const entry of entries) {
-    const author = entry.author;
-    if (!groups.has(author)) groups.set(author, []);
-    groups.get(author)!.push(entry);
-  }
-
-  const result: AuthorChurnEntry[] = [];
-  for (const [author, groupEntries] of groups) {
-    const added = groupEntries.reduce((sum, e) => sum + asInt(e.locAdded!), 0);
-    const deleted = groupEntries.reduce((sum, e) => sum + asInt(e.locDeleted!), 0);
-    const commits = distinctRevisionCount(groupEntries);
-    result.push({ author, added, deleted, commits });
-  }
+  const result = [...groupEntriesBy(entries, (entry) => entry.author)].map(([author, groupEntries]) => ({
+    author,
+    ...churnSummary(groupEntries),
+  }));
 
   return result.sort((a, b) => {
     if (a.author < b.author) return -1;
@@ -197,20 +224,10 @@ export function byAuthor(entries: VCSEntry[], _options: ChurnOptions): AuthorChu
 export function byEntity(entries: VCSEntry[], _options: ChurnOptions): EntityChurnEntry[] {
   throwOnMissingData(entries);
 
-  const groups = new Map<string, VCSEntry[]>();
-  for (const entry of entries) {
-    const entity = entry.entity;
-    if (!groups.has(entity)) groups.set(entity, []);
-    groups.get(entity)!.push(entry);
-  }
-
-  const result: EntityChurnEntry[] = [];
-  for (const [entity, groupEntries] of groups) {
-    const added = groupEntries.reduce((sum, e) => sum + asInt(e.locAdded!), 0);
-    const deleted = groupEntries.reduce((sum, e) => sum + asInt(e.locDeleted!), 0);
-    const commits = distinctRevisionCount(groupEntries);
-    result.push({ entity, added, deleted, commits });
-  }
+  const result = [...groupEntriesBy(entries, (entry) => entry.entity)].map(([entity, groupEntries]) => ({
+    entity,
+    ...churnSummary(groupEntries),
+  }));
 
   // Sort descending by added
   return result.sort((a, b) => b.added - a.added);
@@ -239,29 +256,16 @@ export function byEntity(entries: VCSEntry[], _options: ChurnOptions): EntityChu
 export function asOwnership(entries: VCSEntry[], _options: ChurnOptions): OwnershipEntry[] {
   throwOnMissingData(entries);
 
-  // Group by entity
-  const entityGroups = new Map<string, VCSEntry[]>();
-  for (const entry of entries) {
-    const entity = entry.entity;
-    if (!entityGroups.has(entity)) entityGroups.set(entity, []);
-    entityGroups.get(entity)!.push(entry);
-  }
-
   const result: OwnershipEntry[] = [];
 
-  for (const [entity, entityEntries] of entityGroups) {
-    // Group by author within entity
-    const authorGroups = new Map<string, VCSEntry[]>();
-    for (const entry of entityEntries) {
-      const author = entry.author;
-      if (!authorGroups.has(author)) authorGroups.set(author, []);
-      authorGroups.get(author)!.push(entry);
-    }
-
-    for (const [author, authorEntries] of authorGroups) {
-      const added = authorEntries.reduce((sum, e) => sum + asInt(e.locAdded!), 0);
-      const deleted = authorEntries.reduce((sum, e) => sum + asInt(e.locDeleted!), 0);
-      result.push({ entity, author, added, deleted });
+  for (const [entity, entityEntries] of groupEntriesBy(entries, (entry) => entry.entity)) {
+    for (const [author, authorEntries] of groupEntriesBy(entityEntries, (entry) => entry.author)) {
+      result.push({
+        entity,
+        author,
+        added: sumLoc(authorEntries, "locAdded"),
+        deleted: sumLoc(authorEntries, "locDeleted"),
+      });
     }
   }
 
@@ -279,21 +283,12 @@ type AuthorContrib = {
   deleted: number;
 };
 
-function getAuthorContribs(entries: VCSEntry[]): Map<string, AuthorContrib> {
-  const authorGroups = new Map<string, VCSEntry[]>();
-  for (const entry of entries) {
-    const author = entry.author;
-    if (!authorGroups.has(author)) authorGroups.set(author, []);
-    authorGroups.get(author)!.push(entry);
-  }
-
-  const contribs = new Map<string, AuthorContrib>();
-  for (const [author, authorEntries] of authorGroups) {
-    const added = authorEntries.reduce((sum, e) => sum + asInt(e.locAdded!), 0);
-    const deleted = authorEntries.reduce((sum, e) => sum + asInt(e.locDeleted!), 0);
-    contribs.set(author, { author, added, deleted });
-  }
-  return contribs;
+function getAuthorContribs(entries: VCSEntry[]): AuthorContrib[] {
+  return [...groupEntriesBy(entries, (entry) => entry.author)].map(([author, authorEntries]) => ({
+    author,
+    added: sumLoc(authorEntries, "locAdded"),
+    deleted: sumLoc(authorEntries, "locDeleted"),
+  }));
 }
 
 function asOwnershipRatio(own: number, total: number): number {
@@ -322,19 +317,10 @@ function asOwnershipRatio(own: number, total: number): number {
 export function byMainDeveloper(entries: VCSEntry[], _options: ChurnOptions): MainDeveloperEntry[] {
   throwOnMissingData(entries);
 
-  // Group by entity
-  const entityGroups = new Map<string, VCSEntry[]>();
-  for (const entry of entries) {
-    const entity = entry.entity;
-    if (!entityGroups.has(entity)) entityGroups.set(entity, []);
-    entityGroups.get(entity)!.push(entry);
-  }
-
   const result: MainDeveloperEntry[] = [];
 
-  for (const [entity, entityEntries] of entityGroups) {
-    const contribs = getAuthorContribs(entityEntries);
-    const contribList = [...contribs.values()];
+  for (const [entity, entityEntries] of groupEntriesBy(entries, (entry) => entry.entity)) {
+    const contribList = getAuthorContribs(entityEntries);
 
     const totalAdded = contribList.reduce((sum, c) => sum + c.added, 0);
     // Pick author with max added
@@ -385,19 +371,10 @@ export function byRefactoringMainDeveloper(
 ): RefactoringMainDeveloperEntry[] {
   throwOnMissingData(entries);
 
-  // Group by entity
-  const entityGroups = new Map<string, VCSEntry[]>();
-  for (const entry of entries) {
-    const entity = entry.entity;
-    if (!entityGroups.has(entity)) entityGroups.set(entity, []);
-    entityGroups.get(entity)!.push(entry);
-  }
-
   const result: RefactoringMainDeveloperEntry[] = [];
 
-  for (const [entity, entityEntries] of entityGroups) {
-    const contribs = getAuthorContribs(entityEntries);
-    const contribList = [...contribs.values()];
+  for (const [entity, entityEntries] of groupEntriesBy(entries, (entry) => entry.entity)) {
+    const contribList = getAuthorContribs(entityEntries);
 
     const totalRemoved = contribList.reduce((sum, c) => sum + c.deleted, 0);
     // Pick author with max deleted; on ties, the last in insertion order wins
