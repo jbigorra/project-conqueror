@@ -14,15 +14,36 @@ export type SvnLogEntry = {
 };
 
 // Regex-based XML parsing for the predictable SVN log format
-const LOGENTRY_RE = /<logentry\s+revision='(\d+)'>([\s\S]*?)<\/logentry>/g;
 const AUTHOR_RE = /<author>([\s\S]*?)<\/author>/;
 const DATE_RE = /<date>([\s\S]*?)<\/date>/;
-const PATH_RE = /<path[^>]+action='([^']+)'[^>]*>([\s\S]*?)<\/path>/g;
+
+function getCapture(match: RegExpMatchArray, index: number, context: string): string {
+  const value = match[index];
+  if (value === undefined) {
+    throw new Error(`Malformed SVN log: missing ${context}`);
+  }
+  return value;
+}
+
+function logEntryMatches(xmlText: string): RegExpMatchArray[] {
+  return Array.from(xmlText.matchAll(/<logentry\s+revision='(\d+)'>([\s\S]*?)<\/logentry>/g));
+}
+
+function pathMatches(body: string): RegExpMatchArray[] {
+  return Array.from(body.matchAll(/<path[^>]+action='([^']+)'[^>]*>([\s\S]*?)<\/path>/g));
+}
+
+function parsePaths(body: string): Array<{ entity: string; action: string }> {
+  return pathMatches(body).map((match) => ({
+    action: getCapture(match, 1, "path action"),
+    entity: getCapture(match, 2, "path entity").trim(),
+  }));
+}
 
 function parseSvnDate(dateStr: string): string {
   const m = dateStr.match(/^(\d{4}-\d{2}-\d{2})/);
   if (!m) throw new Error(`Cannot parse SVN date: ${dateStr}`);
-  return m[1]!;
+  return getCapture(m, 1, "date");
 }
 
 /**
@@ -42,29 +63,17 @@ function parseSvnDate(dateStr: string): string {
  */
 export function parseXml(xmlText: string): SvnLogEntry[] {
   const entries: SvnLogEntry[] = [];
-  let m: RegExpExecArray | null;
-
-  LOGENTRY_RE.lastIndex = 0;
-  m = LOGENTRY_RE.exec(xmlText);
-  while (m !== null) {
-    const rev = m[1]!;
-    const body = m[2]!;
+  for (const match of logEntryMatches(xmlText)) {
+    const rev = getCapture(match, 1, "revision");
+    const body = getCapture(match, 2, "entry body");
 
     const authorM = AUTHOR_RE.exec(body);
     const dateM = DATE_RE.exec(body);
-    const author = authorM ? authorM[1]!.trim() : "";
-    const date = dateM ? parseSvnDate(dateM[1]!.trim()) : "";
-
-    const paths: Array<{ entity: string; action: string }> = [];
-    PATH_RE.lastIndex = 0;
-    let pm: RegExpExecArray | null = PATH_RE.exec(body);
-    while (pm !== null) {
-      paths.push({ action: pm[1]!, entity: pm[2]!.trim() });
-      pm = PATH_RE.exec(body);
-    }
+    const author = authorM ? getCapture(authorM, 1, "author").trim() : "";
+    const date = dateM ? parseSvnDate(getCapture(dateM, 1, "date body").trim()) : "";
+    const paths = parsePaths(body);
 
     entries.push({ rev, author, date, paths });
-    m = LOGENTRY_RE.exec(xmlText);
   }
 
   return entries;

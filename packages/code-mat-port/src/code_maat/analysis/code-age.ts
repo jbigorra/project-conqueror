@@ -5,8 +5,35 @@ export type CodeAgeEntry = { entity: string; ageMonths: number };
 
 function parseDate(dateStr: string): Date {
   // Parse "YYYY-MM-DD" as UTC to avoid timezone offset issues
-  const [year, month, day] = dateStr.split("-").map(Number);
-  return new Date(Date.UTC(year!, month! - 1, day!));
+  const parts = dateStr.split("-");
+  if (parts.length !== 3) {
+    throw new Error(`Invalid date format: ${dateStr}`);
+  }
+
+  const [yearText, monthText, dayText] = parts;
+  if (yearText === undefined || monthText === undefined || dayText === undefined) {
+    throw new Error(`Invalid date format: ${dateStr}`);
+  }
+
+  return new Date(Date.UTC(Number(yearText), Number(monthText) - 1, Number(dayText)));
+}
+
+function latestCommitDates(entries: VCSEntry[], referenceDate: Date): Map<string, Date> {
+  const latestByEntity = new Map<string, Date>();
+
+  for (const entry of entries) {
+    if (!entry.date) continue;
+
+    const entryDate = parseDate(entry.date);
+    if (entryDate >= referenceDate) continue;
+
+    const latestDate = latestByEntity.get(entry.entity);
+    if (!latestDate || entryDate > latestDate) {
+      latestByEntity.set(entry.entity, entryDate);
+    }
+  }
+
+  return latestByEntity;
 }
 
 function monthsDiff(from: Date, to: Date): number {
@@ -47,28 +74,10 @@ function monthsDiff(from: Date, to: Date): number {
 export function byAge(entries: VCSEntry[], referenceDate?: string): CodeAgeEntry[] {
   const now = referenceDate ? parseDate(referenceDate) : new Date();
 
-  // Group entries by entity
-  const groups: Record<string, Date[]> = {};
-  for (const entry of entries) {
-    if (!entry.date) continue;
-    const entryDate = parseDate(entry.date);
-    // Only include commits strictly before the reference date
-    if (entryDate >= now) continue;
-    if (!groups[entry.entity]) groups[entry.entity] = [];
-    groups[entry.entity]!.push(entryDate);
-  }
-
-  const result: CodeAgeEntry[] = [];
-  for (const [entity, dates] of Object.entries(groups)) {
-    if (dates.length === 0) continue;
-    // Find the most recent commit date
-    const latestDate = dates.reduce((max, d) => (d > max ? d : max));
-    const ageMonths = monthsDiff(latestDate, now);
-    result.push({ entity, ageMonths });
-  }
-
-  // Sort ascending by age
-  result.sort((a, b) => a.ageMonths - b.ageMonths);
-
-  return result;
+  return [...latestCommitDates(entries, now).entries()]
+    .map(([entity, latestDate]) => ({
+      entity,
+      ageMonths: monthsDiff(latestDate, now),
+    }))
+    .sort((a, b) => a.ageMonths - b.ageMonths);
 }

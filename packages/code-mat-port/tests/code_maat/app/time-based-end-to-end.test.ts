@@ -33,6 +33,11 @@ const OPTIONS_WITH_INVALID_TIME_PERIOD = {
   temporalPeriod: "not a number",
 };
 
+const OPTIONS_WITH_ZERO_TIME_PERIOD = {
+  ...CSV_OPTIONS,
+  temporalPeriod: "0",
+};
+
 describe("time-based end-to-end", () => {
   it("only calculates coupling within same commit by default", async () => {
     const result = await runAnalysis(LOG_FILE, CSV_OPTIONS);
@@ -72,5 +77,9 @@ describe("time-based end-to-end", () => {
 
   it("throws on unsupported time periods", async () => {
     await expect(runAnalysis(LOG_FILE, OPTIONS_WITH_INVALID_TIME_PERIOD)).rejects.toThrow();
+  });
+
+  it("throws on non-positive time periods", async () => {
+    await expect(runAnalysis(LOG_FILE, OPTIONS_WITH_ZERO_TIME_PERIOD)).rejects.toThrow();
   });
 });

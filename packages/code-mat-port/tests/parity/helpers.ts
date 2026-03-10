@@ -88,28 +88,54 @@ const FIELD_MAP: Record<string, Record<string, string>> = {
   age: { entity: "entity", ageMonths: "age-months" },
 };
 
+type CsvRow = Record<string, unknown>;
+
+function invertFieldMap(fieldMap: Record<string, string>): Record<string, string> {
+  const inverseFieldMap: Record<string, string> = {};
+  for (const [tsField, csvHeader] of Object.entries(fieldMap)) {
+    inverseFieldMap[csvHeader] = tsField;
+  }
+  return inverseFieldMap;
+}
+
+function formatCsvValue(
+  row: CsvRow,
+  header: string,
+  inverseFieldMap: Record<string, string>,
+  floatFields: Set<string>,
+): string {
+  const fieldName = inverseFieldMap[header];
+  const value = fieldName ? row[fieldName] ?? "" : "";
+
+  if (floatFields.has(header) && typeof value === "number") {
+    return Number.isInteger(value) ? value.toFixed(1) : String(value);
+  }
+
+  return String(value);
+}
+
+function csvLineForRow(
+  row: CsvRow,
+  headers: string[],
+  inverseFieldMap: Record<string, string>,
+  floatFields: Set<string>,
+): string {
+  return headers.map((header) => formatCsvValue(row, header, inverseFieldMap, floatFields)).join(",");
+}
+
 export function toCSV(rows: unknown[], analysis: string): string {
   const headers = HEADERS[analysis];
   const fieldMap = FIELD_MAP[analysis];
   if (!headers || !fieldMap) throw new Error(`No CSV mapping for analysis: ${analysis}`);
-  // Invert fieldMap: csvHeader → tsField
-  const inv: Record<string, string> = {};
-  for (const [ts, csv] of Object.entries(fieldMap)) inv[csv] = ts;
+
+  const inverseFieldMap = invertFieldMap(fieldMap);
   const floatFields = FLOAT_FIELDS[analysis] ?? new Set<string>();
+
   const lines = [headers.join(",")];
-  for (const row of rows as Record<string, unknown>[]) {
-    lines.push(
-      headers
-        .map((h) => {
-          const val = (row as Record<string, unknown>)[inv[h]!] ?? "";
-          if (floatFields.has(h) && typeof val === "number") {
-            return Number.isInteger(val) ? val.toFixed(1) : String(val);
-          }
-          return String(val);
-        })
-        .join(","),
-    );
+  for (const row of rows as CsvRow[]) {
+    lines.push(csvLineForRow(row, headers, inverseFieldMap, floatFields));
   }
+
   return `${lines.join("\n")}\n`;
 }
 

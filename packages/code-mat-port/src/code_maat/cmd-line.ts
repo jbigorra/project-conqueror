@@ -68,6 +68,184 @@ const DEFAULT_OPTIONS: CliOptions = {
   help: false,
 };
 
+const VALID_VCS_TYPES = ["svn", "git", "git2", "hg", "p4", "tfs"];
+
+type ValueFlagHandler = {
+  kind: "value";
+  apply: (value: string, options: CliOptions, errors: string[], flag: string) => void;
+};
+
+type BooleanFlagHandler = {
+  kind: "boolean";
+  apply: (options: CliOptions) => void;
+};
+
+type FlagHandler = ValueFlagHandler | BooleanFlagHandler;
+
+function flattenArgs(args: string[]): string[] {
+  const flatArgs: string[] = [];
+  for (const arg of args) {
+    flatArgs.push(...arg.split(/\s+/).filter((s) => s.length > 0));
+  }
+  return flatArgs;
+}
+
+function parseIntegerValue(flag: string, value: string, errors: string[]): number | undefined {
+  const parsed = parseInt(value, 10);
+  if (Number.isNaN(parsed)) {
+    errors.push(`Invalid integer for ${flag}: ${value}`);
+    return undefined;
+  }
+  return parsed;
+}
+
+function stringFlag(assign: (options: CliOptions, value: string) => void): ValueFlagHandler {
+  return {
+    kind: "value",
+    apply(value, options) {
+      assign(options, value);
+    },
+  };
+}
+
+function integerFlag(assign: (options: CliOptions, value: number) => void): ValueFlagHandler {
+  return {
+    kind: "value",
+    apply(value, options, errors, flag) {
+      const parsed = parseIntegerValue(flag, value, errors);
+      if (parsed !== undefined) {
+        assign(options, parsed);
+      }
+    },
+  };
+}
+
+function booleanFlag(assign: (options: CliOptions) => void): BooleanFlagHandler {
+  return {
+    kind: "boolean",
+    apply(options) {
+      assign(options);
+    },
+  };
+}
+
+const versionControlFlag: ValueFlagHandler = {
+  kind: "value",
+  apply(value, options, errors) {
+    if (!VALID_VCS_TYPES.includes(value)) {
+      errors.push(`Unknown VCS type: ${value}. Supported: ${VALID_VCS_TYPES.join(", ")}`);
+      return;
+    }
+
+    options.versionControl = value;
+  },
+};
+
+const logFlag = stringFlag((options, value) => {
+  options.log = value;
+});
+
+const analysisFlag = stringFlag((options, value) => {
+  options.analysis = value;
+});
+
+const inputEncodingFlag = stringFlag((options, value) => {
+  options.inputEncoding = value;
+});
+
+const rowsFlag = integerFlag((options, value) => {
+  options.rows = value;
+});
+
+const outfileFlag = stringFlag((options, value) => {
+  options.outfile = value;
+});
+
+const groupFlag = stringFlag((options, value) => {
+  options.group = value;
+});
+
+const teamMapFileFlag = stringFlag((options, value) => {
+  options.teamMapFile = value;
+});
+
+const minRevsFlag = integerFlag((options, value) => {
+  options.minRevs = value;
+});
+
+const minSharedRevsFlag = integerFlag((options, value) => {
+  options.minSharedRevs = value;
+});
+
+const minCouplingFlag = integerFlag((options, value) => {
+  options.minCoupling = value;
+});
+
+const maxCouplingFlag = integerFlag((options, value) => {
+  options.maxCoupling = value;
+});
+
+const maxChangesetSizeFlag = integerFlag((options, value) => {
+  options.maxChangesetSize = value;
+});
+
+const expressionToMatchFlag = stringFlag((options, value) => {
+  options.expressionToMatch = value;
+});
+
+const temporalPeriodFlag = stringFlag((options, value) => {
+  options.temporalPeriod = value;
+});
+
+const ageTimeNowFlag = stringFlag((options, value) => {
+  options.ageTimeNow = value;
+});
+
+const verboseResultsFlag = booleanFlag((options) => {
+  options.verboseResults = true;
+});
+
+const helpFlag = booleanFlag((options) => {
+  options.help = true;
+});
+
+const FLAG_HANDLERS: Record<string, FlagHandler> = {
+  "-l": logFlag,
+  "--log": logFlag,
+  "-c": versionControlFlag,
+  "--version-control": versionControlFlag,
+  "-a": analysisFlag,
+  "--analysis": analysisFlag,
+  "--input-encoding": inputEncodingFlag,
+  "-r": rowsFlag,
+  "--rows": rowsFlag,
+  "-o": outfileFlag,
+  "--outfile": outfileFlag,
+  "-g": groupFlag,
+  "--group": groupFlag,
+  "-p": teamMapFileFlag,
+  "--team-map-file": teamMapFileFlag,
+  "-n": minRevsFlag,
+  "--min-revs": minRevsFlag,
+  "-m": minSharedRevsFlag,
+  "--min-shared-revs": minSharedRevsFlag,
+  "-i": minCouplingFlag,
+  "--min-coupling": minCouplingFlag,
+  "-x": maxCouplingFlag,
+  "--max-coupling": maxCouplingFlag,
+  "-s": maxChangesetSizeFlag,
+  "--max-changeset-size": maxChangesetSizeFlag,
+  "-e": expressionToMatchFlag,
+  "--expression-to-match": expressionToMatchFlag,
+  "-t": temporalPeriodFlag,
+  "--temporal-period": temporalPeriodFlag,
+  "-d": ageTimeNowFlag,
+  "--age-time-now": ageTimeNowFlag,
+  "--verbose-results": verboseResultsFlag,
+  "-h": helpFlag,
+  "--help": helpFlag,
+};
+
 /**
  * Parses a raw array of CLI argument strings into structured {@link CliOptions}.
  *
@@ -91,227 +269,36 @@ export function parseArgs(args: string[]): ParsedArgs {
   const options: CliOptions = { ...DEFAULT_OPTIONS };
   const errors: string[] = [];
 
-  // Flatten args that may contain spaces (e.g. ["-l some_file.log"] -> ["-l", "some_file.log"])
-  const flatArgs: string[] = [];
-  for (const arg of args) {
-    flatArgs.push(...arg.split(/\s+/).filter((s) => s.length > 0));
-  }
+  const flatArgs = flattenArgs(args);
 
   let i = 0;
   while (i < flatArgs.length) {
     const flag = flatArgs[i];
+    if (flag === undefined) break;
 
-    switch (flag) {
-      case "-l":
-      case "--log": {
-        const val = flatArgs[++i];
-        if (val === undefined) {
-          errors.push(`Missing value for ${flag}`);
-        } else {
-          options.log = val;
-        }
-        break;
-      }
-      case "-c":
-      case "--version-control": {
-        const val = flatArgs[++i];
-        if (val === undefined) {
-          errors.push(`Missing value for ${flag}`);
-        } else {
-          const valid = ["svn", "git", "git2", "hg", "p4", "tfs"];
-          if (!valid.includes(val)) {
-            errors.push(`Unknown VCS type: ${val}. Supported: ${valid.join(", ")}`);
-          } else {
-            options.versionControl = val;
-          }
-        }
-        break;
-      }
-      case "-a":
-      case "--analysis": {
-        const val = flatArgs[++i];
-        if (val === undefined) {
-          errors.push(`Missing value for ${flag}`);
-        } else {
-          options.analysis = val;
-        }
-        break;
-      }
-      case "--input-encoding": {
-        const val = flatArgs[++i];
-        if (val === undefined) {
-          errors.push(`Missing value for ${flag}`);
-        } else {
-          options.inputEncoding = val;
-        }
-        break;
-      }
-      case "-r":
-      case "--rows": {
-        const val = flatArgs[++i];
-        if (val === undefined) {
-          errors.push(`Missing value for ${flag}`);
-        } else {
-          const num = parseInt(val, 10);
-          if (Number.isNaN(num)) {
-            errors.push(`Invalid integer for ${flag}: ${val}`);
-          } else {
-            options.rows = num;
-          }
-        }
-        break;
-      }
-      case "-o":
-      case "--outfile": {
-        const val = flatArgs[++i];
-        if (val === undefined) {
-          errors.push(`Missing value for ${flag}`);
-        } else {
-          options.outfile = val;
-        }
-        break;
-      }
-      case "-g":
-      case "--group": {
-        const val = flatArgs[++i];
-        if (val === undefined) {
-          errors.push(`Missing value for ${flag}`);
-        } else {
-          options.group = val;
-        }
-        break;
-      }
-      case "-p":
-      case "--team-map-file": {
-        const val = flatArgs[++i];
-        if (val === undefined) {
-          errors.push(`Missing value for ${flag}`);
-        } else {
-          options.teamMapFile = val;
-        }
-        break;
-      }
-      case "-n":
-      case "--min-revs": {
-        const val = flatArgs[++i];
-        if (val === undefined) {
-          errors.push(`Missing value for ${flag}`);
-        } else {
-          const num = parseInt(val, 10);
-          if (Number.isNaN(num)) {
-            errors.push(`Invalid integer for ${flag}: ${val}`);
-          } else {
-            options.minRevs = num;
-          }
-        }
-        break;
-      }
-      case "-m":
-      case "--min-shared-revs": {
-        const val = flatArgs[++i];
-        if (val === undefined) {
-          errors.push(`Missing value for ${flag}`);
-        } else {
-          const num = parseInt(val, 10);
-          if (Number.isNaN(num)) {
-            errors.push(`Invalid integer for ${flag}: ${val}`);
-          } else {
-            options.minSharedRevs = num;
-          }
-        }
-        break;
-      }
-      case "-i":
-      case "--min-coupling": {
-        const val = flatArgs[++i];
-        if (val === undefined) {
-          errors.push(`Missing value for ${flag}`);
-        } else {
-          const num = parseInt(val, 10);
-          if (Number.isNaN(num)) {
-            errors.push(`Invalid integer for ${flag}: ${val}`);
-          } else {
-            options.minCoupling = num;
-          }
-        }
-        break;
-      }
-      case "-x":
-      case "--max-coupling": {
-        const val = flatArgs[++i];
-        if (val === undefined) {
-          errors.push(`Missing value for ${flag}`);
-        } else {
-          const num = parseInt(val, 10);
-          if (Number.isNaN(num)) {
-            errors.push(`Invalid integer for ${flag}: ${val}`);
-          } else {
-            options.maxCoupling = num;
-          }
-        }
-        break;
-      }
-      case "-s":
-      case "--max-changeset-size": {
-        const val = flatArgs[++i];
-        if (val === undefined) {
-          errors.push(`Missing value for ${flag}`);
-        } else {
-          const num = parseInt(val, 10);
-          if (Number.isNaN(num)) {
-            errors.push(`Invalid integer for ${flag}: ${val}`);
-          } else {
-            options.maxChangesetSize = num;
-          }
-        }
-        break;
-      }
-      case "-e":
-      case "--expression-to-match": {
-        const val = flatArgs[++i];
-        if (val === undefined) {
-          errors.push(`Missing value for ${flag}`);
-        } else {
-          options.expressionToMatch = val;
-        }
-        break;
-      }
-      case "-t":
-      case "--temporal-period": {
-        const val = flatArgs[++i];
-        if (val === undefined) {
-          errors.push(`Missing value for ${flag}`);
-        } else {
-          options.temporalPeriod = val;
-        }
-        break;
-      }
-      case "-d":
-      case "--age-time-now": {
-        const val = flatArgs[++i];
-        if (val === undefined) {
-          errors.push(`Missing value for ${flag}`);
-        } else {
-          options.ageTimeNow = val;
-        }
-        break;
-      }
-      case "--verbose-results": {
-        options.verboseResults = true;
-        break;
-      }
-      case "-h":
-      case "--help": {
-        options.help = true;
-        break;
-      }
-      default: {
-        errors.push(`Unknown option: ${flag}`);
-        break;
-      }
+    const handler = FLAG_HANDLERS[flag];
+
+    if (!handler) {
+      errors.push(`Unknown option: ${flag}`);
+      i += 1;
+      continue;
     }
 
-    i++;
+    if (handler.kind === "boolean") {
+      handler.apply(options);
+      i += 1;
+      continue;
+    }
+
+    const value = flatArgs[i + 1];
+    if (value === undefined) {
+      errors.push(`Missing value for ${flag}`);
+      i += 1;
+      continue;
+    }
+
+    handler.apply(value, options, errors, flag);
+    i += 2;
   }
 
   return {

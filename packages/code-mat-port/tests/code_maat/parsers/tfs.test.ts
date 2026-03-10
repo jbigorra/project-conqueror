@@ -134,66 +134,45 @@ const entries =
   "  add $/Project\n" +
   "\n";
 
+const DEFAULT_SINGLE_ENTRY_RESULT = {
+  author: "Ryan Coy",
+  rev: "5",
+  date: "2015-07-23",
+  entity: "/Project",
+  message: "Created team project folder /Project via the Team Project Creation Wizard",
+};
+
+function expectSingleEntry(text: string, expectedMessage = DEFAULT_SINGLE_ENTRY_RESULT.message): void {
+  expect(parseReadLog(text, {})).toEqual([
+    {
+      ...DEFAULT_SINGLE_ENTRY_RESULT,
+      message: expectedMessage,
+    },
+  ]);
+}
+
 describe("tfs parser", () => {
   test("parses en-us entry to dataset", () => {
-    expect(parseReadLog(enUsEntry, {})).toEqual([
-      {
-        author: "Ryan Coy",
-        rev: "5",
-        date: "2015-07-23",
-        entity: "/Project",
-        message: "Created team project folder /Project via the Team Project Creation Wizard",
-      },
-    ]);
+    expectSingleEntry(enUsEntry);
   });
 
   test("parses checkin-notes entry (skips notes section)", () => {
-    expect(parseReadLog(checkinNotesEntry, {})).toEqual([
-      {
-        author: "Ryan Coy",
-        rev: "5",
-        date: "2015-07-23",
-        entity: "/Project",
-        message: "Created team project folder /Project via the Team Project Creation Wizard",
-      },
-    ]);
+    expectSingleEntry(checkinNotesEntry);
   });
 
   test("parses policy warning entry (skips policy section)", () => {
-    expect(parseReadLog(policyWarningEntry, {})).toEqual([
-      {
-        author: "Ryan Coy",
-        rev: "5",
-        date: "2015-07-23",
-        entity: "/Project",
-        message: "Created team project folder /Project via the Team Project Creation Wizard",
-      },
-    ]);
+    expectSingleEntry(policyWarningEntry);
   });
 
   test("parses long comment with blank lines", () => {
-    expect(parseReadLog(longCommentEntry, {})).toEqual([
-      {
-        author: "Ryan Coy",
-        rev: "5",
-        date: "2015-07-23",
-        entity: "/Project",
-        message:
-          "Created team project folder /Project via the Team Project Creation Wizard\nGave project a unique and colorful name\nIt really is the best project.\n***NO_CI***",
-      },
-    ]);
+    expectSingleEntry(
+      longCommentEntry,
+      "Created team project folder /Project via the Team Project Creation Wizard\nGave project a unique and colorful name\nIt really is the best project.\n***NO_CI***",
+    );
   });
 
   test("parses proxy checkin (ignores checked-in-by line)", () => {
-    expect(parseReadLog(proxyCheckinEntry, {})).toEqual([
-      {
-        author: "Ryan Coy",
-        rev: "5",
-        date: "2015-07-23",
-        entity: "/Project",
-        message: "Created team project folder /Project via the Team Project Creation Wizard",
-      },
-    ]);
+    expectSingleEntry(proxyCheckinEntry);
   });
 
   test("throws on unparsable date format (en-gb)", () => {
