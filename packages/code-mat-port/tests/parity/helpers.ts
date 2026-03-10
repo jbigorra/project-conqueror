@@ -105,7 +105,7 @@ function formatCsvValue(
   floatFields: Set<string>,
 ): string {
   const fieldName = inverseFieldMap[header];
-  const value = fieldName ? row[fieldName] ?? "" : "";
+  const value = fieldName ? (row[fieldName] ?? "") : "";
 
   if (floatFields.has(header) && typeof value === "number") {
     return Number.isInteger(value) ? value.toFixed(1) : String(value);
@@ -120,7 +120,9 @@ function csvLineForRow(
   inverseFieldMap: Record<string, string>,
   floatFields: Set<string>,
 ): string {
-  return headers.map((header) => formatCsvValue(row, header, inverseFieldMap, floatFields)).join(",");
+  return headers
+    .map((header) => formatCsvValue(row, header, inverseFieldMap, floatFields))
+    .join(",");
 }
 
 export function toCSV(rows: unknown[], analysis: string): string {

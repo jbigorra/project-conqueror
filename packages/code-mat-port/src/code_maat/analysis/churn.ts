@@ -152,10 +152,12 @@ function distinctRevisionCount(entries: VCSEntry[]): number {
 export function absolutesTrend(entries: VCSEntry[], _options: ChurnOptions): AbsolutesTrendEntry[] {
   throwOnMissingData(entries);
 
-  const result = [...groupEntriesBy(entries, (entry) => entry.date)].map(([date, groupEntries]) => ({
-    date,
-    ...churnSummary(groupEntries),
-  }));
+  const result = [...groupEntriesBy(entries, (entry) => entry.date)].map(
+    ([date, groupEntries]) => ({
+      date,
+      ...churnSummary(groupEntries),
+    }),
+  );
 
   return result.sort((a, b) => {
     if (a.date < b.date) return -1;
@@ -190,10 +192,12 @@ export function absolutesTrend(entries: VCSEntry[], _options: ChurnOptions): Abs
 export function byAuthor(entries: VCSEntry[], _options: ChurnOptions): AuthorChurnEntry[] {
   throwOnMissingData(entries);
 
-  const result = [...groupEntriesBy(entries, (entry) => entry.author)].map(([author, groupEntries]) => ({
-    author,
-    ...churnSummary(groupEntries),
-  }));
+  const result = [...groupEntriesBy(entries, (entry) => entry.author)].map(
+    ([author, groupEntries]) => ({
+      author,
+      ...churnSummary(groupEntries),
+    }),
+  );
 
   return result.sort((a, b) => {
     if (a.author < b.author) return -1;
@@ -224,10 +228,12 @@ export function byAuthor(entries: VCSEntry[], _options: ChurnOptions): AuthorChu
 export function byEntity(entries: VCSEntry[], _options: ChurnOptions): EntityChurnEntry[] {
   throwOnMissingData(entries);
 
-  const result = [...groupEntriesBy(entries, (entry) => entry.entity)].map(([entity, groupEntries]) => ({
-    entity,
-    ...churnSummary(groupEntries),
-  }));
+  const result = [...groupEntriesBy(entries, (entry) => entry.entity)].map(
+    ([entity, groupEntries]) => ({
+      entity,
+      ...churnSummary(groupEntries),
+    }),
+  );
 
   // Sort descending by added
   return result.sort((a, b) => b.added - a.added);
