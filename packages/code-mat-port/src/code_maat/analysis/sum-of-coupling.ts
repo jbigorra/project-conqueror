@@ -13,10 +13,12 @@ function entitiesByRevision(entries: VCSEntry[]): string[][] {
   const byRev = new Map<string | number, string[]>();
   for (const entry of entries) {
     const key = entry.rev;
-    if (!byRev.has(key)) {
-      byRev.set(key, []);
+    const existing = byRev.get(key);
+    if (existing) {
+      existing.push(entry.entity);
+    } else {
+      byRev.set(key, [entry.entity]);
     }
-    byRev.get(key)!.push(entry.entity);
   }
   return Array.from(byRev.values());
 }

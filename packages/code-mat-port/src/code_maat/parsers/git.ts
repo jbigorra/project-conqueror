@@ -7,6 +7,14 @@ export type ParsedEntry = Omit<VCSEntry, "rev"> & { rev: string };
 const COMMIT_HEADER = /^\[([0-9a-f]+)\]\s+(.+?)\s+(\d{4}-\d{2}-\d{2})\s+(.*)$/;
 const FILE_LINE = /^(-|\d+)\t(-|\d+)\t(.+)$/;
 
+function getCapture(match: RegExpMatchArray, index: number, context: string): string {
+  const value = match[index];
+  if (value === undefined) {
+    throw new Error(`Malformed git log: missing ${context}`);
+  }
+  return value;
+}
+
 /**
  * Parses a git log string into an array of VCS entries.
  *
@@ -36,22 +44,22 @@ export function parseReadLog(text: string, _options: Record<string, unknown>): P
   for (const line of lines) {
     const headerMatch = line.match(COMMIT_HEADER);
     if (headerMatch) {
-      currentRev = headerMatch[1]!;
-      currentAuthor = headerMatch[2]!;
-      currentDate = headerMatch[3]!;
-      currentMessage = headerMatch[4]!;
+      currentRev = getCapture(headerMatch, 1, "revision");
+      currentAuthor = getCapture(headerMatch, 2, "author");
+      currentDate = getCapture(headerMatch, 3, "date");
+      currentMessage = getCapture(headerMatch, 4, "message");
       continue;
     }
 
     const fileMatch = line.match(FILE_LINE);
-    if (fileMatch && currentRev) {
+    if (fileMatch && currentRev && currentDate && currentAuthor) {
       result.push({
-        locAdded: fileMatch[1]!,
-        locDeleted: fileMatch[2]!,
-        entity: fileMatch[3]!,
+        locAdded: getCapture(fileMatch, 1, "added LOC"),
+        locDeleted: getCapture(fileMatch, 2, "deleted LOC"),
+        entity: getCapture(fileMatch, 3, "entity"),
         rev: currentRev,
-        date: currentDate!,
-        author: currentAuthor!,
+        date: currentDate,
+        author: currentAuthor,
         message: currentMessage ?? "-",
       });
     }

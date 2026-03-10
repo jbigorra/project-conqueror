@@ -16,7 +16,7 @@
         "noUnusedVariables": "error"
       },
       "style": {
-        "noNonNullAssertion": "off"
+        "noNonNullAssertion": "error"
       }
     }
   },

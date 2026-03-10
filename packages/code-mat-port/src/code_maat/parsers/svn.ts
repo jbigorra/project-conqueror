@@ -19,10 +19,22 @@ const AUTHOR_RE = /<author>([\s\S]*?)<\/author>/;
 const DATE_RE = /<date>([\s\S]*?)<\/date>/;
 const PATH_RE = /<path[^>]+action='([^']+)'[^>]*>([\s\S]*?)<\/path>/g;
 
+function getCapture(
+  match: RegExpMatchArray | RegExpExecArray,
+  index: number,
+  context: string,
+): string {
+  const value = match[index];
+  if (value === undefined) {
+    throw new Error(`Malformed SVN log: missing ${context}`);
+  }
+  return value;
+}
+
 function parseSvnDate(dateStr: string): string {
   const m = dateStr.match(/^(\d{4}-\d{2}-\d{2})/);
   if (!m) throw new Error(`Cannot parse SVN date: ${dateStr}`);
-  return m[1]!;
+  return getCapture(m, 1, "date");
 }
 
 /**
@@ -47,19 +59,21 @@ export function parseXml(xmlText: string): SvnLogEntry[] {
   LOGENTRY_RE.lastIndex = 0;
   m = LOGENTRY_RE.exec(xmlText);
   while (m !== null) {
-    const rev = m[1]!;
-    const body = m[2]!;
+    const rev = getCapture(m, 1, "revision");
+    const body = getCapture(m, 2, "entry body");
 
     const authorM = AUTHOR_RE.exec(body);
     const dateM = DATE_RE.exec(body);
-    const author = authorM ? authorM[1]!.trim() : "";
-    const date = dateM ? parseSvnDate(dateM[1]!.trim()) : "";
+    const author = authorM ? getCapture(authorM, 1, "author").trim() : "";
+    const date = dateM ? parseSvnDate(getCapture(dateM, 1, "date body").trim()) : "";
 
     const paths: Array<{ entity: string; action: string }> = [];
     PATH_RE.lastIndex = 0;
     let pm: RegExpExecArray | null = PATH_RE.exec(body);
     while (pm !== null) {
-      paths.push({ action: pm[1]!, entity: pm[2]!.trim() });
+      const action = getCapture(pm, 1, "path action");
+      const entity = getCapture(pm, 2, "path entity");
+      paths.push({ action, entity: entity.trim() });
       pm = PATH_RE.exec(body);
     }
 

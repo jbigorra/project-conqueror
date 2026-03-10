@@ -38,18 +38,19 @@ export function parseReadLog(text: string, _options: Record<string, unknown>): M
   for (const line of lines) {
     const headerMatch = line.match(COMMIT_HEADER);
     if (headerMatch) {
-      currentRev = headerMatch[1]!;
-      currentAuthor = headerMatch[2]!;
-      currentDate = headerMatch[3]!;
+      const [, rev, author, date] = headerMatch;
+      currentRev = rev;
+      currentAuthor = author;
+      currentDate = date;
       continue;
     }
 
     // Non-empty, non-header line following a commit header = a file entity
-    if (line.trim() && currentRev) {
+    if (line.trim() && currentRev && currentDate && currentAuthor) {
       result.push({
-        author: currentAuthor!,
+        author: currentAuthor,
         rev: currentRev,
-        date: currentDate!,
+        date: currentDate,
         entity: line,
         message: "-",
       });

@@ -7,6 +7,14 @@ const COMMIT_HEADER = /^--([0-9a-f]+)--(\d{4}-\d{2}-\d{2})--(.+)$/;
 // File stat line: {added}\t{deleted}\t{path}  (binary files use "-" for added/deleted)
 const FILE_LINE = /^(-|\d+)\t(-|\d+)\t(.+)$/;
 
+function getCapture(match: RegExpMatchArray, index: number, context: string): string {
+  const value = match[index];
+  if (value === undefined) {
+    throw new Error(`Malformed git2 log: missing ${context}`);
+  }
+  return value;
+}
+
 /**
  * Parses a git2 log string into an array of VCS entries.
  *
@@ -35,21 +43,21 @@ export function parseReadLog(text: string, _options: Record<string, unknown>): P
   for (const line of lines) {
     const headerMatch = line.match(COMMIT_HEADER);
     if (headerMatch) {
-      currentRev = headerMatch[1]!;
-      currentDate = headerMatch[2]!;
-      currentAuthor = headerMatch[3]!;
+      currentRev = getCapture(headerMatch, 1, "revision");
+      currentDate = getCapture(headerMatch, 2, "date");
+      currentAuthor = getCapture(headerMatch, 3, "author");
       continue;
     }
 
     const fileMatch = line.match(FILE_LINE);
-    if (fileMatch && currentRev) {
+    if (fileMatch && currentRev && currentDate && currentAuthor) {
       result.push({
-        locAdded: fileMatch[1]!,
-        locDeleted: fileMatch[2]!,
-        entity: fileMatch[3]!,
+        locAdded: getCapture(fileMatch, 1, "added LOC"),
+        locDeleted: getCapture(fileMatch, 2, "deleted LOC"),
+        entity: getCapture(fileMatch, 3, "entity"),
         rev: currentRev,
-        date: currentDate!,
-        author: currentAuthor!,
+        date: currentDate,
+        author: currentAuthor,
         message: "-",
       });
     }

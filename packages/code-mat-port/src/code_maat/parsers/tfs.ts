@@ -22,6 +22,14 @@ const ITEM_LINE = /^\s+\S[\s\S]*?\$(.+)$/;
 // Comment line: 2-space indent
 const COMMENT_LINE = /^ {2}(.+)$/;
 
+function getCapture(match: RegExpMatchArray, index: number, context: string): string {
+  const value = match[index];
+  if (value === undefined) {
+    throw new Error(`Malformed TFS log: missing ${context}`);
+  }
+  return value;
+}
+
 const MONTH_MAP: Record<string, string> = {
   January: "01",
   February: "02",
@@ -42,10 +50,13 @@ function parseDate(dateStr: string): string {
   // Optional "DayName, " prefix, then "Month D, YYYY ..."
   const m = dateStr.match(/^(?:\w+,\s+)?([A-Za-z]+)\s+(\d+),\s+(\d{4})\s+/);
   if (!m) throw new Error(`Unsupported TFS Date Format: ${dateStr}`);
-  const month = MONTH_MAP[m[1]!];
+  const monthName = getCapture(m, 1, "month");
+  const rawDay = getCapture(m, 2, "day");
+  const year = getCapture(m, 3, "year");
+  const month = MONTH_MAP[monthName];
   if (!month) throw new Error(`Unsupported TFS Date Format: ${dateStr}`);
-  const day = m[2]!.padStart(2, "0");
-  return `${m[3]!}-${month}-${day}`;
+  const day = rawDay.padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 /**
@@ -106,13 +117,13 @@ export function parseReadLog(text: string, _options: Record<string, unknown> = {
     if (state === "HEADER") {
       const cm = trimmed.match(CHANGESET);
       if (cm) {
-        rev = cm[1]!;
+        rev = getCapture(cm, 1, "changeset");
         continue;
       }
 
       const um = trimmed.match(USER);
       if (um) {
-        author = um[1]!;
+        author = getCapture(um, 1, "user");
         continue;
       }
 
@@ -120,7 +131,7 @@ export function parseReadLog(text: string, _options: Record<string, unknown> = {
 
       const dm = trimmed.match(DATE_LINE);
       if (dm) {
-        date = parseDate(dm[1]!);
+        date = parseDate(getCapture(dm, 1, "date"));
         continue;
       }
 
@@ -140,7 +151,7 @@ export function parseReadLog(text: string, _options: Record<string, unknown> = {
       if (!trimmed) continue; // blank line within comment
       const lm = rawLine.match(COMMENT_LINE);
       if (lm) {
-        messageLines.push(lm[1]!);
+        messageLines.push(getCapture(lm, 1, "comment line"));
         continue;
       }
       continue;
@@ -158,7 +169,7 @@ export function parseReadLog(text: string, _options: Record<string, unknown> = {
       if (!trimmed) continue;
       const im = rawLine.match(ITEM_LINE);
       if (im) {
-        entities.push(im[1]!);
+        entities.push(getCapture(im, 1, "entity"));
       }
     }
 

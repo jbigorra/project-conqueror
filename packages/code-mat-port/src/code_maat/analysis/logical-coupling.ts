@@ -17,10 +17,12 @@ function entitiesByRevisionFiltered(entries: VCSEntry[], maxChangesetSize: numbe
   const byRev = new Map<string | number, VCSEntry[]>();
   for (const entry of entries) {
     const key = entry.rev;
-    if (!byRev.has(key)) {
-      byRev.set(key, []);
+    const existing = byRev.get(key);
+    if (existing) {
+      existing.push(entry);
+    } else {
+      byRev.set(key, [entry]);
     }
-    byRev.get(key)!.push(entry);
   }
   return Array.from(byRev.values()).filter((group) => group.length <= maxChangesetSize);
 }

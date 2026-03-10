@@ -101,15 +101,15 @@ export function bySharedEntities(entries: VCSEntry[]): CommunicationRow[] {
   const rows: CommunicationRow[] = [];
 
   for (const [key, shared] of freqs) {
-    const [me, peer] = key.split("\0");
+    const [me = "", peer = ""] = key.split("\0");
     if (me === peer) continue; // skip self-pairs
 
-    const myTotal = selfCount(me!, freqs);
-    const peerTotal = selfCount(peer!, freqs);
+    const myTotal = selfCount(me, freqs);
+    const peerTotal = selfCount(peer, freqs);
     const average = Math.ceil((myTotal + peerTotal) / 2);
     const strength = Math.trunc(asPercentage(shared / average));
 
-    rows.push({ author: me!, peer: peer!, shared, average, strength });
+    rows.push({ author: me, peer, shared, average, strength });
   }
 
   // Sort by strength desc, then author desc, then peer desc

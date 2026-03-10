@@ -207,13 +207,13 @@ describe("test-argument-parsing", () => {
     it("reports an error for unknown flags", () => {
       const parsed = parseArgs(["--unknown-flag"]);
       expect(parsed.errors).not.toBeNull();
-      expect(parsed.errors!.length).toBeGreaterThan(0);
+      expect(parsed.errors?.length ?? 0).toBeGreaterThan(0);
     });
 
     it("reports an error for unsupported VCS type", () => {
       const parsed = parseArgs(["-l", "file.log", "-c", "invalid-vcs"]);
       expect(parsed.errors).not.toBeNull();
-      expect(parsed.errors!.some((e) => e.includes("invalid-vcs"))).toBe(true);
+      expect(parsed.errors?.some((e) => e.includes("invalid-vcs")) ?? false).toBe(true);
     });
 
     it("reports an error when -l is missing its value", () => {

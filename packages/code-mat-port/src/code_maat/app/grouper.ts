@@ -90,8 +90,13 @@ export function textToGroupSpecification(input: string): GroupSpec[] {
       throw new Error(`Invalid group specification line: "${trimmed}"`);
     }
 
-    const pathToken = match[1]!.trim();
-    const name = match[2]!.trim();
+    const rawPathToken = match[1];
+    const rawName = match[2];
+    if (rawPathToken === undefined || rawName === undefined) {
+      throw new Error(`Invalid group specification line: "${trimmed}"`);
+    }
+    const pathToken = rawPathToken.trim();
+    const name = rawName.trim();
 
     let pathRegex: RegExp;
     if (isRegexPath(pathToken)) {
@@ -118,10 +123,6 @@ function entityToLogicalName(entity: string, groups: GroupSpec[]): string | unde
   return undefined;
 }
 
-function withinGroup(entity: string, groups: GroupSpec[]): boolean {
-  return groups.some(({ path }) => path.test(entity));
-}
-
 /**
  * Maps each entity record to one of the pre-defined architectural boundaries (groups).
  *
@@ -144,12 +145,11 @@ function withinGroup(entity: string, groups: GroupSpec[]): boolean {
  * // [{ entity: "Top", rev: 1 }, { entity: "infrastructure", rev: 2 }]
  */
 export function mapEntitiesToGroups(commits: EntityRecord[], groups: GroupSpec[]): EntityRecord[] {
-  return commits
-    .filter((commit) => withinGroup(commit.entity, groups))
-    .map((commit) => {
-      const logicalName = entityToLogicalName(commit.entity, groups)!;
-      return { ...commit, entity: logicalName };
-    });
+  return commits.flatMap((commit) => {
+    const logicalName = entityToLogicalName(commit.entity, groups);
+    if (!logicalName) return [];
+    return [{ ...commit, entity: logicalName }];
+  });
 }
 
 /**

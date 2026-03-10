@@ -13,6 +13,14 @@ const FILE_LINE = /^\.\.\.\s+\/\/[^/]+\/[^/]+([^#]+)#.+$/;
 
 type State = "HEADER" | "MESSAGE" | "JOBS" | "FILES";
 
+function getCapture(match: RegExpMatchArray, index: number, context: string): string {
+  const value = match[index];
+  if (value === undefined) {
+    throw new Error(`Malformed Perforce log: missing ${context}`);
+  }
+  return value;
+}
+
 /**
  * Parses a Perforce log string into an array of VCS entries.
  *
@@ -42,9 +50,12 @@ export function parseReadLog(text: string, _options: Record<string, unknown>): P
   for (const line of lines) {
     const headerMatch = line.match(CHANGE_HEADER);
     if (headerMatch) {
-      currentRev = headerMatch[1]!;
-      currentAuthor = headerMatch[2]!;
-      currentDate = `${headerMatch[3]!}-${headerMatch[4]!}-${headerMatch[5]!}`;
+      currentRev = getCapture(headerMatch, 1, "revision");
+      currentAuthor = getCapture(headerMatch, 2, "author");
+      const year = getCapture(headerMatch, 3, "year");
+      const month = getCapture(headerMatch, 4, "month");
+      const day = getCapture(headerMatch, 5, "day");
+      currentDate = `${year}-${month}-${day}`;
       state = "MESSAGE";
       continue;
     }
@@ -72,7 +83,7 @@ export function parseReadLog(text: string, _options: Record<string, unknown>): P
           author: currentAuthor,
           rev: currentRev,
           date: currentDate,
-          entity: fileMatch[1]!,
+          entity: getCapture(fileMatch, 1, "entity"),
           message: "",
         });
       }

@@ -58,10 +58,11 @@ export function byCount(
   const entityData = new Map<string, { authors: Set<string>; revs: number }>();
 
   for (const row of ds) {
-    if (!entityData.has(row.entity)) {
-      entityData.set(row.entity, { authors: new Set(), revs: 0 });
+    let data = entityData.get(row.entity);
+    if (!data) {
+      data = { authors: new Set<string>(), revs: 0 };
+      entityData.set(row.entity, data);
     }
-    const data = entityData.get(row.entity)!;
     data.authors.add(row.author);
     data.revs += 1;
   }

@@ -43,10 +43,12 @@ function entitiesByRevision(entries: VCSEntry[]): string[][] {
   const byRev = new Map<string | number, string[]>();
   for (const entry of entries) {
     const key = entry.rev;
-    if (!byRev.has(key)) {
-      byRev.set(key, []);
+    const existing = byRev.get(key);
+    if (existing) {
+      existing.push(entry.entity);
+    } else {
+      byRev.set(key, [entry.entity]);
     }
-    byRev.get(key)!.push(entry.entity);
   }
   return Array.from(byRev.values());
 }
@@ -126,7 +128,13 @@ export function couplingFrequencies(
     }
   }
 
-  return Array.from(counts.entries()).map(([key, count]) => [pairMap.get(key)!, count]);
+  return Array.from(counts.entries()).map(([key, count]) => {
+    const pair = pairMap.get(key);
+    if (!pair) {
+      throw new Error(`Missing coupling pair for key: ${key}`);
+    }
+    return [pair, count];
+  });
 }
 
 /**

@@ -64,14 +64,19 @@ function dailyDatesBetween(start: string, end: string): string[] {
 function padCommitsToCompleteTimeSeries(commits: InputEntry[]): Map<string, InputEntry[]> {
   const grouped = new Map<string, InputEntry[]>();
   for (const c of commits) {
-    const d = c.date!;
-    if (!grouped.has(d)) grouped.set(d, []);
-    grouped.get(d)!.push(c);
+    const d = c.date;
+    const existing = grouped.get(d);
+    if (existing) {
+      existing.push(c);
+    } else {
+      grouped.set(d, [c]);
+    }
   }
 
   const sortedDates = [...grouped.keys()].sort();
-  const firstDate = sortedDates[0]!;
-  const lastDate = sortedDates[sortedDates.length - 1]!;
+  const firstDate = sortedDates.at(0);
+  const lastDate = sortedDates.at(-1);
+  if (!firstDate || !lastDate) return new Map();
 
   const padded = new Map<string, InputEntry[]>();
   for (const date of dailyDatesBetween(firstDate, lastDate)) {
@@ -102,7 +107,7 @@ function distinctByEntity(entries: InputEntry[]): InputEntry[] {
 function adjustRevisionTo(newRev: string, commits: InputEntry[]): OutputEntry[] {
   const deduped = distinctByEntity(commits);
   return deduped.map((c) => ({
-    date: c.date!,
+    date: c.date,
     entity: c.entity,
     rev: newRev,
   }));
@@ -117,9 +122,11 @@ function combineCommitsToLogicalChangesets(windows: InputEntry[][]): OutputEntry
   for (const window of windows) {
     if (window.length === 0) continue;
     const sortedByDate = [...window].sort((a, b) =>
-      a.date! < b.date! ? -1 : a.date! > b.date! ? 1 : 0,
+      a.date < b.date ? -1 : a.date > b.date ? 1 : 0,
     );
-    const latestDay = sortedByDate[sortedByDate.length - 1]!.date!;
+    const latestEntry = sortedByDate.at(-1);
+    if (!latestEntry) continue;
+    const latestDay = latestEntry.date;
     const adjusted = adjustRevisionTo(latestDay, window);
     result.push(...adjusted);
   }
@@ -136,7 +143,7 @@ function isEmptyWindow(dayGroups: InputEntry[][]): boolean {
 function commitsToSlidingWindowSeq(timePeriod: number, commits: InputEntry[]): OutputEntry[] {
   const padded = padCommitsToCompleteTimeSeries(commits);
   const sortedDates = [...padded.keys()].sort();
-  const dayArrays = sortedDates.map((d) => padded.get(d)!);
+  const dayArrays = sortedDates.map((d) => padded.get(d) ?? []);
 
   // Partition with sliding window of size timePeriod, step 1
   const windows: InputEntry[][][] = [];

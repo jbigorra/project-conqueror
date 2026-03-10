@@ -74,6 +74,14 @@ function computeEntityAuthorRevs(entries: VCSEntry[]): EntityAuthorRevs[] {
   return result;
 }
 
+function firstOrThrow<T>(items: T[], message: string): T {
+  const first = items[0];
+  if (first === undefined) {
+    throw new Error(message);
+  }
+  return first;
+}
+
 /**
  * Returns the revision contribution of each author for every entity in the dataset.
  *
@@ -142,7 +150,10 @@ export function asEntityFragmentation(
   const entityAuthorRevs = computeEntityAuthorRevs(entries);
 
   const result: EntityFragmentation[] = entityAuthorRevs.map(({ entity, authorRevs }) => {
-    const totalRevs = authorRevs[0]!.totalRevs;
+    const totalRevs = firstOrThrow(
+      authorRevs,
+      `Expected author revisions for entity fragmentation: ${entity}`,
+    ).totalRevs;
     const sumOfSquares = authorRevs.reduce((acc, { revs }) => {
       return acc + (revs / totalRevs) ** 2;
     }, 0);
@@ -190,7 +201,10 @@ export function asMainDeveloperByRevisions(
 
   const result: MainDeveloper[] = entityAuthorRevs.map(({ entity, authorRevs }) => {
     const sorted = [...authorRevs].sort((a, b) => b.revs - a.revs);
-    const mainAuthor = sorted[0]!;
+    const mainAuthor = firstOrThrow(
+      sorted,
+      `Expected author revisions for main developer analysis: ${entity}`,
+    );
     const ownership = ratioToCentiFloatPrecision(mainAuthor.revs / mainAuthor.totalRevs);
     return {
       entity,

@@ -105,10 +105,12 @@ async function parseCommits(logFilePath: string, options: AppOptions): Promise<V
 function aggregate(commits: VCSEntry[], options: AppOptions): VCSEntry[] {
   let r = commits;
   if (options.group) r = runGrouper(options.group, r) as VCSEntry[];
-  if (options.temporalPeriod)
+  if (options.temporalPeriod) {
+    const temporalPeriod = options.temporalPeriod;
     r = byTimePeriod(r as (VCSEntry & { date: string })[], {
-      temporalPeriod: options.temporalPeriod!,
+      temporalPeriod,
     }) as VCSEntry[];
+  }
   if (options.teamMapFile) r = runTeamMapper(r, fileToAuthorTeamLookup(options.teamMapFile));
   return r;
 }

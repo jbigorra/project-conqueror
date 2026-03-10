@@ -22,7 +22,8 @@
     "typecheck": "tsc --noEmit",
     "format": "biome format --write src/ tests/",
     "lint": "biome lint --write src/ tests/",
-    "check": "biome check --write src/ tests/"
+    "check": "biome check --write src/ tests/",
+    "validation-pipeline": "pnpm run test:no-parity && pnpm run typecheck && pnpm run format && pnpm run lint && pnpm run check"
   },
   "keywords": [],
   "author": "",

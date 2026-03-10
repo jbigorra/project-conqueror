@@ -101,7 +101,8 @@ export function toCSV(rows: unknown[], analysis: string): string {
     lines.push(
       headers
         .map((h) => {
-          const val = (row as Record<string, unknown>)[inv[h]!] ?? "";
+          const fieldName = inv[h];
+          const val = fieldName ? ((row as Record<string, unknown>)[fieldName] ?? "") : "";
           if (floatFields.has(h) && typeof val === "number") {
             return Number.isInteger(val) ? val.toFixed(1) : String(val);
           }

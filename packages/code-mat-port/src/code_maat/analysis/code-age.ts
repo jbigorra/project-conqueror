@@ -5,8 +5,18 @@ export type CodeAgeEntry = { entity: string; ageMonths: number };
 
 function parseDate(dateStr: string): Date {
   // Parse "YYYY-MM-DD" as UTC to avoid timezone offset issues
-  const [year, month, day] = dateStr.split("-").map(Number);
-  return new Date(Date.UTC(year!, month! - 1, day!));
+  const parts = dateStr.split("-");
+  if (parts.length !== 3) {
+    throw new Error(`Invalid date format: ${dateStr}`);
+  }
+  const [yearText, monthText, dayText] = parts;
+  if (yearText === undefined || monthText === undefined || dayText === undefined) {
+    throw new Error(`Invalid date format: ${dateStr}`);
+  }
+  const year = Number(yearText);
+  const month = Number(monthText);
+  const day = Number(dayText);
+  return new Date(Date.UTC(year, month - 1, day));
 }
 
 function monthsDiff(from: Date, to: Date): number {
@@ -54,8 +64,9 @@ export function byAge(entries: VCSEntry[], referenceDate?: string): CodeAgeEntry
     const entryDate = parseDate(entry.date);
     // Only include commits strictly before the reference date
     if (entryDate >= now) continue;
-    if (!groups[entry.entity]) groups[entry.entity] = [];
-    groups[entry.entity]!.push(entryDate);
+    const entityDates = groups[entry.entity] ?? [];
+    entityDates.push(entryDate);
+    groups[entry.entity] = entityDates;
   }
 
   const result: CodeAgeEntry[] = [];
