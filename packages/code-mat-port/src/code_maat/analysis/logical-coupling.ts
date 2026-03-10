@@ -77,7 +77,7 @@ export function byDegree(entries: VCSEntry[], options: AnalysisOptions): Couplin
     const degree = Math.floor((sharedRevs / avg) * 100);
 
     if (degree < minCoupling) continue;
-    if (Math.floor(degree) > maxCoupling) continue;
+    if (degree > maxCoupling) continue;
 
     results.push({ entity: entityA, coupled: entityB, degree, averageRevs });
   }
