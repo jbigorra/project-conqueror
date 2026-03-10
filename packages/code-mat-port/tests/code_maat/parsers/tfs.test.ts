@@ -142,7 +142,10 @@ const DEFAULT_SINGLE_ENTRY_RESULT = {
   message: "Created team project folder /Project via the Team Project Creation Wizard",
 };
 
-function expectSingleEntry(text: string, expectedMessage = DEFAULT_SINGLE_ENTRY_RESULT.message): void {
+function expectSingleEntry(
+  text: string,
+  expectedMessage = DEFAULT_SINGLE_ENTRY_RESULT.message,
+): void {
   expect(parseReadLog(text, {})).toEqual([
     {
       ...DEFAULT_SINGLE_ENTRY_RESULT,
