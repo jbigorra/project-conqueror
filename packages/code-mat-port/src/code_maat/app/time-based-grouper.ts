@@ -154,8 +154,7 @@ function commitsToSlidingWindowSeq(timePeriod: number, commits: InputEntry[]): O
 }
 
 function validatedTimePeriod(options: TimeGroupOptions): number {
-  const { temporalPeriod } = options;
-  if (!/^\d+$/.test(temporalPeriod)) {
+  if (!/^\d+$/.test(temporalPeriod) || parseInt(temporalPeriod, 10) <= 0) {
     throw new Error(`Invalid time-period: the given value '${temporalPeriod}' is not an integer.`);
   }
   return parseInt(temporalPeriod, 10);
