@@ -17,8 +17,10 @@
     "./package.json": "./package.json"
   },
   "scripts": {
-    "test": "bun test",
-    "test:no-parity": "bun test tests/code_maat/*",
+    "test": "bun test tests/code_maat/*",
+    "test:tdd": "bun test tests/code_maat/* --watch",
+    "test:coverage": "bun test tests/code_maat/* --coverage",
+    "test:parity-check": "bun test",
     "typecheck": "tsc --noEmit",
     "format": "biome format --write src/ tests/",
     "lint": "biome lint --write src/ tests/",
