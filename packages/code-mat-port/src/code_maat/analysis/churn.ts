@@ -302,6 +302,14 @@ function asOwnershipRatio(own: number, total: number): number {
   return ratioCentiFloatPrecision(own / safeDenominator);
 }
 
+function sortByEntity<T extends { entity: string }>(entries: T[]): T[] {
+  return entries.sort((a, b) => {
+    if (a.entity < b.entity) return -1;
+    if (a.entity > b.entity) return 1;
+    return 0;
+  });
+}
+
 type DominantContributorSummary = {
   mainDev: string;
   amount: number;
@@ -327,6 +335,41 @@ function dominantContributorSummary(
   };
 }
 
+function dominantContributorEntriesByEntity<T extends { entity: string }>(
+  entries: VCSEntry[],
+  metric: "added" | "deleted",
+  toEntry: (entity: string, summary: DominantContributorSummary) => T,
+): T[] {
+  throwOnMissingData(entries);
+
+  return sortByEntity(
+    [...groupEntriesBy(entries, (entry) => entry.entity)].map(([entity, entityEntries]) =>
+      toEntry(entity, dominantContributorSummary(entityEntries, metric)),
+    ),
+  );
+}
+
+function dominantContributorAnalysis<
+  T extends MainDeveloperEntry | RefactoringMainDeveloperEntry,
+  TAmountKey extends keyof T,
+  TTotalKey extends keyof T,
+>(
+  metric: "added" | "deleted",
+  amountKey: TAmountKey,
+  totalKey: TTotalKey,
+): (entries: VCSEntry[], _options: ChurnOptions) => T[] {
+  return (entries, _options) =>
+    dominantContributorEntriesByEntity(entries, metric, (entity, summary) =>
+      ({
+        entity,
+        mainDev: summary.mainDev,
+        [amountKey]: summary.amount,
+        [totalKey]: summary.total,
+        ownership: summary.ownership,
+      }) as T,
+    );
+}
+
 /**
  * Identifies the main developer of each entity based on lines of code added.
  *
@@ -345,29 +388,11 @@ function dominantContributorSummary(
  * //   { entity: "A", mainDev: "xy", added: 15, totalAdded: 27, ownership: 0.56 },
  * // ]
  */
-export function byMainDeveloper(entries: VCSEntry[], _options: ChurnOptions): MainDeveloperEntry[] {
-  throwOnMissingData(entries);
-
-  const result: MainDeveloperEntry[] = [];
-
-  for (const [entity, entityEntries] of groupEntriesBy(entries, (entry) => entry.entity)) {
-    const summary = dominantContributorSummary(entityEntries, "added");
-
-    result.push({
-      entity,
-      mainDev: summary.mainDev,
-      added: summary.amount,
-      totalAdded: summary.total,
-      ownership: summary.ownership,
-    });
-  }
-
-  return result.sort((a, b) => {
-    if (a.entity < b.entity) return -1;
-    if (a.entity > b.entity) return 1;
-    return 0;
-  });
-}
+export const byMainDeveloper = dominantContributorAnalysis<
+  MainDeveloperEntry,
+  "added",
+  "totalAdded"
+>("added", "added", "totalAdded");
 
 /**
  * Identifies the main refactoring developer of each entity based on lines of code removed.
@@ -390,29 +415,8 @@ export function byMainDeveloper(entries: VCSEntry[], _options: ChurnOptions): Ma
  * //   { entity: "A", mainDev: "xy", removed: 3, totalRemoved: 9, ownership: 0.33 },
  * // ]
  */
-export function byRefactoringMainDeveloper(
-  entries: VCSEntry[],
-  _options: ChurnOptions,
-): RefactoringMainDeveloperEntry[] {
-  throwOnMissingData(entries);
-
-  const result: RefactoringMainDeveloperEntry[] = [];
-
-  for (const [entity, entityEntries] of groupEntriesBy(entries, (entry) => entry.entity)) {
-    const summary = dominantContributorSummary(entityEntries, "deleted");
-
-    result.push({
-      entity,
-      mainDev: summary.mainDev,
-      removed: summary.amount,
-      totalRemoved: summary.total,
-      ownership: summary.ownership,
-    });
-  }
-
-  return result.sort((a, b) => {
-    if (a.entity < b.entity) return -1;
-    if (a.entity > b.entity) return 1;
-    return 0;
-  });
-}
+export const byRefactoringMainDeveloper = dominantContributorAnalysis<
+  RefactoringMainDeveloperEntry,
+  "removed",
+  "totalRemoved"
+>("deleted", "removed", "totalRemoved");
