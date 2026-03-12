@@ -90,6 +90,13 @@ const FIELD_MAP: Record<string, Record<string, string>> = {
 
 type CsvRow = Record<string, unknown>;
 
+type RunJarOptions = {
+  logFile: string;
+  vcs: string;
+  analysis: string;
+  extra?: string[];
+};
+
 function invertFieldMap(fieldMap: Record<string, string>): Record<string, string> {
   const inverseFieldMap: Record<string, string> = {};
   for (const [tsField, csvHeader] of Object.entries(fieldMap)) {
@@ -159,12 +166,7 @@ export function toCSV(rows: unknown[], analysis: string): string {
   return `${lines.join("\n")}\n`;
 }
 
-export function runJar(
-  logFile: string,
-  vcs: string,
-  analysis: string,
-  extra: string[] = [],
-): string {
+export function runJar({ logFile, vcs, analysis, extra = [] }: RunJarOptions): string {
   const r = spawnSync(["java", "-jar", JAR, "-l", logFile, "-c", vcs, "-a", analysis, ...extra]);
   if (r.exitCode !== 0) throw new Error(`JAR failed: ${r.stderr}`);
   const output = r.stdout.toString();
