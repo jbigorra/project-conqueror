@@ -18,10 +18,8 @@ type InputEntry = {
   [key: string]: unknown;
 };
 
-type OutputEntry = {
-  entity: string;
+type OutputEntry<T extends InputEntry> = Omit<T, "rev"> & {
   rev: string;
-  date: string;
 };
 
 type TimeGroupOptions = {
@@ -61,8 +59,8 @@ function dailyDatesBetween(start: string, end: string): string[] {
  * Pad commits so every day from first to last commit date has an entry in the map
  * (empty array for days without commits).
  */
-function padCommitsToCompleteTimeSeries(commits: InputEntry[]): Map<string, InputEntry[]> {
-  const grouped = new Map<string, InputEntry[]>();
+function padCommitsToCompleteTimeSeries<T extends InputEntry>(commits: T[]): Map<string, T[]> {
+  const grouped = new Map<string, T[]>();
   for (const c of commits) {
     const d = c.date;
     if (!grouped.has(d)) grouped.set(d, []);
@@ -73,7 +71,7 @@ function padCommitsToCompleteTimeSeries(commits: InputEntry[]): Map<string, Inpu
   const firstDate = sortedDates[0]!;
   const lastDate = sortedDates[sortedDates.length - 1]!;
 
-  const padded = new Map<string, InputEntry[]>();
+  const padded = new Map<string, T[]>();
   for (const date of dailyDatesBetween(firstDate, lastDate)) {
     padded.set(date, grouped.get(date) ?? []);
   }
@@ -83,9 +81,9 @@ function padCommitsToCompleteTimeSeries(commits: InputEntry[]): Map<string, Inpu
 /**
  * Return unique entries by entity, keeping first occurrence.
  */
-function distinctByEntity(entries: InputEntry[]): InputEntry[] {
+function distinctByEntity<T extends InputEntry>(entries: T[]): T[] {
   const seen = new Set<string>();
-  const result: InputEntry[] = [];
+  const result: T[] = [];
   for (const e of entries) {
     if (!seen.has(e.entity)) {
       seen.add(e.entity);
@@ -99,21 +97,17 @@ function distinctByEntity(entries: InputEntry[]): InputEntry[] {
  * Adjust all commits in a window to use the latest date as their revision.
  * Also deduplicates by entity (keeping the first occurrence).
  */
-function adjustRevisionTo(newRev: string, commits: InputEntry[]): OutputEntry[] {
+function adjustRevisionTo<T extends InputEntry>(newRev: string, commits: T[]): OutputEntry<T>[] {
   const deduped = distinctByEntity(commits);
-  return deduped.map((c) => ({
-    date: c.date,
-    entity: c.entity,
-    rev: newRev,
-  }));
+  return deduped.map((c) => ({ ...c, rev: newRev }));
 }
 
 /**
  * Combine all commits in a sliding window into a single logical changeset.
  * The revision is set to the latest date in that window.
  */
-function combineCommitsToLogicalChangesets(windows: InputEntry[][]): OutputEntry[] {
-  const result: OutputEntry[] = [];
+function combineCommitsToLogicalChangesets<T extends InputEntry>(windows: T[][]): OutputEntry<T>[] {
+  const result: OutputEntry<T>[] = [];
   for (const window of windows) {
     if (window.length === 0) continue;
     const sortedByDate = [...window].sort((a, b) =>
@@ -129,17 +123,20 @@ function combineCommitsToLogicalChangesets(windows: InputEntry[][]): OutputEntry
 /**
  * Check if all sub-arrays in a window are empty.
  */
-function isEmptyWindow(dayGroups: InputEntry[][]): boolean {
+function isEmptyWindow<T extends InputEntry>(dayGroups: T[][]): boolean {
   return dayGroups.every((g) => g.length === 0);
 }
 
-function commitsToSlidingWindowSeq(timePeriod: number, commits: InputEntry[]): OutputEntry[] {
+function commitsToSlidingWindowSeq<T extends InputEntry>(
+  timePeriod: number,
+  commits: T[],
+): OutputEntry<T>[] {
   const padded = padCommitsToCompleteTimeSeries(commits);
   const sortedDates = [...padded.keys()].sort();
   const dayArrays = sortedDates.map((d) => padded.get(d)!);
 
   // Partition with sliding window of size timePeriod, step 1
-  const windows: InputEntry[][][] = [];
+  const windows: T[][][] = [];
   for (let i = 0; i <= dayArrays.length - timePeriod; i++) {
     windows.push(dayArrays.slice(i, i + timePeriod));
   }
@@ -195,12 +192,12 @@ function ensureTimePeriodFitsCommitHistory(timePeriod: number, commits: InputEnt
  * changeset. An empty `commits` array returns an empty array immediately.
  *
  * @param commits - Array of VCS entries, each with `entity`, `rev`, and a
- *   `date` field in `YYYY-MM-DD` format. Extra fields are not carried through
- *   to the output.
+ *   `date` field in `YYYY-MM-DD` format. Any extra fields are preserved on the
+ *   output entries.
  * @param options - Must contain `temporalPeriod`: a string integer (e.g. `"2"`)
  *   representing the window size in days. Non-integer values throw an error.
- * @returns A flat array of `{ entity, rev, date }` objects. The `rev` of each
- *   entry is the latest date string of the window it belongs to.
+ * @returns A flat array of input-shaped objects with `rev` replaced by the
+ *   latest date string of the window each entry belongs to.
  *
  * @example
  * byTimePeriod(
@@ -215,7 +212,10 @@ function ensureTimePeriodFitsCommitHistory(timePeriod: number, commits: InputEnt
  * //   { date: "2022-10-20", entity: "B", rev: "2022-10-20" }
  * // ]
  */
-export function byTimePeriod(commits: InputEntry[], options: TimeGroupOptions): OutputEntry[] {
+export function byTimePeriod<T extends InputEntry>(
+  commits: T[],
+  options: TimeGroupOptions,
+): OutputEntry<T>[] {
   const timePeriod = validatedTimePeriod(options);
   if (commits.length === 0) return [];
   ensureCommitsHaveDates(commits);
