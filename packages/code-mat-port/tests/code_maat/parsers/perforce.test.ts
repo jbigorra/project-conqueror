@@ -39,19 +39,19 @@ const entryWithMultipleFiles =
 describe("perforce parser", () => {
   test("parses single entry to dataset", () => {
     expect(parseReadLog(entry, {})).toEqual([
-      { author: "user1", rev: "1108116", date: "2014-12-19", entity: "/Makefile", message: "" },
+      { author: "user1", rev: "1108116", date: "2014-12-19", entity: "/Makefile", message: "-" },
     ]);
   });
 
   test("parses multiple entries to dataset", () => {
     expect(parseReadLog(entries, {})).toEqual([
-      { author: "user1", rev: "1108116", date: "2014-12-19", entity: "/Makefile", message: "" },
+      { author: "user1", rev: "1108116", date: "2014-12-19", entity: "/Makefile", message: "-" },
       {
         author: "user2",
         rev: "1108117",
         date: "2014-12-19",
         entity: "/meta/recipes-core/udev/udev-extraconf/mount.blacklist",
-        message: "",
+        message: "-",
       },
     ]);
   });
@@ -67,15 +67,15 @@ describe("perforce parser", () => {
         rev: "399449",
         date: "2015-02-17",
         entity: "/fimbul/cerkl.cxx",
-        message: "",
+        message: "-",
       },
     ]);
   });
 
   test("parses multiple files from the same changelist", () => {
     expect(parseReadLog(entryWithMultipleFiles, {})).toEqual([
-      { author: "user1", rev: "1108116", date: "2014-12-19", entity: "/Makefile", message: "" },
-      { author: "user1", rev: "1108116", date: "2014-12-19", entity: "/src/main.ts", message: "" },
+      { author: "user1", rev: "1108116", date: "2014-12-19", entity: "/Makefile", message: "-" },
+      { author: "user1", rev: "1108116", date: "2014-12-19", entity: "/src/main.ts", message: "-" },
     ]);
   });
 });

@@ -79,7 +79,7 @@ function parseFileEntry(line: string, change: ChangeContext | null): PerforceEnt
     rev: change.rev,
     date: change.date,
     entity: getCapture({ match: fileMatch, index: 1, context: "entity" }),
-    message: "",
+    message: "-",
   };
 }
 
@@ -149,7 +149,7 @@ function consumeLine(context: ParserContext, line: string): void {
  * @example
  * const text = await Bun.file("tests/fixtures/log-fixtures/simple_p4.txt").text();
  * parseReadLog(text, {});
- * // [{ author: "APT", entity: "/Infrastrucure/Network/Connection.cs", rev: "2", date: "2013-02-08", message: "" }, ...]
+ * // [{ author: "APT", entity: "/Infrastrucure/Network/Connection.cs", rev: "2", date: "2013-02-08", message: "-" }, ...]
  */
 export function parseReadLog(text: string, _options: Record<string, unknown>): PerforceEntry[] {
   if (!text.trim()) return [];
@@ -174,7 +174,7 @@ export function parseReadLog(text: string, _options: Record<string, unknown>): P
  *
  * @example
  * const entries = await parseLog("tests/fixtures/log-fixtures/simple_p4.txt", {});
- * // [{ author: "APT", entity: "/Infrastrucure/Network/Connection.cs", rev: "2", date: "2013-02-08", message: "" }, ...]
+ * // [{ author: "APT", entity: "/Infrastrucure/Network/Connection.cs", rev: "2", date: "2013-02-08", message: "-" }, ...]
  */
 export function parseLog(
   filePath: string,
