@@ -359,14 +359,17 @@ function dominantContributorAnalysis<
   totalKey: TTotalKey,
 ): (entries: VCSEntry[], _options: ChurnOptions) => T[] {
   return (entries, _options) =>
-    dominantContributorEntriesByEntity(entries, metric, (entity, summary) =>
-      ({
-        entity,
-        mainDev: summary.mainDev,
-        [amountKey]: summary.amount,
-        [totalKey]: summary.total,
-        ownership: summary.ownership,
-      }) as T,
+    dominantContributorEntriesByEntity(
+      entries,
+      metric,
+      (entity, summary) =>
+        ({
+          entity,
+          mainDev: summary.mainDev,
+          [amountKey]: summary.amount,
+          [totalKey]: summary.total,
+          ownership: summary.ownership,
+        }) as T,
     );
 }
 
