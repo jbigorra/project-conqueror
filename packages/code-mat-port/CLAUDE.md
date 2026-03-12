@@ -12,7 +12,7 @@ bun run tsc --noEmit        # typecheck
 
 ## TDD Workflow (mandatory)
 
-write failing test → `bun test` (expect FAIL) → implement → `bun test` (expect PASS) → `bun run validation-pipeline` → commit
+write failing test → `bun test` (expect FAIL) → implement → `bun test` (expect PASS) → `bun run validation` → commit
 
 ## Key Types (`src/code_maat/types.ts`)
 
