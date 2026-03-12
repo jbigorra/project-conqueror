@@ -16,6 +16,20 @@ describe("commit-messages analysis", () => {
       ]);
     });
 
+    test("sorts tie counts by entity name ascending", () => {
+      const commits: VCSEntry[] = [
+        { author: "apt", entity: "B", rev: 1, message: "change one" },
+        { author: "apt", entity: "A", rev: 2, message: "change two" },
+      ];
+
+      const result = byWordFrequency(commits, { expressionToMatch: "change" });
+
+      expect(result).toEqual([
+        { entity: "A", matches: 1 },
+        { entity: "B", matches: 1 },
+      ]);
+    });
+
     test("counts entity occurrences where message matches 'Third'", () => {
       const result = byWordFrequency(vcs, { expressionToMatch: "Third" });
       expect(result).toEqual([{ entity: "A", matches: 1 }]);

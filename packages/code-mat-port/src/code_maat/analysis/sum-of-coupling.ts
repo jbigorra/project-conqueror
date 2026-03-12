@@ -79,7 +79,7 @@ export function asSoc(
     .filter(([, n]) => n > minRevs)
     .sort(([entityA, nA], [entityB, nB]) => {
       if (nB !== nA) return nB - nA;
-      return entityA.localeCompare(entityB);
+      return entityA < entityB ? -1 : entityA > entityB ? 1 : 0;
     });
 }
 

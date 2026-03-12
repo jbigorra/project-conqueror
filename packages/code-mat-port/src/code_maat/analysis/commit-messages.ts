@@ -64,7 +64,7 @@ function asMatchingEntityFreqs(entries: VCSEntry[]): CommitMessageResult[] {
     .map(([entity, matches]) => ({ entity, matches }))
     .sort((a, b) => {
       if (b.matches !== a.matches) return b.matches - a.matches;
-      return b.entity.localeCompare(a.entity);
+      return a.entity < b.entity ? -1 : a.entity > b.entity ? 1 : 0;
     });
 }
 
@@ -76,7 +76,7 @@ function asMatchingEntityFreqs(entries: VCSEntry[]): CommitMessageResult[] {
  * with a missing or sentinel ("-") message are ignored. If the dataset contains no real
  * messages at all, `IllegalArgumentError` is thrown — this typically indicates a git2 or
  * other format that omits commit messages. Results are sorted descending by match count;
- * ties are broken by entity name descending.
+ * ties are broken by entity name ascending.
  *
  * @param entries - VCS log entries. Must include a `message` field for any entity to appear
  *   in the output; entries without `message` or with `message === "-"` are skipped.
