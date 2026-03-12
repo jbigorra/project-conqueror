@@ -51,5 +51,11 @@ describe("commit-messages analysis", () => {
       const result = byWordFrequency(commits, { expressionToMatch: "change" });
       expect(result).toEqual([{ entity: "B", matches: 1 }]);
     });
+
+    test("throws a clear error for invalid regular expressions", () => {
+      expect(() => byWordFrequency(vcs, { expressionToMatch: "[" })).toThrow(
+        "Invalid expressionToMatch regex: [",
+      );
+    });
   });
 });

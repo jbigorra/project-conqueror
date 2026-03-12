@@ -302,6 +302,31 @@ function asOwnershipRatio(own: number, total: number): number {
   return ratioCentiFloatPrecision(own / safeDenominator);
 }
 
+type DominantContributorSummary = {
+  mainDev: string;
+  amount: number;
+  total: number;
+  ownership: number;
+};
+
+function dominantContributorSummary(
+  entries: VCSEntry[],
+  metric: "added" | "deleted",
+): DominantContributorSummary {
+  const contribList = getAuthorContribs(entries);
+  const total = contribList.reduce((sum, contrib) => sum + contrib[metric], 0);
+  const dominant = contribList.reduce((best, contrib) =>
+    contrib[metric] >= best[metric] ? contrib : best,
+  );
+
+  return {
+    mainDev: dominant.author,
+    amount: dominant[metric],
+    total,
+    ownership: asOwnershipRatio(dominant[metric], total),
+  };
+}
+
 /**
  * Identifies the main developer of each entity based on lines of code added.
  *
@@ -326,20 +351,14 @@ export function byMainDeveloper(entries: VCSEntry[], _options: ChurnOptions): Ma
   const result: MainDeveloperEntry[] = [];
 
   for (const [entity, entityEntries] of groupEntriesBy(entries, (entry) => entry.entity)) {
-    const contribList = getAuthorContribs(entityEntries);
-
-    const totalAdded = contribList.reduce((sum, c) => sum + c.added, 0);
-    // Pick author with max added
-    const mainDevContrib = contribList.reduce((best, c) => (c.added > best.added ? c : best));
-
-    const ownership = asOwnershipRatio(mainDevContrib.added, totalAdded);
+    const summary = dominantContributorSummary(entityEntries, "added");
 
     result.push({
       entity,
-      mainDev: mainDevContrib.author,
-      added: mainDevContrib.added,
-      totalAdded,
-      ownership,
+      mainDev: summary.mainDev,
+      added: summary.amount,
+      totalAdded: summary.total,
+      ownership: summary.ownership,
     });
   }
 
@@ -380,21 +399,14 @@ export function byRefactoringMainDeveloper(
   const result: RefactoringMainDeveloperEntry[] = [];
 
   for (const [entity, entityEntries] of groupEntriesBy(entries, (entry) => entry.entity)) {
-    const contribList = getAuthorContribs(entityEntries);
-
-    const totalRemoved = contribList.reduce((sum, c) => sum + c.deleted, 0);
-    // Pick author with max deleted; on ties, the last in insertion order wins
-    // (matches Clojure's stable sort + reverse + first behaviour)
-    const mainDevContrib = contribList.reduce((best, c) => (c.deleted >= best.deleted ? c : best));
-
-    const ownership = asOwnershipRatio(mainDevContrib.deleted, totalRemoved);
+    const summary = dominantContributorSummary(entityEntries, "deleted");
 
     result.push({
       entity,
-      mainDev: mainDevContrib.author,
-      removed: mainDevContrib.deleted,
-      totalRemoved,
-      ownership,
+      mainDev: summary.mainDev,
+      removed: summary.amount,
+      totalRemoved: summary.total,
+      ownership: summary.ownership,
     });
   }
 

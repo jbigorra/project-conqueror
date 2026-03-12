@@ -18,6 +18,13 @@ const coupled: VCSEntry[] = [
   { author: "a", entity: "B", rev: 2 },
 ];
 
+const nonAsciiCoupled: VCSEntry[] = [
+  { author: "a", entity: "z.ts", rev: 1 },
+  { author: "a", entity: "🧠.ts", rev: 1 },
+  { author: "a", entity: "ä.ts", rev: 2 },
+  { author: "a", entity: "🧠.ts", rev: 2 },
+];
+
 const defaultOptions: AnalysisOptions = {
   minRevs: 1,
   minSharedRevs: 1,
@@ -86,6 +93,14 @@ describe("logical-coupling", () => {
       const result = byDegree(coupled, defaultOptions);
       const degrees = result.map((r) => r.degree);
       expect(degrees).toEqual([...degrees].sort((a, b) => b - a));
+    });
+
+    it("sorts equal-degree non-ASCII entities by lexicographic code-point order", () => {
+      const result = byDegree(nonAsciiCoupled, defaultOptions);
+      expect(result).toEqual([
+        { entity: "z.ts", coupled: "🧠.ts", degree: 66, averageRevs: 2 },
+        { entity: "ä.ts", coupled: "🧠.ts", degree: 66, averageRevs: 2 },
+      ]);
     });
   });
 });

@@ -1,10 +1,14 @@
 import { describe, expect, it } from "bun:test";
 import { parseArgs } from "../../../src/code_maat/cmd-line";
 
+function withRequiredArgs(...extra: string[]): string[] {
+  return ["-l", "file.log", "-c", "git", ...extra];
+}
+
 describe("test-argument-parsing", () => {
   describe("simple cmd line parsing", () => {
-    it("parses -l flag with no errors", () => {
-      const args = ["-l some_file.log"];
+    it("parses required -l and -c flags with no errors", () => {
+      const args = ["-l some_file.log", "-c git"];
       const parsed = parseArgs(args);
       expect(parsed.errors).toBeNull();
     });
@@ -12,30 +16,30 @@ describe("test-argument-parsing", () => {
 
   describe("valid inputs produce no errors", () => {
     it("parses long-form --log flag", () => {
-      const parsed = parseArgs(["--log", "some_file.log"]);
+      const parsed = parseArgs(["--log", "some_file.log", "-c", "git"]);
       expect(parsed.errors).toBeNull();
       expect(parsed.options.log).toBe("some_file.log");
     });
 
     it("parses -l flag short form", () => {
-      const parsed = parseArgs(["-l", "some_file.log"]);
+      const parsed = parseArgs(["-l", "some_file.log", "-c", "git"]);
       expect(parsed.errors).toBeNull();
       expect(parsed.options.log).toBe("some_file.log");
     });
 
     it("applies default analysis value", () => {
-      const parsed = parseArgs(["-l", "file.log"]);
+      const parsed = parseArgs(withRequiredArgs());
       expect(parsed.options.analysis).toBe("authors");
     });
 
     it("parses -a analysis flag", () => {
-      const parsed = parseArgs(["-l", "file.log", "-a", "coupling"]);
+      const parsed = parseArgs(withRequiredArgs("-a", "coupling"));
       expect(parsed.errors).toBeNull();
       expect(parsed.options.analysis).toBe("coupling");
     });
 
     it("parses --analysis long form", () => {
-      const parsed = parseArgs(["--log", "file.log", "--analysis", "revisions"]);
+      const parsed = parseArgs(["--log", "file.log", "-c", "git", "--analysis", "revisions"]);
       expect(parsed.errors).toBeNull();
       expect(parsed.options.analysis).toBe("revisions");
     });
@@ -77,115 +81,115 @@ describe("test-argument-parsing", () => {
     });
 
     it("parses -r rows flag as integer", () => {
-      const parsed = parseArgs(["-l", "file.log", "-r", "10"]);
+      const parsed = parseArgs(withRequiredArgs("-r", "10"));
       expect(parsed.errors).toBeNull();
       expect(parsed.options.rows).toBe(10);
     });
 
     it("parses -o outfile flag", () => {
-      const parsed = parseArgs(["-l", "file.log", "-o", "output.csv"]);
+      const parsed = parseArgs(withRequiredArgs("-o", "output.csv"));
       expect(parsed.errors).toBeNull();
       expect(parsed.options.outfile).toBe("output.csv");
     });
 
     it("parses -g group flag", () => {
-      const parsed = parseArgs(["-l", "file.log", "-g", "layers.txt"]);
+      const parsed = parseArgs(withRequiredArgs("-g", "layers.txt"));
       expect(parsed.errors).toBeNull();
       expect(parsed.options.group).toBe("layers.txt");
     });
 
     it("parses -p team-map-file flag", () => {
-      const parsed = parseArgs(["-l", "file.log", "-p", "teams.csv"]);
+      const parsed = parseArgs(withRequiredArgs("-p", "teams.csv"));
       expect(parsed.errors).toBeNull();
       expect(parsed.options.teamMapFile).toBe("teams.csv");
     });
 
     it("applies default min-revs value of 5", () => {
-      const parsed = parseArgs(["-l", "file.log"]);
+      const parsed = parseArgs(withRequiredArgs());
       expect(parsed.options.minRevs).toBe(5);
     });
 
     it("parses -n min-revs flag as integer", () => {
-      const parsed = parseArgs(["-l", "file.log", "-n", "3"]);
+      const parsed = parseArgs(withRequiredArgs("-n", "3"));
       expect(parsed.errors).toBeNull();
       expect(parsed.options.minRevs).toBe(3);
     });
 
     it("applies default min-shared-revs value of 5", () => {
-      const parsed = parseArgs(["-l", "file.log"]);
+      const parsed = parseArgs(withRequiredArgs());
       expect(parsed.options.minSharedRevs).toBe(5);
     });
 
     it("parses -m min-shared-revs flag as integer", () => {
-      const parsed = parseArgs(["-l", "file.log", "-m", "2"]);
+      const parsed = parseArgs(withRequiredArgs("-m", "2"));
       expect(parsed.errors).toBeNull();
       expect(parsed.options.minSharedRevs).toBe(2);
     });
 
     it("applies default min-coupling value of 30", () => {
-      const parsed = parseArgs(["-l", "file.log"]);
+      const parsed = parseArgs(withRequiredArgs());
       expect(parsed.options.minCoupling).toBe(30);
     });
 
     it("parses -i min-coupling flag as integer", () => {
-      const parsed = parseArgs(["-l", "file.log", "-i", "50"]);
+      const parsed = parseArgs(withRequiredArgs("-i", "50"));
       expect(parsed.errors).toBeNull();
       expect(parsed.options.minCoupling).toBe(50);
     });
 
     it("applies default max-coupling value of 100", () => {
-      const parsed = parseArgs(["-l", "file.log"]);
+      const parsed = parseArgs(withRequiredArgs());
       expect(parsed.options.maxCoupling).toBe(100);
     });
 
     it("parses -x max-coupling flag as integer", () => {
-      const parsed = parseArgs(["-l", "file.log", "-x", "80"]);
+      const parsed = parseArgs(withRequiredArgs("-x", "80"));
       expect(parsed.errors).toBeNull();
       expect(parsed.options.maxCoupling).toBe(80);
     });
 
     it("applies default max-changeset-size value of 30", () => {
-      const parsed = parseArgs(["-l", "file.log"]);
+      const parsed = parseArgs(withRequiredArgs());
       expect(parsed.options.maxChangesetSize).toBe(30);
     });
 
     it("parses -s max-changeset-size flag as integer", () => {
-      const parsed = parseArgs(["-l", "file.log", "-s", "15"]);
+      const parsed = parseArgs(withRequiredArgs("-s", "15"));
       expect(parsed.errors).toBeNull();
       expect(parsed.options.maxChangesetSize).toBe(15);
     });
 
     it("parses -e expression-to-match flag", () => {
-      const parsed = parseArgs(["-l", "file.log", "-e", "JIRA-\\d+"]);
+      const parsed = parseArgs(withRequiredArgs("-e", "JIRA-\\d+"));
       expect(parsed.errors).toBeNull();
       expect(parsed.options.expressionToMatch).toBe("JIRA-\\d+");
     });
 
     it("parses -t temporal-period flag", () => {
-      const parsed = parseArgs(["-l", "file.log", "-t", "7"]);
+      const parsed = parseArgs(withRequiredArgs("-t", "7"));
       expect(parsed.errors).toBeNull();
       expect(parsed.options.temporalPeriod).toBe("7");
     });
 
     it("parses -d age-time-now flag", () => {
-      const parsed = parseArgs(["-l", "file.log", "-d", "2024-01-01"]);
+      const parsed = parseArgs(withRequiredArgs("-d", "2024-01-01"));
       expect(parsed.errors).toBeNull();
       expect(parsed.options.ageTimeNow).toBe("2024-01-01");
     });
 
     it("parses --verbose-results flag", () => {
-      const parsed = parseArgs(["-l", "file.log", "--verbose-results"]);
+      const parsed = parseArgs(withRequiredArgs("--verbose-results"));
       expect(parsed.errors).toBeNull();
       expect(parsed.options.verboseResults).toBe(true);
     });
 
     it("verbose-results defaults to false", () => {
-      const parsed = parseArgs(["-l", "file.log"]);
+      const parsed = parseArgs(withRequiredArgs());
       expect(parsed.options.verboseResults).toBe(false);
     });
 
     it("parses --input-encoding flag", () => {
-      const parsed = parseArgs(["-l", "file.log", "--input-encoding", "ISO-8859-1"]);
+      const parsed = parseArgs(withRequiredArgs("--input-encoding", "ISO-8859-1"));
       expect(parsed.errors).toBeNull();
       expect(parsed.options.inputEncoding).toBe("ISO-8859-1");
     });
@@ -210,6 +214,20 @@ describe("test-argument-parsing", () => {
       expect(parsed.errors!.length).toBeGreaterThan(0);
     });
 
+    it("reports an error when --log is missing", () => {
+      const parsed = parseArgs(["-c", "git"]);
+      expect(parsed.errors).not.toBeNull();
+      expect(parsed.errors).toContain("Missing required option: --log (path to the VCS log file).");
+    });
+
+    it("reports an error when --version-control is missing", () => {
+      const parsed = parseArgs(["-l", "file.log"]);
+      expect(parsed.errors).not.toBeNull();
+      expect(parsed.errors).toContain(
+        "Missing required option: --version-control (supported: svn, git, git2, hg, p4, tfs).",
+      );
+    });
+
     it("reports an error for unsupported VCS type", () => {
       const parsed = parseArgs(["-l", "file.log", "-c", "invalid-vcs"]);
       expect(parsed.errors).not.toBeNull();
@@ -222,7 +240,7 @@ describe("test-argument-parsing", () => {
     });
 
     it("reports an error when -r rows is not a number", () => {
-      const parsed = parseArgs(["-l", "file.log", "-r", "notanumber"]);
+      const parsed = parseArgs(withRequiredArgs("-r", "notanumber"));
       expect(parsed.errors).not.toBeNull();
     });
   });

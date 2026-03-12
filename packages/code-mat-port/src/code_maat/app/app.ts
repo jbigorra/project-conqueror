@@ -43,9 +43,9 @@ export type AppOptions = AnalysisOptions & {
   analysis: string;
   /** When set, commits are re-grouped into sliding time windows of this many days (as a string integer). */
   temporalPeriod?: string;
-  /** Multi-line group spec text (`path => name`). When set, entities are mapped to architectural groups before analysis. */
+  /** Multi-line group spec text (`path => name`) or a file path containing that text. */
   group?: string;
-  /** CSV text with columns `author,team`. When set, author names are replaced with team names before analysis. */
+  /** CSV text with columns `author,team` or a file path containing that CSV. */
   teamMapFile?: string;
   /** Reference date string (`YYYY-MM-DD`) used as "now" for code-age analysis. */
   ageTimeNow?: string;
@@ -113,6 +113,75 @@ function aggregate(commits: VCSEntry[], options: AppOptions): VCSEntry[] {
   return r;
 }
 
+type AnalysisRunner = (entries: VCSEntry[], options: AppOptions) => unknown[];
+
+const ANALYSIS_RUNNERS: Record<string, AnalysisRunner> = {
+  authors: (entries, options) => authors.byCount(entries, options),
+  revisions: (entries, options) => entities.byRevision(entries, options),
+  coupling: (entries, options) => logicalCoupling.byDegree(entries, options),
+  soc: (entries, options) => sumOfCoupling.byDegree(entries, options),
+  summary: (entries) => summary.overview(entries),
+  identity: (entries) => entries,
+  "abs-churn": (entries, options) => churn.absolutesTrend(entries, options),
+  "author-churn": (entries, options) => churn.byAuthor(entries, options),
+  "entity-churn": (entries, options) => churn.byEntity(entries, options),
+  "entity-ownership": (entries, options) => churn.asOwnership(entries, options),
+  "main-dev": (entries, options) => churn.byMainDeveloper(entries, options),
+  "refactoring-main-dev": (entries, options) => churn.byRefactoringMainDeveloper(entries, options),
+  "entity-effort": (entries, options) => effort.asRevisionsPerAuthor(entries, options),
+  "main-dev-by-revs": (entries, options) => effort.asMainDeveloperByRevisions(entries, options),
+  fragmentation: (entries, options) => effort.asEntityFragmentation(entries, options),
+  communication: (entries) => communication.bySharedEntities(entries),
+  messages: (entries, options) =>
+    commitMessages.byWordFrequency(entries, {
+      expressionToMatch: options.expressionToMatch ?? "",
+    }),
+  age: (entries, options) => codeAge.byAge(entries, options.ageTimeNow),
+};
+
+function invalidAnalysisError(analysis: string): Error {
+  return new Error(
+    `Invalid analysis requested: ${analysis}. Supported analyses are: authors, revisions, coupling, soc, summary, identity, abs-churn, author-churn, entity-churn, entity-ownership, main-dev, refactoring-main-dev, entity-effort, main-dev-by-revs, fragmentation, communication, messages, age.`,
+  );
+}
+
+type TextOptionResolver = {
+  optionName: "group" | "teamMapFile";
+  looksLikeInlineContent: (value: string) => boolean;
+  expectedFormat: string;
+};
+
+async function resolveTextOption(
+  value: string | undefined,
+  resolver: TextOptionResolver,
+): Promise<string | undefined> {
+  if (!value) return undefined;
+  if (resolver.looksLikeInlineContent(value)) return value;
+
+  const file = Bun.file(value);
+  if (await file.exists()) return await file.text();
+
+  throw new Error(
+    `Invalid ${resolver.optionName} option: expected ${resolver.expectedFormat} content or a readable file path, got '${value}'.`,
+  );
+}
+
+async function resolveAggregationOptions(options: AppOptions): Promise<AppOptions> {
+  return {
+    ...options,
+    group: await resolveTextOption(options.group, {
+      optionName: "group",
+      looksLikeInlineContent: (value) => value.includes("=>"),
+      expectedFormat: "group specification",
+    }),
+    teamMapFile: await resolveTextOption(options.teamMapFile, {
+      optionName: "teamMapFile",
+      looksLikeInlineContent: (value) => value.includes(",") || value.includes("\n"),
+      expectedFormat: "team-map CSV",
+    }),
+  };
+}
+
 /**
  * Dispatches pre-processed entries to the requested analysis function.
  *
@@ -130,50 +199,9 @@ function aggregate(commits: VCSEntry[], options: AppOptions): VCSEntry[] {
  *   chosen analysis.
  */
 function runAnalysisOn(entries: VCSEntry[], options: AppOptions): unknown[] {
-  switch (options.analysis) {
-    case "authors":
-      return authors.byCount(entries, options);
-    case "revisions":
-      return entities.byRevision(entries, options);
-    case "coupling":
-      return logicalCoupling.byDegree(entries, options);
-    case "soc":
-      return sumOfCoupling.byDegree(entries, options);
-    case "summary":
-      return summary.overview(entries);
-    case "identity":
-      return entries;
-    case "abs-churn":
-      return churn.absolutesTrend(entries, options);
-    case "author-churn":
-      return churn.byAuthor(entries, options);
-    case "entity-churn":
-      return churn.byEntity(entries, options);
-    case "entity-ownership":
-      return churn.asOwnership(entries, options);
-    case "main-dev":
-      return churn.byMainDeveloper(entries, options);
-    case "refactoring-main-dev":
-      return churn.byRefactoringMainDeveloper(entries, options);
-    case "entity-effort":
-      return effort.asRevisionsPerAuthor(entries, options);
-    case "main-dev-by-revs":
-      return effort.asMainDeveloperByRevisions(entries, options);
-    case "fragmentation":
-      return effort.asEntityFragmentation(entries, options);
-    case "communication":
-      return communication.bySharedEntities(entries);
-    case "messages":
-      return commitMessages.byWordFrequency(entries, {
-        expressionToMatch: options.expressionToMatch ?? "",
-      });
-    case "age":
-      return codeAge.byAge(entries, options.ageTimeNow);
-    default:
-      throw new Error(
-        `Invalid analysis requested: ${options.analysis}. Supported analyses are: authors, revisions, coupling, soc, summary, identity, abs-churn, author-churn, entity-churn, entity-ownership, main-dev, refactoring-main-dev, entity-effort, main-dev-by-revs, fragmentation, communication, messages, age.`,
-      );
-  }
+  const runner = ANALYSIS_RUNNERS[options.analysis];
+  if (!runner) throw invalidAnalysisError(options.analysis);
+  return runner(entries, options);
 }
 
 /**
@@ -207,5 +235,9 @@ function runAnalysisOn(entries: VCSEntry[], options: AppOptions): unknown[] {
  * // [{ entity: "src/app.ts", nRevs: 5 }, { entity: "src/index.ts", nRevs: 3 }]
  */
 export async function runAnalysis(logFilePath: string, options: AppOptions): Promise<unknown[]> {
-  return runAnalysisOn(aggregate(await parseCommits(logFilePath, options), options), options);
+  const resolvedOptions = await resolveAggregationOptions(options);
+  return runAnalysisOn(
+    aggregate(await parseCommits(logFilePath, resolvedOptions), resolvedOptions),
+    resolvedOptions,
+  );
 }
