@@ -12,7 +12,7 @@ bun run tsc --noEmit        # typecheck
 
 ## TDD Workflow (mandatory)
 
-write failing test → `bun test` (expect FAIL) → implement → `bun test` (expect PASS) → `bun run tsc --noEmit` → commit
+write failing test → `bun test` (expect FAIL) → implement → `bun test` (expect PASS) → `bun run validation-pipeline` → commit
 
 ## Key Types (`src/code_maat/types.ts`)
 
@@ -45,14 +45,14 @@ tmp/code-maat/src/           — original Clojure source (reference only, do not
 
 ## Parsers: File path → function
 
-| VCS | Import | Sync fn | Async fn |
-|-----|--------|---------|----------|
-| git | `parsers/git` | `parseReadLog(text, {})` | `parseLog(path, {})` |
-| git2 | `parsers/git2` | `parseReadLog(text, {})` | `parseLog(path, {})` |
-| hg | `parsers/mercurial` | `parseReadLog(text, {})` | `parseLog(path, {})` |
-| p4 | `parsers/perforce` | `parseReadLog(text, {})` | `parseLog(path, {})` |
-| tfs | `parsers/tfs` | `parseReadLog(text, {})` | `parseLog(path, {})` |
-| svn | `parsers/svn` | `parseReadLog(text, {})` | — (read file, pass text) |
+| VCS  | Import              | Sync fn                  | Async fn                 |
+| ---- | ------------------- | ------------------------ | ------------------------ |
+| git  | `parsers/git`       | `parseReadLog(text, {})` | `parseLog(path, {})`     |
+| git2 | `parsers/git2`      | `parseReadLog(text, {})` | `parseLog(path, {})`     |
+| hg   | `parsers/mercurial` | `parseReadLog(text, {})` | `parseLog(path, {})`     |
+| p4   | `parsers/perforce`  | `parseReadLog(text, {})` | `parseLog(path, {})`     |
+| tfs  | `parsers/tfs`       | `parseReadLog(text, {})` | `parseLog(path, {})`     |
+| svn  | `parsers/svn`       | `parseReadLog(text, {})` | — (read file, pass text) |
 
 ## Commit style
 
