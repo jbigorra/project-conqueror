@@ -143,7 +143,11 @@ export function asEntityFragmentation(
   const entityAuthorRevs = computeEntityAuthorRevs(entries);
 
   const result: EntityFragmentation[] = entityAuthorRevs.map(({ entity, authorRevs }) => {
-    const totalRevs = authorRevs[0]!.totalRevs;
+    const totalRevs = authorRevs[0]?.totalRevs ?? 0;
+    if (totalRevs === 0) {
+      return { entity, fractalValue: 0, totalRevs };
+    }
+
     const sumOfSquares = authorRevs.reduce((acc, { revs }) => {
       return acc + (revs / totalRevs) ** 2;
     }, 0);

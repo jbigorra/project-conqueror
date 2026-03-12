@@ -42,6 +42,17 @@ function plainPathToRegex(path: string): RegExp {
   return new RegExp(`^${escaped}/`);
 }
 
+function regexPathToRegex(path: string, lineNumber: number, line: string): RegExp {
+  try {
+    return new RegExp(path);
+  } catch (error) {
+    throw new Error(
+      `Invalid regex in group specification line ${lineNumber}: "${line}". Offending regex: "${path}"`,
+      { cause: error },
+    );
+  }
+}
+
 /**
  * Parses a group specification text into an array of `GroupSpec` objects.
  *
@@ -72,7 +83,7 @@ export function textToGroupSpecification(input: string): GroupSpec[] {
   const lines = input.split("\n");
   const specs: GroupSpec[] = [];
 
-  for (const line of lines) {
+  for (const [index, line] of lines.entries()) {
     const trimmed = line.trim();
     if (!trimmed) continue;
 
@@ -83,10 +94,11 @@ export function textToGroupSpecification(input: string): GroupSpec[] {
 
     const pathToken = match[1]!.trim();
     const name = match[2]!.trim();
+    const lineNumber = index + 1;
 
     let pathRegex: RegExp;
     if (isRegexPath(pathToken)) {
-      pathRegex = new RegExp(pathToken);
+      pathRegex = regexPathToRegex(pathToken, lineNumber, trimmed);
     } else {
       pathRegex = plainPathToRegex(pathToken);
     }

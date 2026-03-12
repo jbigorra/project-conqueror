@@ -88,6 +88,12 @@ describe("parses-specification", () => {
 
     expect(spec!.path.test(String.raw`C:\work\src/file.ts`)).toBe(true);
   });
+
+  it("surfaces a descriptive error for invalid regex groups", () => {
+    expect(() => textToGroupSpecification("^/some/path([)$ => G1")).toThrow(
+      'Invalid regex in group specification line 1: "^/some/path([)$ => G1". Offending regex: "^/some/path([)$"',
+    );
+  });
 });
 
 // Data for mapping tests
