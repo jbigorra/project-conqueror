@@ -104,8 +104,8 @@ const EXPECTED_EFFORT = [
 ];
 
 const EXPECTED_COMMUNICATION = [
-  { author: "APT", peer: "XYZ", shared: 1, average: 2, strength: 50 },
   { author: "XYZ", peer: "APT", shared: 1, average: 2, strength: 50 },
+  { author: "APT", peer: "XYZ", shared: 1, average: 2, strength: 50 },
 ];
 
 const EXPECTED_AGE = [

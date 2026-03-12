@@ -14,13 +14,14 @@ describe("communication analysis", () => {
   test("calculates communication needs for shared authorship", () => {
     const result = bySharedEntities(sharingAuthors);
 
+    // Both strength and author are sorted descending. No peer tiebreak.
     expect(result).toEqual([
-      { author: "at", peer: "jt", shared: 2, average: 2, strength: 100 },
       { author: "jt", peer: "at", shared: 2, average: 2, strength: 100 },
+      { author: "at", peer: "jt", shared: 2, average: 2, strength: 100 },
+      { author: "jt", peer: "ap", shared: 1, average: 2, strength: 50 },
+      { author: "at", peer: "ap", shared: 1, average: 2, strength: 50 },
       { author: "ap", peer: "at", shared: 1, average: 2, strength: 50 },
       { author: "ap", peer: "jt", shared: 1, average: 2, strength: 50 },
-      { author: "at", peer: "ap", shared: 1, average: 2, strength: 50 },
-      { author: "jt", peer: "ap", shared: 1, average: 2, strength: 50 },
     ]);
   });
 });

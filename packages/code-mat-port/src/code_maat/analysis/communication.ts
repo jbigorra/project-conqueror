@@ -112,11 +112,9 @@ export function bySharedEntities(entries: VCSEntry[]): CommunicationRow[] {
     rows.push({ author: me!, peer: peer!, shared, average, strength });
   }
 
-  // Sort by strength desc, then author asc, then peer asc
   rows.sort((a, b) => {
     if (b.strength !== a.strength) return b.strength - a.strength;
-    if (a.author !== b.author) return a.author < b.author ? -1 : 1;
-    if (a.peer !== b.peer) return a.peer < b.peer ? -1 : 1;
+    if (a.author !== b.author) return a.author > b.author ? -1 : 1;
     return 0;
   });
 

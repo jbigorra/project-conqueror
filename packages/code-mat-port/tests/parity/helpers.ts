@@ -132,24 +132,6 @@ function csvLineForRow(
     .join(",");
 }
 
-function normalizeCommunicationCsv(csv: string): string {
-  const [header, ...rows] = csv.trimEnd().split("\n");
-  if (!header) return csv;
-
-  const sortedRows = rows.sort((a, b) => {
-    const [authorA = "", peerA = "", , , strengthA = "0"] = a.split(",");
-    const [authorB = "", peerB = "", , , strengthB = "0"] = b.split(",");
-    const strengthDiff = Number(strengthB) - Number(strengthA);
-
-    if (strengthDiff !== 0) return strengthDiff;
-    if (authorA !== authorB) return authorA < authorB ? -1 : 1;
-    if (peerA !== peerB) return peerA < peerB ? -1 : 1;
-    return 0;
-  });
-
-  return `${[header, ...sortedRows].join("\n")}\n`;
-}
-
 export function toCSV(rows: unknown[], analysis: string): string {
   const headers = HEADERS[analysis];
   const fieldMap = FIELD_MAP[analysis];
@@ -169,8 +151,7 @@ export function toCSV(rows: unknown[], analysis: string): string {
 export function runJar({ logFile, vcs, analysis, extra = [] }: RunJarOptions): string {
   const r = spawnSync(["java", "-jar", JAR, "-l", logFile, "-c", vcs, "-a", analysis, ...extra]);
   if (r.exitCode !== 0) throw new Error(`JAR failed: ${r.stderr}`);
-  const output = r.stdout.toString();
-  return analysis === "communication" ? normalizeCommunicationCsv(output) : output;
+  return r.stdout.toString();
 }
 
 export async function runTS(
