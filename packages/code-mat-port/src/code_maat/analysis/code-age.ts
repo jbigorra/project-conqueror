@@ -17,11 +17,7 @@ function parseDate(dateStr: string): Date {
   const day = Number(dayText);
   const parsed = new Date(Date.UTC(year, month - 1, day));
 
-  if (
-    parsed.getUTCFullYear() !== year ||
-    parsed.getUTCMonth() !== month - 1 ||
-    parsed.getUTCDate() !== day
-  ) {
+  if (parsed.toISOString().slice(0, 10) !== dateStr) {
     throw new Error(`Invalid date format: ${dateStr}`);
   }
 

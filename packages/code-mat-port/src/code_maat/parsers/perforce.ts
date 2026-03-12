@@ -25,7 +25,13 @@ type ParserContext = {
   result: PerforceEntry[];
 };
 
-function getCapture(match: RegExpMatchArray, index: number, context: string): string {
+type CaptureRequest = {
+  match: RegExpMatchArray;
+  index: number;
+  context: string;
+};
+
+function getCapture({ match, index, context }: CaptureRequest): string {
   const value = match[index];
   if (value === undefined) {
     throw new Error(`Malformed Perforce log: missing ${context}`);
@@ -37,11 +43,11 @@ function parseChangeContext(line: string): ChangeContext | null {
   const headerMatch = line.match(CHANGE_HEADER);
   if (!headerMatch) return null;
 
-  const rev = getCapture(headerMatch, 1, "revision");
-  const author = getCapture(headerMatch, 2, "author");
-  const year = getCapture(headerMatch, 3, "year");
-  const month = getCapture(headerMatch, 4, "month");
-  const day = getCapture(headerMatch, 5, "day");
+  const rev = getCapture({ match: headerMatch, index: 1, context: "revision" });
+  const author = getCapture({ match: headerMatch, index: 2, context: "author" });
+  const year = getCapture({ match: headerMatch, index: 3, context: "year" });
+  const month = getCapture({ match: headerMatch, index: 4, context: "month" });
+  const day = getCapture({ match: headerMatch, index: 5, context: "day" });
 
   return {
     author,
@@ -72,7 +78,7 @@ function parseFileEntry(line: string, change: ChangeContext | null): PerforceEnt
     author: change.author,
     rev: change.rev,
     date: change.date,
-    entity: getCapture(fileMatch, 1, "entity"),
+    entity: getCapture({ match: fileMatch, index: 1, context: "entity" }),
     message: "",
   };
 }
