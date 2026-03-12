@@ -50,4 +50,9 @@ describe("code-age analysis", () => {
       expect(result).toEqual([{ entity: "A", ageMonths: 0 }]);
     });
   });
+
+  test("throws on malformed entry dates", () => {
+    const malformed: VCSEntry[] = [{ author: "", entity: "A", rev: 1, date: "2014-AB-05" }];
+    expect(() => byAge(malformed, "2014-04-06")).toThrow("Invalid date format: 2014-AB-05");
+  });
 });

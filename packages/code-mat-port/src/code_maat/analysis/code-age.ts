@@ -3,19 +3,29 @@ import type { VCSEntry } from "../types";
 /** One row of the code-age analysis: age of an entity in whole calendar months. */
 export type CodeAgeEntry = { entity: string; ageMonths: number };
 
+const ISO_DATE_RE = /^(\d{4})-(\d{2})-(\d{2})$/;
+
 function parseDate(dateStr: string): Date {
-  // Parse "YYYY-MM-DD" as UTC to avoid timezone offset issues
-  const parts = dateStr.split("-");
-  if (parts.length !== 3) {
+  const match = ISO_DATE_RE.exec(dateStr);
+  if (!match) {
     throw new Error(`Invalid date format: ${dateStr}`);
   }
 
-  const [yearText, monthText, dayText] = parts;
-  if (yearText === undefined || monthText === undefined || dayText === undefined) {
+  const [, yearText, monthText, dayText] = match;
+  const year = Number(yearText);
+  const month = Number(monthText);
+  const day = Number(dayText);
+  const parsed = new Date(Date.UTC(year, month - 1, day));
+
+  if (
+    parsed.getUTCFullYear() !== year ||
+    parsed.getUTCMonth() !== month - 1 ||
+    parsed.getUTCDate() !== day
+  ) {
     throw new Error(`Invalid date format: ${dateStr}`);
   }
 
-  return new Date(Date.UTC(Number(yearText), Number(monthText) - 1, Number(dayText)));
+  return parsed;
 }
 
 function latestCommitDates(entries: VCSEntry[], referenceDate: Date): Map<string, Date> {

@@ -29,6 +29,13 @@ const entryWithMultipleJobs =
   "Affected files ...\n" +
   "... //depot/fiks/fimbul/cerkl.cxx#100 edit";
 
+const entryWithMultipleFiles =
+  "Change 1108116 by user1@client on 2014/12/19 14:40:17\n" +
+  "\tFix Stuff.\n" +
+  "Affected files ...\n" +
+  "... //depot/project/Makefile#3 edit\n" +
+  "... //depot/project/src/main.ts#7 edit";
+
 describe("perforce parser", () => {
   test("parses single entry to dataset", () => {
     expect(parseReadLog(entry, {})).toEqual([
@@ -62,6 +69,13 @@ describe("perforce parser", () => {
         entity: "/fimbul/cerkl.cxx",
         message: "",
       },
+    ]);
+  });
+
+  test("parses multiple files from the same changelist", () => {
+    expect(parseReadLog(entryWithMultipleFiles, {})).toEqual([
+      { author: "user1", rev: "1108116", date: "2014-12-19", entity: "/Makefile", message: "" },
+      { author: "user1", rev: "1108116", date: "2014-12-19", entity: "/src/main.ts", message: "" },
     ]);
   });
 });

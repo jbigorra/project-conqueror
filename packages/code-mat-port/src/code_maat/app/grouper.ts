@@ -36,18 +36,9 @@ function isRegexPath(path: string): boolean {
 /**
  * Converts a plain text path into a regex that matches entities under that path.
  * e.g. "/some/path" → /^\/some\/path\//
- *
- * We must NOT escape backslashes that are already escape sequences in the input,
- * but we DO need to escape special regex metacharacters (except backslash, which
- * the user may use deliberately in the plain-text form).
  */
 function plainPathToRegex(path: string): RegExp {
-  // Escape regex metacharacters in the path, but keep backslashes as-is
-  // so that "\\path" remains "\\path" in the pattern.
-  // Characters to escape: . + * ? ( ) [ ] { } | ^ $
-  // We do NOT escape backslash itself – the user's input literal backslash
-  // is kept as a literal backslash in the regex.
-  const escaped = path.replace(/[.+*?()[\]{}|^$]/g, "\\$&");
+  const escaped = path.replace(/[\\.+*?()[\]{}|^$]/g, "\\$&");
   return new RegExp(`^${escaped}/`);
 }
 

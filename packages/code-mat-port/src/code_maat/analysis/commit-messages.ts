@@ -41,7 +41,14 @@ function ensureSupportedVcs(entries: VCSEntry[]): VCSEntry[] {
 }
 
 function buildMatchExpr(options: CommitMessageOptions): RegExp {
-  return new RegExp(options.expressionToMatch);
+  try {
+    return new RegExp(options.expressionToMatch);
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : String(error);
+    throw new IllegalArgumentError(
+      `Invalid expressionToMatch regex: ${options.expressionToMatch}. ${detail}`,
+    );
+  }
 }
 
 function rowsMatchingExpr(pattern: RegExp, entries: VCSEntry[]): VCSEntry[] {

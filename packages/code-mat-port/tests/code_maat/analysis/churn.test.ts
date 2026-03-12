@@ -45,6 +45,11 @@ const sameAuthor: VCSEntry[] = [
   { entity: "A", rev: 4, author: "xy", date: "2013-11-11", locAdded: "8", locDeleted: "2" },
 ];
 
+const tiedMainDevelopers: VCSEntry[] = [
+  { entity: "A", rev: 1, author: "first", date: "2013-11-10", locAdded: "5", locDeleted: "1" },
+  { entity: "A", rev: 2, author: "last", date: "2013-11-11", locAdded: "5", locDeleted: "2" },
+];
+
 const withBinary: VCSEntry[] = [
   { entity: "binary", rev: 1, author: "at", date: "2013-11-10", locAdded: "-", locDeleted: "-" },
 ];
@@ -129,6 +134,13 @@ describe("churn analysis", () => {
       const result = byMainDeveloper(onlyRemovedLines, options);
       expect(result).toEqual([
         { entity: "Same", mainDev: "single", added: 0, totalAdded: 0, ownership: 0.0 },
+      ]);
+    });
+
+    test("uses last-wins tie breaking when added lines are equal", () => {
+      const result = byMainDeveloper(tiedMainDevelopers, options);
+      expect(result).toEqual([
+        { entity: "A", mainDev: "last", added: 5, totalAdded: 10, ownership: 0.5 },
       ]);
     });
   });

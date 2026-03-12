@@ -67,7 +67,7 @@ describe("parses-specification", () => {
 
   it("With backslash", () => {
     expect(comparableGroupSpecFor("/some\\\\path => G1")).toEqual(
-      comparableGroupSpec([{ path: /^\/some\\path\//, name: "G1" }]),
+      comparableGroupSpec([{ path: /^\/some\\\\path\//, name: "G1" }]),
     );
   });
 
@@ -81,6 +81,12 @@ describe("parses-specification", () => {
     expect(comparableGroupSpecFor("/some/path/with-dash/x => G1")).toEqual(
       comparableGroupSpec([{ path: /^\/some\/path\/with-dash\/x\//, name: "G1" }]),
     );
+  });
+
+  it("With Windows-style path separators", () => {
+    const [spec] = textToGroupSpecification(String.raw`C:\work\src => G1`);
+
+    expect(spec!.path.test(String.raw`C:\work\src/file.ts`)).toBe(true);
   });
 });
 

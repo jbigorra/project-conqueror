@@ -37,6 +37,11 @@ const sharedEffort: VCSEntry[] = [
   { entity: "C", rev: 6, author: "x2", date: "2013-11-16" },
 ];
 
+const nonAsciiEntities: VCSEntry[] = [
+  { entity: "ä.ts", rev: 1, author: "at", date: "2013-11-10" },
+  { entity: "z.ts", rev: 2, author: "zt", date: "2013-11-11" },
+];
+
 describe("effort analysis", () => {
   describe("asRevisionsPerAuthor", () => {
     test("calculates effort for a single author", () => {
@@ -57,6 +62,11 @@ describe("effort analysis", () => {
         { entity: "Z", author: "xy", authorRevs: 2, totalRevs: 3 },
         { entity: "Z", author: "zt", authorRevs: 1, totalRevs: 3 },
       ]);
+    });
+
+    test("sorts non-ASCII entities with lexicographic code-point ordering", () => {
+      const result = asRevisionsPerAuthor(nonAsciiEntities, {});
+      expect(result.map((entry) => entry.entity)).toEqual(["z.ts", "ä.ts"]);
     });
   });
 
@@ -87,6 +97,11 @@ describe("effort analysis", () => {
         { entity: "B", mainDev: "xx", added: 1, totalAdded: 1, ownership: 1.0 },
         { entity: "C", mainDev: "x1", added: 1, totalAdded: 2, ownership: 0.5 },
       ]);
+    });
+
+    test("sorts entities with lexicographic code-point ordering", () => {
+      const result = asMainDeveloperByRevisions(nonAsciiEntities, {});
+      expect(result.map((entry) => entry.entity)).toEqual(["z.ts", "ä.ts"]);
     });
   });
 });

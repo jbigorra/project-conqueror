@@ -1,4 +1,5 @@
 import type { VCSEntry } from "../types";
+import { ratioCentiFloatPrecision } from "./math";
 
 /** One row of the revisions-per-author analysis: how many revisions an author contributed to an entity. */
 export type RevisionPerAuthor = {
@@ -35,8 +36,8 @@ type EntityAuthorRevs = {
   authorRevs: AuthorRevs[];
 };
 
-function ratioToCentiFloatPrecision(ratio: number): number {
-  return Math.round(ratio * 100) / 100;
+function compareEntities(a: string, b: string): number {
+  return a < b ? -1 : a > b ? 1 : 0;
 }
 
 function groupByEntity(entries: VCSEntry[]): Map<string, VCSEntry[]> {
@@ -109,7 +110,7 @@ export function asRevisionsPerAuthor(
 
   // Sort by author-revs descending (stable), then by entity ascending
   flat.sort((a, b) => b.authorRevs - a.authorRevs);
-  flat.sort((a, b) => a.entity.localeCompare(b.entity));
+  flat.sort((a, b) => compareEntities(a.entity, b.entity));
 
   return flat;
 }
@@ -146,7 +147,7 @@ export function asEntityFragmentation(
     const sumOfSquares = authorRevs.reduce((acc, { revs }) => {
       return acc + (revs / totalRevs) ** 2;
     }, 0);
-    const fractalValue = ratioToCentiFloatPrecision(1 - sumOfSquares);
+    const fractalValue = ratioCentiFloatPrecision(1 - sumOfSquares);
     return { entity, fractalValue, totalRevs };
   });
 
@@ -191,7 +192,7 @@ export function asMainDeveloperByRevisions(
   const result: MainDeveloper[] = entityAuthorRevs.map(({ entity, authorRevs }) => {
     const sorted = [...authorRevs].sort((a, b) => b.revs - a.revs);
     const mainAuthor = sorted[0]!;
-    const ownership = ratioToCentiFloatPrecision(mainAuthor.revs / mainAuthor.totalRevs);
+    const ownership = ratioCentiFloatPrecision(mainAuthor.revs / mainAuthor.totalRevs);
     return {
       entity,
       mainDev: mainAuthor.author,
@@ -202,7 +203,7 @@ export function asMainDeveloperByRevisions(
   });
 
   // Sort by entity ascending
-  result.sort((a, b) => a.entity.localeCompare(b.entity));
+  result.sort((a, b) => compareEntities(a.entity, b.entity));
 
   return result;
 }

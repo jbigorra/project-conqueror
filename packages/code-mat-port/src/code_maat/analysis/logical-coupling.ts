@@ -25,6 +25,35 @@ function entitiesByRevisionFiltered(entries: VCSEntry[], maxChangesetSize: numbe
   return Array.from(byRev.values()).filter((group) => group.length <= maxChangesetSize);
 }
 
+function compareByDegreeThenEntity(a: CouplingResult, b: CouplingResult): number {
+  if (b.degree !== a.degree) return b.degree - a.degree;
+  return a.entity < b.entity ? -1 : a.entity > b.entity ? 1 : 0;
+}
+
+function toCouplingResult(
+  pair: [string, string],
+  sharedRevs: number,
+  moduleRevs: Record<string, number>,
+  options: AnalysisOptions,
+): CouplingResult | undefined {
+  const [entity, coupled] = pair;
+  const revsA = moduleRevs[entity] ?? 0;
+  const revsB = moduleRevs[coupled] ?? 0;
+  const avg = (revsA + revsB) / 2;
+  const averageRevs = Math.ceil(avg);
+
+  if (sharedRevs < options.minSharedRevs || averageRevs < options.minRevs) {
+    return undefined;
+  }
+
+  const degree = Math.floor((sharedRevs / avg) * 100);
+  if (degree < options.minCoupling || degree > options.maxCoupling) {
+    return undefined;
+  }
+
+  return { entity, coupled, degree, averageRevs };
+}
+
 /**
  * Calculates the degree of logical coupling for all co-changing module pairs.
  *
@@ -53,7 +82,7 @@ function entitiesByRevisionFiltered(entries: VCSEntry[], maxChangesetSize: numbe
  * // ]
  */
 export function byDegree(entries: VCSEntry[], options: AnalysisOptions): CouplingResult[] {
-  const { minRevs, minSharedRevs, minCoupling, maxCoupling, maxChangesetSize } = options;
+  const { maxChangesetSize } = options;
 
   // Filter revisions by changeset size, then compute co-changing pairs
   const filteredGroups = entitiesByRevisionFiltered(entries, maxChangesetSize);
@@ -64,26 +93,12 @@ export function byDegree(entries: VCSEntry[], options: AnalysisOptions): Couplin
 
   const results: CouplingResult[] = [];
 
-  for (const [[entityA, entityB], sharedRevs] of coupling) {
-    if (sharedRevs < minSharedRevs) continue;
-
-    const revsA = moduleRevs[entityA] ?? 0;
-    const revsB = moduleRevs[entityB] ?? 0;
-    const avg = (revsA + revsB) / 2;
-    const averageRevs = Math.ceil(avg);
-
-    if (averageRevs < minRevs) continue;
-
-    const degree = Math.floor((sharedRevs / avg) * 100);
-
-    if (degree < minCoupling) continue;
-    if (degree > maxCoupling) continue;
-
-    results.push({ entity: entityA, coupled: entityB, degree, averageRevs });
+  for (const [pair, sharedRevs] of coupling) {
+    const result = toCouplingResult(pair, sharedRevs, moduleRevs, options);
+    if (result) {
+      results.push(result);
+    }
   }
 
-  return results.sort((a, b) => {
-    if (b.degree !== a.degree) return b.degree - a.degree;
-    return a.entity.localeCompare(b.entity);
-  });
+  return results.sort(compareByDegreeThenEntity);
 }

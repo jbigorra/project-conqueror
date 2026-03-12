@@ -1,4 +1,6 @@
 import { describe, expect, it } from "bun:test";
+import { mkdtemp, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { AppOptions } from "../../../src/code_maat/app/app";
 import { runAnalysis } from "../../../src/code_maat/app/app";
@@ -82,4 +84,43 @@ describe("analysis dispatch", () => {
     ).toHaveProperty("ageMonths"));
   it("unknown throws", async () =>
     expect(runAnalysis(GIT, opts({ analysis: "unknown" }))).rejects.toThrow("Invalid analysis"));
+});
+
+describe("option content resolution", () => {
+  it("accepts a group specification file path", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "code-maat-group-"));
+    const groupFile = join(dir, "layers.txt");
+    await writeFile(
+      groupFile,
+      "/Infrastrucure => infrastructure\n/Presentation => presentation\n",
+      "utf8",
+    );
+
+    await expect(
+      runAnalysis(GIT, opts({ analysis: "revisions", group: groupFile })),
+    ).resolves.toEqual([
+      { entity: "infrastructure", nRevs: 2 },
+      { entity: "presentation", nRevs: 1 },
+    ]);
+  });
+
+  it("accepts a team map file path", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "code-maat-team-map-"));
+    const teamMapFile = join(dir, "teams.csv");
+    await writeFile(teamMapFile, "author,team\nAPT,Team A\nXYZ,Team B\n", "utf8");
+
+    await expect(runAnalysis(GIT, opts({ analysis: "identity", teamMapFile }))).resolves.toEqual([
+      expect.objectContaining({ author: "Team A" }),
+      expect.objectContaining({ author: "Team A" }),
+      expect.objectContaining({ author: "Team B" }),
+    ]);
+  });
+
+  it("rejects a missing team map file path instead of silently ignoring it", async () => {
+    const missingPath = join(tmpdir(), "code-maat", "missing-team-map.csv");
+
+    await expect(
+      runAnalysis(GIT, opts({ analysis: "identity", teamMapFile: missingPath })),
+    ).rejects.toThrow("Invalid teamMapFile option");
+  });
 });

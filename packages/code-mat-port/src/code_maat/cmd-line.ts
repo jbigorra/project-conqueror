@@ -90,6 +90,22 @@ function flattenArgs(args: string[]): string[] {
   return flatArgs;
 }
 
+function validateRequiredOptions(options: CliOptions, errors: string[]): void {
+  if (options.help) {
+    return;
+  }
+
+  if (!options.log) {
+    errors.push("Missing required option: --log (path to the VCS log file).");
+  }
+
+  if (!options.versionControl) {
+    errors.push(
+      `Missing required option: --version-control (supported: ${VALID_VCS_TYPES.join(", ")}).`,
+    );
+  }
+}
+
 function parseIntegerValue(flag: string, value: string, errors: string[]): number | undefined {
   const parsed = parseInt(value, 10);
   if (Number.isNaN(parsed)) {
@@ -300,6 +316,8 @@ export function parseArgs(args: string[]): ParsedArgs {
     handler.apply(value, options, errors, flag);
     i += 2;
   }
+
+  validateRequiredOptions(options, errors);
 
   return {
     options,

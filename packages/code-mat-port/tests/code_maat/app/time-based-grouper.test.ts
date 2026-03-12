@@ -72,5 +72,23 @@ describe("time-based-grouper", () => {
         "Invalid time-period",
       );
     });
+
+    it("rejects temporal periods larger than the commit history span", () => {
+      const inputCommits = [{ entity: "B", rev: 3, date: "2022-10-19" }];
+
+      expect(() => byTimePeriod(inputCommits, { temporalPeriod: "2" })).toThrow(
+        "exceeds commit history span",
+      );
+    });
+
+    it("rejects commits with missing dates", () => {
+      const inputCommits = [{ entity: "B", rev: 3 }] as Array<{
+        entity: string;
+        rev: number;
+        date: string;
+      }>;
+
+      expect(() => byTimePeriod(inputCommits, { temporalPeriod: "1" })).toThrow("missing date");
+    });
   });
 });

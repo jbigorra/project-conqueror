@@ -64,7 +64,7 @@ function dailyDatesBetween(start: string, end: string): string[] {
 function padCommitsToCompleteTimeSeries(commits: InputEntry[]): Map<string, InputEntry[]> {
   const grouped = new Map<string, InputEntry[]>();
   for (const c of commits) {
-    const d = c.date!;
+    const d = c.date;
     if (!grouped.has(d)) grouped.set(d, []);
     grouped.get(d)!.push(c);
   }
@@ -102,7 +102,7 @@ function distinctByEntity(entries: InputEntry[]): InputEntry[] {
 function adjustRevisionTo(newRev: string, commits: InputEntry[]): OutputEntry[] {
   const deduped = distinctByEntity(commits);
   return deduped.map((c) => ({
-    date: c.date!,
+    date: c.date,
     entity: c.entity,
     rev: newRev,
   }));
@@ -117,9 +117,9 @@ function combineCommitsToLogicalChangesets(windows: InputEntry[][]): OutputEntry
   for (const window of windows) {
     if (window.length === 0) continue;
     const sortedByDate = [...window].sort((a, b) =>
-      a.date! < b.date! ? -1 : a.date! > b.date! ? 1 : 0,
+      a.date < b.date ? -1 : a.date > b.date ? 1 : 0,
     );
-    const latestDay = sortedByDate[sortedByDate.length - 1]!.date!;
+    const latestDay = sortedByDate[sortedByDate.length - 1]!.date;
     const adjusted = adjustRevisionTo(latestDay, window);
     result.push(...adjusted);
   }
@@ -161,6 +161,28 @@ function validatedTimePeriod(options: TimeGroupOptions): number {
   return parseInt(temporalPeriod, 10);
 }
 
+function ensureCommitsHaveDates(commits: InputEntry[]): void {
+  const missingDateCommit = commits.find(
+    (commit) => commit.date === undefined || commit.date.trim() === "",
+  );
+
+  if (!missingDateCommit) return;
+
+  throw new Error(
+    `Invalid commit: missing date for entity '${missingDateCommit.entity}' in revision '${String(missingDateCommit.rev)}'.`,
+  );
+}
+
+function ensureTimePeriodFitsCommitHistory(timePeriod: number, commits: InputEntry[]): void {
+  const historySpan = padCommitsToCompleteTimeSeries(commits).size;
+
+  if (timePeriod <= historySpan) return;
+
+  throw new Error(
+    `Invalid time-period: temporal period ${timePeriod} exceeds commit history span of ${historySpan} day${historySpan === 1 ? "" : "s"}.`,
+  );
+}
+
 /**
  * Groups VCS entries into logical changesets using a sliding time window.
  *
@@ -196,5 +218,7 @@ function validatedTimePeriod(options: TimeGroupOptions): number {
 export function byTimePeriod(commits: InputEntry[], options: TimeGroupOptions): OutputEntry[] {
   const timePeriod = validatedTimePeriod(options);
   if (commits.length === 0) return [];
+  ensureCommitsHaveDates(commits);
+  ensureTimePeriodFitsCommitHistory(timePeriod, commits);
   return commitsToSlidingWindowSeq(timePeriod, commits);
 }

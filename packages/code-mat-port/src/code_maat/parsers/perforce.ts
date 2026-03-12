@@ -19,6 +19,12 @@ type ChangeContext = {
   date: string;
 };
 
+type ParserContext = {
+  state: State;
+  currentChange: ChangeContext | null;
+  result: PerforceEntry[];
+};
+
 function getCapture(match: RegExpMatchArray, index: number, context: string): string {
   const value = match[index];
   if (value === undefined) {
@@ -71,6 +77,59 @@ function parseFileEntry(line: string, change: ChangeContext | null): PerforceEnt
   };
 }
 
+function createParserContext(): ParserContext {
+  return {
+    state: "HEADER",
+    currentChange: null,
+    result: [],
+  };
+}
+
+function beginChange(context: ParserContext, change: ChangeContext): void {
+  context.currentChange = change;
+  context.state = "MESSAGE";
+}
+
+function resetChange(context: ParserContext): void {
+  context.currentChange = null;
+  context.state = "HEADER";
+}
+
+function isSkippingSection(state: State): boolean {
+  return state === "MESSAGE" || state === "JOBS";
+}
+
+function consumeFileLine(context: ParserContext, line: string): void {
+  if (!line.trim()) {
+    resetChange(context);
+    return;
+  }
+
+  const fileEntry = parseFileEntry(line, context.currentChange);
+  if (fileEntry) {
+    context.result.push(fileEntry);
+  }
+}
+
+function consumeLine(context: ParserContext, line: string): void {
+  const change = parseChangeContext(line);
+  if (change) {
+    beginChange(context, change);
+    return;
+  }
+
+  if (isSkippingSection(context.state)) {
+    context.state = nextParseState(line, context.state);
+    return;
+  }
+
+  if (context.state !== "FILES") {
+    return;
+  }
+
+  consumeFileLine(context, line);
+}
+
 /**
  * Parses a Perforce log string into an array of VCS entries.
  *
@@ -89,39 +148,13 @@ function parseFileEntry(line: string, change: ChangeContext | null): PerforceEnt
 export function parseReadLog(text: string, _options: Record<string, unknown>): PerforceEntry[] {
   if (!text.trim()) return [];
 
-  const result: PerforceEntry[] = [];
-
-  let state: State = "HEADER";
-  let currentChange: ChangeContext | null = null;
+  const context = createParserContext();
 
   for (const line of text.split("\n")) {
-    const header = parseChangeContext(line);
-    if (header) {
-      currentChange = header;
-      state = "MESSAGE";
-      continue;
-    }
-
-    if (state === "MESSAGE" || state === "JOBS") {
-      state = nextParseState(line, state);
-      continue; // skip message/job lines
-    }
-
-    if (state === "FILES") {
-      if (!line.trim()) {
-        state = "HEADER";
-        currentChange = null;
-        continue;
-      }
-
-      const fileEntry = parseFileEntry(line, currentChange);
-      if (fileEntry) {
-        result.push(fileEntry);
-      }
-    }
+    consumeLine(context, line);
   }
 
-  return result;
+  return context.result;
 }
 
 /**
