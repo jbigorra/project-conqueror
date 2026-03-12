@@ -36,14 +36,14 @@ for (const [vcs, logFile] of VCS_FILES) {
     for (const analysis of NON_CHURN) {
       it(analysis, async () =>
         expect(await runTS(logFile, { versionControl: vcs, analysis })).toEqual(
-          runJar(logFile, vcs, analysis),
+          runJar({ logFile, vcs, analysis }),
         ),
       );
     }
     it("age", async () =>
       expect(
         await runTS(logFile, { versionControl: vcs, analysis: "age", ageTimeNow: AGE_DATE }),
-      ).toEqual(runJar(logFile, vcs, "age", ["--age-time-now", AGE_DATE])));
+      ).toEqual(runJar({ logFile, vcs, analysis: "age", extra: ["--age-time-now", AGE_DATE] })));
   });
 }
 
@@ -52,7 +52,7 @@ describe("JAR parity — git2 churn", () => {
   for (const analysis of CHURN) {
     it(analysis, async () =>
       expect(await runTS(LOG, { versionControl: "git2", analysis })).toEqual(
-        runJar(LOG, "git2", analysis),
+        runJar({ logFile: LOG, vcs: "git2", analysis }),
       ),
     );
   }

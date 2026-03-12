@@ -32,7 +32,7 @@ describe("JAR parity — git", () => {
   for (const analysis of BASIC) {
     it(analysis, async () =>
       expect(await runTS(LOG, { versionControl: VCS, analysis })).toEqual(
-        runJar(LOG, VCS, analysis),
+        runJar({ logFile: LOG, vcs: VCS, analysis }),
       ),
     );
   }
@@ -40,17 +40,26 @@ describe("JAR parity — git", () => {
   it("age", async () =>
     expect(
       await runTS(LOG, { versionControl: VCS, analysis: "age", ageTimeNow: AGE_DATE }),
-    ).toEqual(runJar(LOG, VCS, "age", ["--age-time-now", AGE_DATE])));
+    ).toEqual(
+      runJar({ logFile: LOG, vcs: VCS, analysis: "age", extra: ["--age-time-now", AGE_DATE] }),
+    ));
 
   it("messages", async () =>
     expect(
       await runTS(LOG, { versionControl: VCS, analysis: "messages", expressionToMatch: "stat" }),
-    ).toEqual(runJar(LOG, VCS, "messages", ["--expression-to-match", "stat"])));
+    ).toEqual(
+      runJar({
+        logFile: LOG,
+        vcs: VCS,
+        analysis: "messages",
+        extra: ["--expression-to-match", "stat"],
+      }),
+    ));
 
   for (const analysis of CHURN) {
     it(`${analysis} (churn)`, async () =>
       expect(await runTS(LOG, { versionControl: VCS, analysis })).toEqual(
-        runJar(LOG, VCS, analysis),
+        runJar({ logFile: LOG, vcs: VCS, analysis }),
       ));
   }
 });
