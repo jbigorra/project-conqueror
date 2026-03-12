@@ -14,6 +14,34 @@ describe("time-based-grouper", () => {
         { date: "2022-10-20", entity: "B", rev: "2022-10-20" },
       ]);
     });
+
+    it("preserves extra VCS entry fields while overriding rev", () => {
+      const inputCommits = [
+        {
+          author: "alice",
+          date: "2022-10-20",
+          entity: "A",
+          locAdded: "10",
+          locDeleted: "3",
+          message: "feat: preserve fields",
+          rev: 1,
+        },
+      ];
+
+      const result = byTimePeriod(inputCommits, { temporalPeriod: "1" });
+
+      expect(result).toEqual([
+        {
+          author: "alice",
+          date: "2022-10-20",
+          entity: "A",
+          locAdded: "10",
+          locDeleted: "3",
+          message: "feat: preserve fields",
+          rev: "2022-10-20",
+        },
+      ]);
+    });
   });
 
   describe("multiple-days give a rolling dataset", () => {
