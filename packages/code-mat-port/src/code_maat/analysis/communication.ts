@@ -80,7 +80,7 @@ function selfCount(author: string, freqs: Map<string, number>): number {
  * both touched (`shared`), computes an `average` baseline as the ceiling of
  * (A's total entities + B's total entities) / 2, and derives a `strength` percentage
  * as floor(shared / average * 100). Self-pairs are excluded. Results are sorted
- * descending by strength, then by author name descending, then by peer name descending.
+ * descending by strength, then by author name ascending, then by peer name ascending.
  *
  * @param entries - VCS log entries. Only `entity` and `author` fields are required.
  * @returns Array of `CommunicationRow` sorted descending by `strength`. Each record
@@ -112,11 +112,11 @@ export function bySharedEntities(entries: VCSEntry[]): CommunicationRow[] {
     rows.push({ author: me!, peer: peer!, shared, average, strength });
   }
 
-  // Sort by strength desc, then author desc, then peer desc
+  // Sort by strength desc, then author asc, then peer asc
   rows.sort((a, b) => {
     if (b.strength !== a.strength) return b.strength - a.strength;
-    if (b.author !== a.author) return b.author > a.author ? 1 : -1;
-    if (b.peer !== a.peer) return b.peer > a.peer ? 1 : -1;
+    if (a.author !== b.author) return a.author < b.author ? -1 : 1;
+    if (a.peer !== b.peer) return a.peer < b.peer ? -1 : 1;
     return 0;
   });
 

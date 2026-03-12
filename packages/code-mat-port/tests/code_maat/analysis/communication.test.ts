@@ -15,12 +15,12 @@ describe("communication analysis", () => {
     const result = bySharedEntities(sharingAuthors);
 
     expect(result).toEqual([
-      { author: "jt", peer: "at", shared: 2, average: 2, strength: 100 },
       { author: "at", peer: "jt", shared: 2, average: 2, strength: 100 },
-      { author: "jt", peer: "ap", shared: 1, average: 2, strength: 50 },
-      { author: "at", peer: "ap", shared: 1, average: 2, strength: 50 },
-      { author: "ap", peer: "jt", shared: 1, average: 2, strength: 50 },
+      { author: "jt", peer: "at", shared: 2, average: 2, strength: 100 },
       { author: "ap", peer: "at", shared: 1, average: 2, strength: 50 },
+      { author: "ap", peer: "jt", shared: 1, average: 2, strength: 50 },
+      { author: "at", peer: "ap", shared: 1, average: 2, strength: 50 },
+      { author: "jt", peer: "ap", shared: 1, average: 2, strength: 50 },
     ]);
   });
 });

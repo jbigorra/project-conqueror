@@ -54,6 +54,11 @@ function monthsDiff(from: Date, to: Date): number {
   return Math.max(0, totalMonths);
 }
 
+function defaultReferenceDate(): Date {
+  const today = new Date();
+  return new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()));
+}
+
 /**
  * Calculates the age (in whole calendar months) of each entity based on its most
  * recent commit date that falls strictly before the reference date.
@@ -66,7 +71,7 @@ function monthsDiff(from: Date, to: Date): number {
  * @param entries - VCS log entries. Each entry must have a `date` field in "YYYY-MM-DD"
  *   format; entries without a date are silently skipped.
  * @param referenceDate - Optional ISO date string ("YYYY-MM-DD") to use as "now".
- *   Defaults to the current wall-clock date when omitted.
+ *   Defaults to the current local wall-clock date normalized to UTC midnight when omitted.
  * @returns Array of `CodeAgeEntry` sorted ascending by `ageMonths`. Each record contains
  *   `entity` (path) and `ageMonths` (whole months since last commit before reference).
  *
@@ -78,7 +83,7 @@ function monthsDiff(from: Date, to: Date): number {
  * // ]
  */
 export function byAge(entries: VCSEntry[], referenceDate?: string): CodeAgeEntry[] {
-  const now = referenceDate ? parseDate(referenceDate) : new Date();
+  const now = referenceDate ? parseDate(referenceDate) : defaultReferenceDate();
 
   return [...latestCommitDates(entries, now).entries()]
     .map(([entity, latestDate]) => ({
