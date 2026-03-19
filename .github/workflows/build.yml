@@ -3,7 +3,7 @@ on:
   workflow_run:
     workflows: ["Security Audit"]
     types: [completed]
-    branches: ["**"]
+    branches: [master, fix/*, feature/*]
 jobs:
   build:
     name: Build
