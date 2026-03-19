@@ -27,12 +27,18 @@ export class LizardExecutor implements ICLIExecutor {
   }
 
   async execute(args: string[]): Promise<Result<TCLIResult>> {
-    const spawnArgs = [this.pathToLizard, ...args];
-    const result = await this.spawnAsync(this.pythonBin, spawnArgs);
+    try {
+      const spawnArgs = [this.pathToLizard, ...args];
+      const result = await this.spawnAsync(this.pythonBin, spawnArgs);
 
-    if (result.isFailure()) {
-      return Result.error(new Error(result.errorMessage()));
+      if (result.isFailure()) {
+        return Result.error(new Error(result.errorMessage()));
+      }
+      return Result.success(result);
+    } catch (error) {
+      return Result.error(
+        error instanceof Error ? error : new Error(String(error)),
+      );
     }
-    return Result.success(result);
   }
 }
