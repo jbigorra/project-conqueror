@@ -1,0 +1,3 @@
+[submodule "packages/lizard-ts/src/python-lizard"]
+	path = packages/lizard-ts/src/python-lizard
+	url = https://github.com/terryyin/lizard
