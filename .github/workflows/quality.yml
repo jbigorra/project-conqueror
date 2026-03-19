@@ -16,29 +16,29 @@ jobs:
         task: [test:coverage] # add lint to the list when we have a linting step
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
       - name: Enable Corepack
         run: corepack enable
       - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
+        uses: oven-sh/setup-bun@v2.2.0
         with:
           bun-version-file: ".bun-version"
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 20
           cache: "pnpm"
       - name: Restore Turbo cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .turbo
           key: ${{ runner.os }}-turbo-${{ hashFiles('**/package.json', '**/pnpm-lock.yaml', 'turbo.json') }}
           restore-keys: |
             ${{ runner.os }}-turbo-
       - name: Restore workspace cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             node_modules
@@ -61,7 +61,7 @@ jobs:
       # Upload coverage only for test job
       - name: Upload coverage artifacts
         if: matrix.task == 'test:coverage'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: coverage
           path: |
@@ -82,13 +82,13 @@ jobs:
           - { name: "lib", path: "packages/lib" }
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
           fetch-depth: 0
 
       - name: Restore Turbo cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .turbo
           key: ${{ runner.os }}-turbo-${{ hashFiles('**/package.json', '**/pnpm-lock.yaml', 'turbo.json') }}
@@ -96,7 +96,7 @@ jobs:
             ${{ runner.os }}-turbo-
 
       - name: Restore workspace cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             node_modules
@@ -109,7 +109,7 @@ jobs:
             workspace-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}-
 
       - name: Download coverage artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: coverage
       - name: Find coverage report file
@@ -117,7 +117,7 @@ jobs:
           ls -la ${{ matrix.project.path }}
           find ${{ matrix.project.path }} -name "lcov.info"
       - name: SonarQube Scan - ${{ matrix.project.name }}
-        uses: SonarSource/sonarqube-scan-action@v5.3.1
+        uses: SonarSource/sonarqube-scan-action@v7
         with:
           projectBaseDir: ${{ matrix.project.path }}/
         env:
