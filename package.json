@@ -18,7 +18,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.14.0",
+  "packageManager": "pnpm@10.32.1",
   "devDependencies": {
     "@oxc-minify/binding-darwin-arm64": "0.93.0",
     "@oxc-transform/binding-darwin-arm64": "0.93.0",
