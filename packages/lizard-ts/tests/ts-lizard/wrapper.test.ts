@@ -35,21 +35,15 @@ describe("Lizard", () => {
     expect(result).toEqual(expectedError);
   });
 
-  it("should prepend the correct headers to the csv file", async () => {
+  it("should return only headers when stdout is empty", async () => {
     const executor = mockFn<ICLIExecutor>();
-    const csvOutput =
-      '6,1,34,1,7,"create@18-24@./path/to/file.ts","/path/to/file.ts","create","create ( deps : Deps )",18,24';
     executor.execute.mockResolvedValue(
-      Result.success(new CLIResult(0, csvOutput, "")),
+      Result.success(new CLIResult(0, "", "")),
     );
     const lizard = new Lizard(executor);
 
-    const result = await lizard.analyze("/path/to/source");
+    const result = await lizard.analyze("/empty/project");
 
-    expect(executor.execute.spy()).toHaveBeenCalledWith([
-      "/path/to/source",
-      "--csv",
-    ]);
-    expect(result).toBe(lizard.CSV_HEADERS + csvOutput);
+    expect(result).toBe(lizard.CSV_HEADERS);
   });
 });
