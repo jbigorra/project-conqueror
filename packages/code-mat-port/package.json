@@ -30,20 +30,20 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.14.0",
+  "packageManager": "pnpm@10.32.1",
   "dependencies": {
     "csv-parse": "6.1.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.6",
     "@prj-conq/typescript-config": "workspace:*",
-    "@types/bun": "^1.3.10",
+    "@types/bun": "^1.3.11",
     "bun-automock": "^0.2.5",
     "bunup": "^0.16.31",
     "fishery": "2.4.0",
     "typescript": "^5.9.3"
   },
   "engines": {
-    "bun": ">=1.3.10"
+    "bun": ">=1.3.11"
   }
 }

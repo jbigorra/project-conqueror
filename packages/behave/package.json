@@ -25,7 +25,7 @@
     "#analyses/*": "./src/analyses/*"
   },
   "engines": {
-    "bun": ">=1.2.21"
+    "bun": ">=1.3.11"
   },
   "scripts": {
     "build": "bunup",
@@ -37,14 +37,14 @@
   "keywords": [],
   "author": "Juan Bigorra <jbigorra.soft.eng@pm.me>",
   "license": "ISC",
-  "packageManager": "pnpm@10.14.0",
+  "packageManager": "pnpm@10.32.1",
   "dependencies": {
     "@prj-conq/lib": "workspace:^",
     "csv-parse": "6.1.0"
   },
   "devDependencies": {
     "@prj-conq/typescript-config": "workspace:*",
-    "@types/bun": "^1.3.10",
+    "@types/bun": "^1.3.11",
     "bun-automock": "^0.2.5",
     "bunup": "^0.16.31",
     "fishery": "2.4.0",
