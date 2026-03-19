@@ -24,6 +24,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          submodules: true
 
       - name: Enable Corepack
         run: corepack enable
@@ -71,6 +73,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          submodules: true
 
       - name: Enable Corepack
         run: corepack enable
@@ -85,6 +89,11 @@ jobs:
         with:
           node-version: 20
           cache: "pnpm"
+
+      - name: Setup Python venv for lizard
+        run: |
+          python3 -m venv packages/lizard-ts/src/python-lizard/.venv
+          packages/lizard-ts/src/python-lizard/.venv/bin/pip install pygments pathspec
 
       - name: Restore workspace cache
         uses: actions/cache@v5
