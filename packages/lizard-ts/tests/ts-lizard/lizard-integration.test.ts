@@ -42,7 +42,10 @@ describe("Lizard integration", () => {
     expect(result).toBe(buildExpectedOutput(expectedFile));
   });
 
-  it("should return an error for a nonexistent path", async () => {
+  // Lizard exits with code 0 for nonexistent paths (reports 0 files analyzed).
+  // The error path (non-zero exit) is covered by unit tests in wrapper.test.ts
+  // and lizard-executor.test.ts.
+  it("should return only headers for a nonexistent path", async () => {
     const result = await lizard.analyze("/nonexistent/path/to/code");
 
     expect(result).not.toBeInstanceOf(Error);
