@@ -1,4 +1,5 @@
 import { describe, expect, it } from "bun:test";
+import { join } from "node:path";
 import { runAnalysis } from "../../../src/code_maat/app/app";
 
 /**
@@ -10,8 +11,7 @@ import { runAnalysis } from "../../../src/code_maat/app/app";
  * part of the same work.
  */
 
-const LOG_FILE =
-  "/Users/jbigorra/Projects/project-conqueror.worktrees/master/packages/code-mat-port/tmp/code-maat/test/code_maat/app/day_coupled_entities_git.txt";
+const LOG_FILE = join(__dirname, "../../fixtures/log-fixtures/day_coupled_entities_git.txt");
 
 const CSV_OPTIONS = {
   versionControl: "git",
