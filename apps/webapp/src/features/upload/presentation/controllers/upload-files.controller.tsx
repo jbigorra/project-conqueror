@@ -51,7 +51,6 @@ export const uploadFilesController = createBaseController("uploadFilesController
             maxSize: 1024 * 1024 * 20, // 20MB
             minSize: 1, // 1byte,
             error: "A non empty plain/text file with .log extension is required.",
-            type: "text/plain",
           }),
         }),
       },
