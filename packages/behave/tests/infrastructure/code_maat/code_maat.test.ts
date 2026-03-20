@@ -9,7 +9,7 @@ describe("CodeMaat", () => {
   const expectedJarPath = path.join(
     __dirname,
     "../../../",
-    "src/infrastructure/code_maat/vendor/code-maat-1.0.4-standalone.jar",
+    "src/legacy/infrastructure/code_maat/vendor/code-maat-1.0.4-standalone.jar",
   );
 
   beforeEach(() => {

@@ -1,14 +1,2 @@
-import { AnalysisOptions, Behave } from "#behave/behave.ts";
-import { AnalysisRunner } from "#runners/analysis_runner.ts";
-
-export default class BehaveInstance {
-  private static instance: Behave | null = null;
-
-  static create(): Behave {
-    BehaveInstance.instance ??= new Behave(AnalysisRunner.create({}));
-
-    return BehaveInstance.instance;
-  }
-}
-
-export { AnalysisOptions, Behave };
+// Legacy (deprecated) — existing consumers keep working
+export { default, AnalysisOptions, Behave } from "./legacy/index"
