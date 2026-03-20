@@ -19,10 +19,10 @@
     "./package.json": "./package.json"
   },
   "imports": {
-    "#behave/*": "./src/*",
-    "#infra/*": "./src/infrastructure/*",
-    "#runners/*": "./src/runners/*",
-    "#analyses/*": "./src/analyses/*"
+    "#behave/*": "./src/legacy/*",
+    "#infra/*": "./src/legacy/infrastructure/*",
+    "#runners/*": "./src/legacy/runners/*",
+    "#analyses/*": "./src/legacy/analyses/*"
   },
   "engines": {
     "bun": ">=1.3.11"
@@ -32,7 +32,8 @@
     "dev": "bunup --watch",
     "test": "bun test",
     "test:coverage": "bun test --coverage",
-    "tdd": "bun test --watch"
+    "tdd": "bun test --watch",
+    "validate": "bun test && biome check . --write"
   },
   "keywords": [],
   "author": "Juan Bigorra <jbigorra.soft.eng@pm.me>",

@@ -9,7 +9,7 @@ export default defineConfig({
   format: "esm",
   sourcemap: "linked",
   plugins: [
-    copy("src/infrastructure/code_maat/vendor/code-maat-1.0.4-standalone.jar").to(
+    copy("src/legacy/infrastructure/code_maat/vendor/code-maat-1.0.4-standalone.jar").to(
       "dist/infrastructure/code_maat/vendor/code-maat-1.0.4-standalone.jar",
     ),
   ],
