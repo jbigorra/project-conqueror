@@ -9,7 +9,7 @@ const escapeField = (value: unknown): string => {
   return str
 }
 
-export const toCsv = <T extends Record<string, unknown>>(data: T[]): Effect.Effect<string, FormatError> =>
+export const toCsv = <T extends Record<string, unknown>>(data: readonly T[]): Effect.Effect<string, FormatError> =>
   Effect.try({
     try: () => {
       if (data.length === 0) throw new Error("Cannot convert empty data to CSV")
