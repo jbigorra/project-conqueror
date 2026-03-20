@@ -7,7 +7,7 @@ import { extractParameters } from "./extract-parameters"
 
 export const toAnalysis = <T>(
   analysisName: string,
-  data: T[],
+  data: readonly T[],
   input: { format?: OutputFormat; [key: string]: unknown }
 ): Effect.Effect<Analysis<T>, FormatError> =>
   Effect.gen(function* () {
@@ -19,7 +19,7 @@ export const toAnalysis = <T>(
       format,
     }
     if (format === "csv") {
-      return { metadata: { ...metadata, format: "csv" as const }, data: yield* toCsv(data as Record<string, unknown>[]) }
+      return { metadata: { ...metadata, format: "csv" as const }, data: yield* toCsv(data as readonly Record<string, unknown>[]) }
     }
     return { metadata: { ...metadata, format: "json" as const }, data }
   })

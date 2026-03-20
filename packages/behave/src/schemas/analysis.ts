@@ -8,5 +8,5 @@ export type AnalysisMetadata = {
 }
 
 export type Analysis<T> =
-  | { metadata: AnalysisMetadata & { format: "json" }; data: T[] }
+  | { metadata: AnalysisMetadata & { format: "json" }; data: readonly T[] }
   | { metadata: AnalysisMetadata & { format: "csv" }; data: string }
