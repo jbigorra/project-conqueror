@@ -32,6 +32,7 @@ export * as math from "./code_maat/analysis/math";
 export * as sumOfCoupling from "./code_maat/analysis/sum-of-coupling";
 export * as summary from "./code_maat/analysis/summary";
 export * as app from "./code_maat/app/app";
+export type { AppOptions } from "./code_maat/app/app";
 export * as grouper from "./code_maat/app/grouper";
 export * as teamMapper from "./code_maat/app/team-mapper";
 export * as timeBasedGrouper from "./code_maat/app/time-based-grouper";

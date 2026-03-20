@@ -41,7 +41,10 @@
   "packageManager": "pnpm@10.32.1",
   "dependencies": {
     "@prj-conq/lib": "workspace:^",
-    "csv-parse": "6.1.0"
+    "@prj-conq/lizard-ts": "workspace:^",
+    "code-mat-port": "workspace:^",
+    "csv-parse": "6.1.0",
+    "effect": "^3.21.0"
   },
   "devDependencies": {
     "@prj-conq/typescript-config": "workspace:*",
