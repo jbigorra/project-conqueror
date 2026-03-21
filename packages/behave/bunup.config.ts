@@ -5,7 +5,7 @@ export default defineConfig({
   name: "@prj-conq/behave",
   entry: "src/index.ts",
   outDir: "dist",
-  dts: true,
+  dts: false,
   noExternal: [
     "@prj-conq/code-maat-port",
     "@prj-conq/lizard-ts",
