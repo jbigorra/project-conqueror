@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { mergeByEntity } from "../../../src/pipeline/transform/merge-by-entity";
 import type { Revision } from "../../../src/schemas/code-maat";
-import type { LizardFunctionMetrics } from "../../../src/schemas/lizard";
+import type { LizardFunctionMetric } from "../../../src/schemas/lizard";
 
 describe("mergeByEntity", () => {
 	test("inner joins churn and complexity by file/entity", () => {
@@ -9,7 +9,7 @@ describe("mergeByEntity", () => {
 			{ entity: "src/foo.ts", nRevs: 10 },
 			{ entity: "src/bar.ts", nRevs: 5 },
 		];
-		const complexity: LizardFunctionMetrics = [
+		const complexity: LizardFunctionMetric[] = [
 			{
 				nloc: 50,
 				cyclomaticComplexity: 8,
@@ -34,7 +34,7 @@ describe("mergeByEntity", () => {
 	});
 	test("takes max cyclomatic complexity per file", () => {
 		const churn: Revision[] = [{ entity: "src/foo.ts", nRevs: 10 }];
-		const complexity: LizardFunctionMetrics = [
+		const complexity: LizardFunctionMetric[] = [
 			{
 				nloc: 10,
 				cyclomaticComplexity: 3,
@@ -81,7 +81,7 @@ describe("mergeByEntity", () => {
 	});
 	test("returns empty array when no entities match", () => {
 		const churn: Revision[] = [{ entity: "src/foo.ts", nRevs: 10 }];
-		const complexity: LizardFunctionMetrics = [
+		const complexity: LizardFunctionMetric[] = [
 			{
 				nloc: 10,
 				cyclomaticComplexity: 5,
@@ -102,5 +102,30 @@ describe("mergeByEntity", () => {
 	test("returns empty array when both inputs are empty", () => {
 		const result = mergeByEntity([], []);
 		expect(result).toEqual([]);
+	});
+	test("matches git-relative entity paths with lizard absolute file paths", () => {
+		const churn: Revision[] = [{ entity: "src/foo.ts", nRevs: 10 }];
+		const complexity: LizardFunctionMetric[] = [
+			{
+				nloc: 20,
+				cyclomaticComplexity: 7,
+				tokenCount: 80,
+				parameters: 1,
+				length: 20,
+				location: "fn@1-20@/home/user/project/src/foo.ts",
+				file: "/home/user/project/src/foo.ts",
+				functionName: "fn",
+				longName: "fn(x)",
+				startLine: 1,
+				endLine: 20,
+			},
+		];
+		const result = mergeByEntity(churn, complexity);
+		expect(result).toHaveLength(1);
+		expect(result[0]).toEqual({
+			entity: "src/foo.ts",
+			nRevs: 10,
+			cyclomaticComplexity: 7,
+		});
 	});
 });
