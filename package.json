@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "description": "Monorepo for 'Project Conqueror' a behavioural code analysis tool.",
   "engines": {
-    "node": ">=22.0.0"
+    "bun": ">=1.3.11"
   },
   "scripts": {
     "build": "turbo build",
@@ -13,7 +13,7 @@
     "test:coverage": "turbo test:coverage",
     "tdd": "turbo tdd",
     "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md,json}\""
+    "format": "turbo format"
   },
   "keywords": [],
   "author": "",
@@ -22,7 +22,6 @@
   "devDependencies": {
     "@oxc-minify/binding-darwin-arm64": "0.93.0",
     "@oxc-transform/binding-darwin-arm64": "0.93.0",
-    "prettier": "3.6.2",
     "turbo": "2.6.1",
     "typescript": "^5.9.3"
   },
