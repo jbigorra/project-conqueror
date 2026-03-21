@@ -34,7 +34,7 @@ src/code_maat/
   parsers/                   — git, git2, mercurial, perforce, svn, tfs, time-parser
   app/                       — app, grouper, team-mapper, time-based-grouper
   cmd-line.ts
-src/index.ts                 — public API (namespace re-exports)
+src/index.ts                 — public API (named re-exports, see export rules below)
 
 tests/                       — mirrors src/ structure
 tests/fixtures/log-fixtures/ — simple_git.txt, simple_git2.txt, simple_hg.txt, simple_p4.txt
@@ -53,6 +53,10 @@ tmp/code-maat/src/           — original Clojure source (reference only, do not
 | p4   | `parsers/perforce`  | `parseReadLog(text, {})` | `parseLog(path, {})`     |
 | tfs  | `parsers/tfs`       | `parseReadLog(text, {})` | `parseLog(path, {})`     |
 | svn  | `parsers/svn`       | `parseReadLog(text, {})` | — (read file, pass text) |
+
+## Export Rules
+
+The barrel `src/index.ts` must use **named exports only** (`export { X } from` or `export * from`). Do NOT use `export * as namespace from` — bun's DTS bundler cannot generate declaration files when `noExternal` is combined with namespace re-exports, which breaks the downstream `@prj-conq/behave` build. Use `export { X as AliasedName } from` to resolve naming conflicts between modules (e.g. `parseReadLog` exists in every parser).
 
 ## Commit style
 
