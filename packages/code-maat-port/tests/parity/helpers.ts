@@ -5,7 +5,7 @@ import { runAnalysis } from "../../src/code_maat/app/app";
 
 export const JAR = join(
   __dirname,
-  "../../../behave/src/infrastructure/code_maat/vendor/code-maat-1.0.4-standalone.jar",
+  "../fixtures/vendor/code-maat-1.0.4-standalone.jar",
 );
 export const FIXTURES = join(__dirname, "../fixtures/log-fixtures");
 
