@@ -63,6 +63,10 @@ export const LizardFunctionMetricsItem = Schema.transform(
 
 export const LizardMetricsSchema = Schema.Array(LizardFunctionMetricsItem);
 
+export type LizardFunctionMetric = Schema.Schema.Type<
+	typeof LizardFunctionMetricsItem
+>;
+
 export type LizardFunctionMetrics = Schema.Schema.Type<
 	typeof LizardMetricsSchema
 >;

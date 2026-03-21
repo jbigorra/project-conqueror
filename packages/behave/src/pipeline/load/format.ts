@@ -1,12 +1,11 @@
 import { Effect } from "effect";
 import { FormatError } from "../../errors";
 
+const needsQuoting = /[,"\n]/;
+
 const escapeField = (value: unknown): string => {
 	const str = String(value);
-	if (str.includes(",") || str.includes('"') || str.includes("\n")) {
-		return `"${str.replace(/"/g, '""')}"`;
-	}
-	return str;
+	return needsQuoting.test(str) ? `"${str.replace(/"/g, '""')}"` : str;
 };
 
 export const toCsv = <T extends Record<string, unknown>>(

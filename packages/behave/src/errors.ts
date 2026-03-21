@@ -1,13 +1,16 @@
 import { Data } from "effect";
 
-export class CodeMaatError extends Data.TaggedError("CodeMaatError")<{
+const CodeMaatError_ = Data.TaggedError("CodeMaatError")<{
 	cause: unknown;
-}> {}
+}>;
+export class CodeMaatError extends CodeMaatError_ {}
 
-export class LizardError extends Data.TaggedError("LizardError")<{
+const LizardError_ = Data.TaggedError("LizardError")<{
 	cause: unknown;
-}> {}
+}>;
+export class LizardError extends LizardError_ {}
 
-export class FormatError extends Data.TaggedError("FormatError")<{
+const FormatError_ = Data.TaggedError("FormatError")<{
 	message: string;
-}> {}
+}>;
+export class FormatError extends FormatError_ {}
