@@ -12,11 +12,13 @@ export class LizardService extends Context.Tag("LizardService")<
 	}
 >() {}
 
+const lizard = LizardInstance.create();
+
 export const LizardLive = Layer.succeed(LizardService, {
 	analyze: (sourcePath) =>
 		Effect.tryPromise({
 			try: async () => {
-				const result = await LizardInstance.create().analyze(sourcePath);
+				const result = await lizard.analyze(sourcePath);
 				if (result instanceof Error) throw result;
 				return result;
 			},

@@ -1,12 +1,6 @@
 import { Effect } from "effect";
+import { stringify } from "csv-stringify/sync";
 import { FormatError } from "../../errors";
-
-const needsQuoting = /[,"\n]/;
-
-const escapeField = (value: unknown): string => {
-	const str = String(value);
-	return needsQuoting.test(str) ? `"${str.replace(/"/g, '""')}"` : str;
-};
 
 export const toCsv = <T extends Record<string, unknown>>(
 	data: readonly T[],
@@ -15,13 +9,7 @@ export const toCsv = <T extends Record<string, unknown>>(
 		try: () => {
 			if (data.length === 0)
 				throw new Error("Cannot convert empty data to CSV");
-			const first = data[0] as T;
-			const headers = Object.keys(first);
-			const headerLine = headers.join(",");
-			const rows = data.map((row) =>
-				headers.map((h) => escapeField(row[h])).join(","),
-			);
-			return [headerLine, ...rows].join("\n");
+			return stringify(data as T[], { header: true }).trimEnd();
 		},
 		catch: (e) => new FormatError({ message: String(e) }),
 	});

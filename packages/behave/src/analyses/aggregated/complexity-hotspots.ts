@@ -37,10 +37,7 @@ export const complexityHotspotsEffect = (input: ComplexityHotspotsInput) =>
 			yield* Schema.decodeUnknown(LizardMetricsSchema)(complexityData);
 
 		// Transform
-		const hotspots = mergeByEntity(
-			churn as { entity: string; nRevs: number }[],
-			complexity,
-		);
+		const hotspots = mergeByEntity(churn, complexity);
 
 		// Load
 		return yield* toAnalysis("complexity-hotspots", hotspots, input);
