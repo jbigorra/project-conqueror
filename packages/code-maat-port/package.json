@@ -19,6 +19,7 @@
     "./package.json": "./package.json"
   },
   "scripts": {
+    "build": "bunup",
     "test": "bun test tests/code_maat/*",
     "test:tdd": "bun test tests/code_maat/* --watch",
     "test:coverage": "bun test tests/code_maat/* --coverage",
