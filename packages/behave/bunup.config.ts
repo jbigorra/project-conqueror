@@ -12,6 +12,6 @@ export default defineConfig({
 	plugins: [
 		copy(
 			"src/legacy/infrastructure/code_maat/vendor/code-maat-1.0.4-standalone.jar",
-		).to("dist/infrastructure/code_maat/vendor/code-maat-1.0.4-standalone.jar"),
+		).to("infrastructure/code_maat/vendor/code-maat-1.0.4-standalone.jar"),
 	],
 });
