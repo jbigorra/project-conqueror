@@ -1,5 +1,5 @@
 import { Factory } from "fishery";
-import type { TOptions } from "@/behave/behave";
+import type { TOptions } from "#behave/behave.ts";
 
 export const analysisOptionsFactory = Factory.define<TOptions>(() => ({
 	analysisType: "abs-churn" as const,
