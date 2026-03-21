@@ -31,4 +31,4 @@ yarn-error.log*
 .manual-test-scripts/*
 **/coverage
 
-packages/code-mat-port/tmp/
+packages/code-maat-port/tmp/

@@ -4,7 +4,7 @@
 
 **Goal:** Port missing `summary` analysis, expand `app.ts` to all 18 analyses × 6 VCS, verify 100% parity against original JAR.
 
-**Working dir:** `packages/code-mat-port/`
+**Working dir:** `packages/code-maat-port/`
 **JAR:** `../../behave/src/infrastructure/code_maat/vendor/code-maat-1.0.4-standalone.jar`
 
 **Status: COMPLETE** — 290 tests passing (237 unit + 17 git parity + 36 multi-VCS parity), typecheck clean.
