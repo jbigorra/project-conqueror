@@ -113,7 +113,11 @@ function sumLoc(entries: VCSEntry[], metric: "locAdded" | "locDeleted"): number 
   return entries.reduce((sum, entry) => sum + asInt(locMetrics(entry)[metric]), 0);
 }
 
-function churnSummary(entries: VCSEntry[]): { added: number; deleted: number; commits: number } {
+function churnSummary(entries: VCSEntry[]): {
+  added: number;
+  deleted: number;
+  commits: number;
+} {
   return {
     added: sumLoc(entries, "locAdded"),
     deleted: sumLoc(entries, "locDeleted"),
@@ -349,6 +353,9 @@ function dominantContributorEntriesByEntity<T extends { entity: string }>(
   );
 }
 
+// type DominantContributorAnalysisReturn<
+//   T extends MainDeveloperEntry | RefactoringMainDeveloperEntry,
+// > = (entries: VCSEntry[], _options: ChurnOptions) => T[];
 function dominantContributorAnalysis<
   T extends MainDeveloperEntry | RefactoringMainDeveloperEntry,
   TAmountKey extends keyof T,
@@ -419,10 +426,9 @@ export const byMainDeveloper: ReturnType<typeof dominantContributorAnalysis> =
  * //   { entity: "A", mainDev: "xy", removed: 3, totalRemoved: 9, ownership: 0.33 },
  * // ]
  */
-export const byRefactoringMainDeveloper: ReturnType<
-  typeof dominantContributorAnalysis
-> = dominantContributorAnalysis<
-  RefactoringMainDeveloperEntry,
-  "removed",
-  "totalRemoved"
->("deleted", "removed", "totalRemoved");
+export const byRefactoringMainDeveloper: ReturnType<typeof dominantContributorAnalysis> =
+  dominantContributorAnalysis<RefactoringMainDeveloperEntry, "removed", "totalRemoved">(
+    "deleted",
+    "removed",
+    "totalRemoved",
+  );

@@ -3,10 +3,7 @@ import { spawnSync } from "bun";
 import type { AppOptions } from "../../src/code_maat/app/app";
 import { runAnalysis } from "../../src/code_maat/app/app";
 
-export const JAR = join(
-  __dirname,
-  "../fixtures/vendor/code-maat-1.0.4-standalone.jar",
-);
+export const JAR = join(__dirname, "../fixtures/vendor/code-maat-1.0.4-standalone.jar");
 export const FIXTURES = join(__dirname, "../fixtures/log-fixtures");
 
 // HEADERS[analysis]: ordered CSV column names (match JAR output)

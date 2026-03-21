@@ -48,7 +48,9 @@ function regexPathToRegex(path: string, lineNumber: number, line: string): RegEx
   } catch (error) {
     throw new Error(
       `Invalid regex in group specification line ${lineNumber}: "${line}". Offending regex: "${path}"`,
-      { cause: error },
+      {
+        cause: error,
+      },
     );
   }
 }
