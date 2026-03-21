@@ -391,11 +391,12 @@ function dominantContributorAnalysis<
  * //   { entity: "A", mainDev: "xy", added: 15, totalAdded: 27, ownership: 0.56 },
  * // ]
  */
-export const byMainDeveloper = dominantContributorAnalysis<
-  MainDeveloperEntry,
-  "added",
-  "totalAdded"
->("added", "added", "totalAdded");
+export const byMainDeveloper: ReturnType<typeof dominantContributorAnalysis> =
+  dominantContributorAnalysis<MainDeveloperEntry, "added", "totalAdded">(
+    "added",
+    "added",
+    "totalAdded",
+  );
 
 /**
  * Identifies the main refactoring developer of each entity based on lines of code removed.
@@ -418,7 +419,9 @@ export const byMainDeveloper = dominantContributorAnalysis<
  * //   { entity: "A", mainDev: "xy", removed: 3, totalRemoved: 9, ownership: 0.33 },
  * // ]
  */
-export const byRefactoringMainDeveloper = dominantContributorAnalysis<
+export const byRefactoringMainDeveloper: ReturnType<
+  typeof dominantContributorAnalysis
+> = dominantContributorAnalysis<
   RefactoringMainDeveloperEntry,
   "removed",
   "totalRemoved"
