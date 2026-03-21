@@ -1,14 +1,15 @@
+/** biome-ignore-all lint/complexity/noStaticOnlyClass: expected singleton */
 import { AnalysisOptions, Behave } from "#behave/behave.ts";
 import { AnalysisRunner } from "#runners/analysis_runner.ts";
 
 export default class BehaveInstance {
-  private static instance: Behave | null = null;
+	private static instance: Behave | null = null;
 
-  static create(): Behave {
-    BehaveInstance.instance ??= new Behave(AnalysisRunner.create({}));
+	static create(): Behave {
+		BehaveInstance.instance ??= new Behave(AnalysisRunner.create({}));
 
-    return BehaveInstance.instance;
-  }
+		return BehaveInstance.instance;
+	}
 }
 
 export { AnalysisOptions, Behave };

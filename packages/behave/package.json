@@ -1,57 +1,60 @@
 {
-  "name": "@prj-conq/behave",
-  "description": "A library that executes behavioural code analysis by using code-maat together with other tools for more complex analysis.",
-  "version": "0.1.0",
-  "type": "module",
-  "private": true,
-  "files": [
-    "dist"
-  ],
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.js"
-      }
-    },
-    "./package.json": "./package.json"
-  },
-  "imports": {
-    "#behave/*": "./src/legacy/*",
-    "#infra/*": "./src/legacy/infrastructure/*",
-    "#runners/*": "./src/legacy/runners/*",
-    "#analyses/*": "./src/legacy/analyses/*"
-  },
-  "engines": {
-    "bun": ">=1.3.11"
-  },
-  "scripts": {
-    "build": "bunup",
-    "dev": "bunup --watch",
-    "test": "bun test",
-    "test:coverage": "bun test --coverage",
-    "tdd": "bun test --watch",
-    "validate": "bun test && biome check . --write"
-  },
-  "keywords": [],
-  "author": "Juan Bigorra <jbigorra.soft.eng@pm.me>",
-  "license": "ISC",
-  "packageManager": "pnpm@10.32.1",
-  "dependencies": {
-    "@prj-conq/lib": "workspace:^",
-    "@prj-conq/lizard-ts": "workspace:^",
-    "code-mat-port": "workspace:^",
-    "csv-parse": "6.1.0",
-    "effect": "^3.21.0"
-  },
-  "devDependencies": {
-    "@prj-conq/typescript-config": "workspace:*",
-    "@types/bun": "^1.3.11",
-    "bun-automock": "^0.2.5",
-    "bunup": "^0.16.31",
-    "fishery": "2.4.0",
-    "typescript": "^5.9.3"
-  }
+	"name": "@prj-conq/behave",
+	"description": "A library that executes behavioural code analysis by using code-maat together with other tools for more complex analysis.",
+	"version": "0.1.0",
+	"type": "module",
+	"private": true,
+	"files": [
+		"dist"
+	],
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			}
+		},
+		"./package.json": "./package.json"
+	},
+	"imports": {
+		"#behave/*": "./src/legacy/*",
+		"#infra/*": "./src/legacy/infrastructure/*",
+		"#runners/*": "./src/legacy/runners/*",
+		"#analyses/*": "./src/legacy/analyses/*"
+	},
+	"engines": {
+		"bun": ">=1.3.11"
+	},
+	"scripts": {
+		"build": "bunup",
+		"dev": "bunup --watch",
+		"test": "bun test",
+		"test:coverage": "bun test --coverage",
+		"tdd": "bun test --watch",
+		"lint": "biome lint . --write",
+		"format": "biome format . --write",
+		"validate": "bun test && biome check . --write"
+	},
+	"keywords": [],
+	"author": "Juan Bigorra <jbigorra.soft.eng@pm.me>",
+	"license": "ISC",
+	"packageManager": "pnpm@10.32.1",
+	"dependencies": {
+		"@prj-conq/lib": "workspace:^",
+		"@prj-conq/lizard-ts": "workspace:^",
+		"code-mat-port": "workspace:^",
+		"csv-parse": "6.1.0",
+		"effect": "^3.21.0"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.4.6",
+		"@prj-conq/typescript-config": "workspace:*",
+		"@types/bun": "^1.3.11",
+		"bun-automock": "^0.2.5",
+		"bunup": "^0.16.31",
+		"fishery": "2.4.0",
+		"typescript": "^5.9.3"
+	}
 }

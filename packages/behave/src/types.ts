@@ -1,25 +1,25 @@
-import type { AnalysisOptions } from "code-mat-port"
+import type { AnalysisOptions } from "code-mat-port";
 
-export type OutputFormat = "json" | "csv"
+export type OutputFormat = "json" | "csv";
 
 export type BaseAnalysisInput = {
-  format?: OutputFormat
-}
+	format?: OutputFormat;
+};
 
 export type SimpleAnalysisInput = BaseAnalysisInput & {
-  gitLogPath: string
-  vcsType?: string
-  options?: Partial<AnalysisOptions>
-  ageTimeNow?: string
-  expressionToMatch?: string
-  group?: string
-  teamMapFile?: string
-  temporalPeriod?: string
-}
+	gitLogPath: string;
+	vcsType?: string;
+	options?: Partial<AnalysisOptions>;
+	ageTimeNow?: string;
+	expressionToMatch?: string;
+	group?: string;
+	teamMapFile?: string;
+	temporalPeriod?: string;
+};
 
 export type ComplexityHotspotsInput = BaseAnalysisInput & {
-  gitLogPath: string
-  sourceDir: string
-  vcsType?: string
-  options?: Partial<AnalysisOptions>
-}
+	gitLogPath: string;
+	sourceDir: string;
+	vcsType?: string;
+	options?: Partial<AnalysisOptions>;
+};

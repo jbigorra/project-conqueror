@@ -1,22 +1,24 @@
-import { Effect, Schema } from "effect"
-import { CodeMaatService } from "../../services/code-maat"
-import { AuthorsSchema, type Author } from "../../schemas/code-maat"
-import { toAnalysis } from "../../pipeline/load/to-analysis"
-import { buildAppOptions } from "../../pipeline/extract/build-app-options"
-import { BehaveLive } from "../../services"
-import type { SimpleAnalysisInput } from "../../types"
-import type { Analysis } from "../../schemas/analysis"
+import { Effect, Schema } from "effect";
+import { buildAppOptions } from "../../pipeline/extract/build-app-options";
+import { toAnalysis } from "../../pipeline/load/to-analysis";
+import type { Analysis } from "../../schemas/analysis";
+import { type Author, AuthorsSchema } from "../../schemas/code-maat";
+import { BehaveLive } from "../../services";
+import { CodeMaatService } from "../../services/code-maat";
+import type { SimpleAnalysisInput } from "../../types";
 
 export const authorsEffect = (input: SimpleAnalysisInput) =>
-  Effect.gen(function* () {
-    const codeMaat = yield* CodeMaatService
-    const raw = yield* codeMaat.runAnalysis(
-      input.gitLogPath,
-      buildAppOptions("authors", input)
-    )
-    const data = yield* Schema.decodeUnknown(AuthorsSchema)(raw)
-    return yield* toAnalysis("authors", data, input)
-  })
+	Effect.gen(function* () {
+		const codeMaat = yield* CodeMaatService;
+		const raw = yield* codeMaat.runAnalysis(
+			input.gitLogPath,
+			buildAppOptions("authors", input),
+		);
+		const data = yield* Schema.decodeUnknown(AuthorsSchema)(raw);
+		return yield* toAnalysis("authors", data, input);
+	});
 
-export const authors = (input: SimpleAnalysisInput): Promise<Analysis<Author>> =>
-  Effect.runPromise(authorsEffect(input).pipe(Effect.provide(BehaveLive)))
+export const authors = (
+	input: SimpleAnalysisInput,
+): Promise<Analysis<Author>> =>
+	Effect.runPromise(authorsEffect(input).pipe(Effect.provide(BehaveLive)));
