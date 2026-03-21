@@ -5,6 +5,7 @@ export default defineConfig({
 	name: "@prj-conq/behave",
 	entry: "src/index.ts",
 	outDir: "dist",
+	dts: { inferTypes: true },
 	exports: true,
 	format: "esm",
 	sourcemap: "linked",
