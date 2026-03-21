@@ -46,6 +46,7 @@
 		"@prj-conq/lizard-ts": "workspace:^",
 		"code-mat-port": "workspace:^",
 		"csv-parse": "6.1.0",
+		"csv-stringify": "^6.7.0",
 		"effect": "^3.21.0"
 	},
 	"devDependencies": {
