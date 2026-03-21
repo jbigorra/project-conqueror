@@ -1,11 +1,13 @@
 // New API — analyses
-export { complexityHotspots } from "./analyses/aggregated/complexity-hotspots"
-export * as simple from "./analyses/simple"
-
-// New API — types for consumers
-export type { Analysis, AnalysisMetadata } from "./schemas/analysis"
-export type { OutputFormat, ComplexityHotspotsInput, SimpleAnalysisInput } from "./types"
-export { CodeMaatError, LizardError, FormatError } from "./errors"
-
+export { complexityHotspots } from "./analyses/aggregated/complexity-hotspots";
+export * as simple from "./analyses/simple";
+export { CodeMaatError, FormatError, LizardError } from "./errors";
 // Legacy (deprecated) — existing consumers keep working
-export { default, AnalysisOptions, Behave } from "./legacy/index"
+export { AnalysisOptions, Behave, default } from "./legacy/index";
+// New API — types for consumers
+export type { Analysis, AnalysisMetadata } from "./schemas/analysis";
+export type {
+	ComplexityHotspotsInput,
+	OutputFormat,
+	SimpleAnalysisInput,
+} from "./types";
