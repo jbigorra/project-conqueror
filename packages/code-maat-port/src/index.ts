@@ -7,9 +7,9 @@
  * for computing coupling, churn, authorship, and other software evolution metrics.
  *
  * @example
- * import { app } from "@prj-conq/code-maat-port";
+ * import { runAnalysis } from "@prj-conq/code-maat-port";
  *
- * const results = await app.runAnalysis("git.log", {
+ * const results = await runAnalysis("git.log", {
  *   versionControl: "git",
  *   analysis: "coupling",
  *   minRevs: 5,
@@ -19,30 +19,105 @@
  *   maxChangesetSize: 30,
  * });
  */
-export * as authors from "./code_maat/analysis/authors";
-export * as churn from "./code_maat/analysis/churn";
-export * as codeAge from "./code_maat/analysis/code-age";
-export * as commitMessages from "./code_maat/analysis/commit-messages";
-export * as communication from "./code_maat/analysis/communication";
-export * as couplingAlgos from "./code_maat/analysis/coupling-algos";
-export * as effort from "./code_maat/analysis/effort";
-export * as entities from "./code_maat/analysis/entities";
-export * as logicalCoupling from "./code_maat/analysis/logical-coupling";
-export * as math from "./code_maat/analysis/math";
-export * as sumOfCoupling from "./code_maat/analysis/sum-of-coupling";
-export * as summary from "./code_maat/analysis/summary";
-export * as app from "./code_maat/app/app";
-export type { AppOptions } from "./code_maat/app/app";
-export * as grouper from "./code_maat/app/grouper";
-export * as teamMapper from "./code_maat/app/team-mapper";
-export * as timeBasedGrouper from "./code_maat/app/time-based-grouper";
-export * as cmdLine from "./code_maat/cmd-line";
-export * as dataset from "./code_maat/dataset/dataset";
-export * as gitParser from "./code_maat/parsers/git";
-export * as git2Parser from "./code_maat/parsers/git2";
-export * as mercurialParser from "./code_maat/parsers/mercurial";
-export * as perforceParser from "./code_maat/parsers/perforce";
-export * as svnParser from "./code_maat/parsers/svn";
-export * as tfsParser from "./code_maat/parsers/tfs";
-export * as timeParser from "./code_maat/parsers/time-parser";
+
+// --- Analysis (no naming conflicts) ---
+export * from "./code_maat/analysis/churn";
+export * from "./code_maat/analysis/code-age";
+export * from "./code_maat/analysis/commit-messages";
+export * from "./code_maat/analysis/communication";
+export * from "./code_maat/analysis/coupling-algos";
+export * from "./code_maat/analysis/effort";
+export * from "./code_maat/analysis/math";
+export * from "./code_maat/analysis/summary";
+
+// --- Analysis (aliased to avoid conflicts) ---
+export {
+	all as allAuthors,
+	ofModule,
+	byCount,
+} from "./code_maat/analysis/authors";
+
+export {
+	type EntityRevCount,
+	all as allEntities,
+	allRevisions,
+	byRevision,
+	revisionsOf,
+} from "./code_maat/analysis/entities";
+
+export {
+	type CouplingResult,
+	byDegree as couplingByDegree,
+} from "./code_maat/analysis/logical-coupling";
+
+export {
+	type SocResult,
+	asSoc,
+	byDegree as socByDegree,
+} from "./code_maat/analysis/sum-of-coupling";
+
+// --- App (no naming conflicts) ---
+export * from "./code_maat/app/app";
+export * from "./code_maat/app/time-based-grouper";
+
+// --- App (aliased to avoid conflicts) ---
+export {
+	type GroupSpec,
+	textToGroupSpecification,
+	mapEntitiesToGroups,
+	run as runGrouper,
+} from "./code_maat/app/grouper";
+
+export {
+	fileToAuthorTeamLookup,
+	run as runTeamMapper,
+} from "./code_maat/app/team-mapper";
+
+// --- Infrastructure ---
+export * from "./code_maat/cmd-line";
+export * from "./code_maat/dataset/dataset";
+
+// --- Parsers (aliased to avoid conflicts) ---
+export {
+	type ParsedEntry as GitParsedEntry,
+	parseReadLog as parseGitReadLog,
+	parseLog as parseGitLog,
+} from "./code_maat/parsers/git";
+
+export {
+	type ParsedEntry as Git2ParsedEntry,
+	parseReadLog as parseGit2ReadLog,
+	parseLog as parseGit2Log,
+} from "./code_maat/parsers/git2";
+
+export {
+	type MercurialEntry,
+	parseReadLog as parseMercurialReadLog,
+	parseLog as parseMercurialLog,
+} from "./code_maat/parsers/mercurial";
+
+export {
+	type PerforceEntry,
+	parseReadLog as parsePerforceReadLog,
+	parseLog as parsePerforceLog,
+} from "./code_maat/parsers/perforce";
+
+export {
+	type SvnEntry,
+	type SvnLogEntry,
+	parseXml as parseSvnXml,
+	asRows as svnAsRows,
+	parseLog as parseSvnLog,
+	parseReadLog as parseSvnReadLog,
+} from "./code_maat/parsers/svn";
+
+export {
+	type TfsEntry,
+	parseReadLog as parseTfsReadLog,
+	parseLog as parseTfsLog,
+} from "./code_maat/parsers/tfs";
+
+export * from "./code_maat/parsers/time-parser";
+
+// --- Types ---
 export * from "./code_maat/types";
