@@ -14,12 +14,12 @@
 
 **Files:**
 
-- Modify: `packages/code-mat-port/package.json`
-- Create: `packages/code-mat-port/biome.json`
+- Modify: `packages/code-maat-port/package.json`
+- Create: `packages/code-maat-port/biome.json`
 
 **Step 1: Add Biome as dev dependency**
 
-Run from `packages/code-mat-port/`:
+Run from `packages/code-maat-port/`:
 
 ```bash
 bun add -d @biomejs/biome
@@ -125,7 +125,7 @@ git commit -m "feat: add biome for formatting and linting"
 
 **Step 1: Run Biome check (format + lint + organize imports) on entire codebase**
 
-Run from `packages/code-mat-port/`:
+Run from `packages/code-maat-port/`:
 
 ```bash
 bun run check
@@ -607,7 +607,7 @@ For `src/index.ts`, add a file-level module JSDoc above all exports:
 
 ```typescript
 /**
- * @module code-mat-port
+ * @module code-maat-port
  *
  * TypeScript port of [code-maat](https://github.com/adamtornhill/code-maat).
  *
@@ -615,7 +615,7 @@ For `src/index.ts`, add a file-level module JSDoc above all exports:
  * for computing coupling, churn, authorship, and other software evolution metrics.
  *
  * @example
- * import { app } from "code-mat-port";
+ * import { app } from "@prj-conq/code-maat-port";
  *
  * const results = await app.runAnalysis("git.log", {
  *   versionControl: "git",

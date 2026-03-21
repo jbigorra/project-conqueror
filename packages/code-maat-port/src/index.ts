@@ -7,7 +7,7 @@
  * for computing coupling, churn, authorship, and other software evolution metrics.
  *
  * @example
- * import { app } from "code-mat-port";
+ * import { app } from "@prj-conq/code-maat-port";
  *
  * const results = await app.runAnalysis("git.log", {
  *   versionControl: "git",

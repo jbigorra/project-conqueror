@@ -1,5 +1,5 @@
-import type { AppOptions } from "code-mat-port";
-import { app } from "code-mat-port";
+import type { AppOptions } from "@prj-conq/code-maat-port";
+import { app } from "@prj-conq/code-maat-port";
 import { Context, Effect, Layer } from "effect";
 import { CodeMaatError } from "../errors";
 

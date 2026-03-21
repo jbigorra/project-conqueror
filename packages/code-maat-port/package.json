@@ -1,7 +1,9 @@
 {
-  "name": "code-mat-port",
+  "name": "@prj-conq/code-maat-port",
   "description": "A typescript port of code-maat https://github.com/adamtornhill/code-maat",
-  "version": "0.0.0",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
   "files": [
     "dist"
   ],

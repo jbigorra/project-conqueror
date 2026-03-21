@@ -1,4 +1,4 @@
-import type { AppOptions } from "code-mat-port";
+import type { AppOptions } from "@prj-conq/code-maat-port";
 import type { SimpleAnalysisInput } from "../../types";
 import { withDefaults } from "./defaults";
 

@@ -1,4 +1,4 @@
-import type { AnalysisOptions } from "code-mat-port";
+import type { AnalysisOptions } from "@prj-conq/code-maat-port";
 
 export type OutputFormat = "json" | "csv";
 
