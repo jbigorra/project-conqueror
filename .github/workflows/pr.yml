@@ -34,7 +34,7 @@ jobs:
         uses: actions/cache@v5
         with:
           path: .turbo
-          key: ${{ runner.os }}-turbo-${{ hashFiles('**/package.json', '**/pnpm-lock.yaml', 'turbo.json') }}
+          key: ${{ runner.os }}-turbo-${{ hashFiles('**/package.json', '**/pnpm-lock.yaml', 'turbo.json', '**/bunup.config.ts') }}
           restore-keys: |
             ${{ runner.os }}-turbo-
 
@@ -117,7 +117,7 @@ jobs:
         uses: actions/cache@v5
         with:
           path: .turbo
-          key: ${{ runner.os }}-turbo-${{ hashFiles('**/package.json', '**/pnpm-lock.yaml', 'turbo.json') }}
+          key: ${{ runner.os }}-turbo-${{ hashFiles('**/package.json', '**/pnpm-lock.yaml', 'turbo.json', '**/bunup.config.ts') }}
           restore-keys: |
             ${{ runner.os }}-turbo-
 
