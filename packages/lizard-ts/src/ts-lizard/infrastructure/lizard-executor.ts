@@ -1,7 +1,23 @@
+import { existsSync } from "node:fs";
 import path from "node:path";
 import { Result } from "@prj-conq/lib/patterns";
 import type { TCLIResult, TSpawnAsyncFn } from "@prj-conq/lib/processes";
 import type { ICLIExecutor } from "#lizard/ts-lizard/infrastructure/interfaces.ts";
+
+function findPythonLizardDir(): string {
+  // From dist/index.js: python-lizard/ is copied adjacent by bunup
+  // From source: python-lizard/ is at ../../python-lizard relative to this file
+  const candidates = [
+    path.resolve(import.meta.dir, "python-lizard"),
+    path.resolve(import.meta.dir, "../../python-lizard"),
+  ];
+  for (const dir of candidates) {
+    if (existsSync(path.join(dir, "lizard.py"))) return dir;
+  }
+  throw new Error(
+    `python-lizard directory not found. Searched: ${candidates.join(", ")}`,
+  );
+}
 
 export class LizardExecutor implements ICLIExecutor {
   private readonly pathToLizard: string;
@@ -12,14 +28,7 @@ export class LizardExecutor implements ICLIExecutor {
     lizardPath?: string,
     pythonBin?: string,
   ) {
-    // Note: import.meta.dir resolves to the source directory when running
-    // via Bun directly (dev/test). If consumed via the built dist/ output,
-    // these defaults would resolve incorrectly. This is acceptable because
-    // the package is private and always run from source within this monorepo.
-    const pythonLizardDir = path.resolve(
-      import.meta.dir,
-      "../../python-lizard",
-    );
+    const pythonLizardDir = findPythonLizardDir();
     this.pathToLizard =
       lizardPath ?? path.resolve(pythonLizardDir, "lizard.py");
     this.pythonBin =
