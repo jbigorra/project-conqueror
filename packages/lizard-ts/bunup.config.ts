@@ -9,6 +9,6 @@ export default defineConfig({
 	format: "esm",
 	sourcemap: "linked",
 	plugins: [
-		copy("src/python-lizard").to("python-lizard"),
+		copy("src/python-lizard").to("python-lizard").with({ followSymlinks: true }),
 	],
 });

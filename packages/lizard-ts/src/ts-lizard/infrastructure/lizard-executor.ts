@@ -5,8 +5,8 @@ import type { TCLIResult, TSpawnAsyncFn } from "@prj-conq/lib/processes";
 import type { ICLIExecutor } from "#lizard/ts-lizard/infrastructure/interfaces.ts";
 
 function findPythonLizardDir(): string {
-  // From dist/index.js: python-lizard/ is copied adjacent by bunup
-  // From source: python-lizard/ is at ../../python-lizard relative to this file
+  // In dist: python-lizard/ is copied adjacent to index.js by bunup
+  // In source (dev/test): python-lizard/ is at ../../python-lizard
   const candidates = [
     path.resolve(import.meta.dir, "python-lizard"),
     path.resolve(import.meta.dir, "../../python-lizard"),
