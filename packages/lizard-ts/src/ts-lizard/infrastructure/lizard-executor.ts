@@ -1,18 +1,20 @@
-import { existsSync } from "node:fs";
 import path from "node:path";
 import { Result } from "@prj-conq/lib/patterns";
 import type { TCLIResult, TSpawnAsyncFn } from "@prj-conq/lib/processes";
 import type { ICLIExecutor } from "#lizard/ts-lizard/infrastructure/interfaces.ts";
 
 function findPythonLizardDir(): string {
-  // In dist: python-lizard/ is copied adjacent to index.js by bunup
-  // In source (dev/test): python-lizard/ is at ../../python-lizard
+  // Resolve the lizard-ts package root via its package.json, then navigate
+  // to the python-lizard directory. This works regardless of whether the
+  // code is bundled into another package (e.g. behave via noExternal).
+  const pkgJsonPath = import.meta.resolve("@prj-conq/lizard-ts/package.json");
+  const pkgRoot = path.dirname(pkgJsonPath.replace("file://", ""));
   const candidates = [
-    path.resolve(import.meta.dir, "python-lizard"),
-    path.resolve(import.meta.dir, "../../python-lizard"),
+    path.resolve(pkgRoot, "dist/python-lizard"),
+    path.resolve(pkgRoot, "src/python-lizard"),
   ];
   for (const dir of candidates) {
-    if (existsSync(path.join(dir, "lizard.py"))) return dir;
+    if (Bun.file(path.join(dir, "lizard.py")).size > 0) return dir;
   }
   throw new Error(
     `python-lizard directory not found. Searched: ${candidates.join(", ")}`,
