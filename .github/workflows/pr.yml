@@ -52,6 +52,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Setup Python venv for lizard
+        run: |
+          python3 -m venv packages/lizard-ts/src/python-lizard/.venv
+          packages/lizard-ts/src/python-lizard/.venv/bin/pip install pygments pathspec
+
       - name: Build with Turbo
         run: pnpm run build
 
