@@ -1,0 +1,22 @@
+--abc1234--2025-03-01--Alice
+10	2	sample.ts
+5	1	utils.ts
+
+--def5678--2025-04-15--Bob
+3	1	sample.ts
+8	0	utils.ts
+2	0	helpers.ts
+
+--789abcd--2025-06-20--Alice
+7	3	sample.ts
+2	1	utils.ts
+4	0	helpers.ts
+
+--aaa1111--2025-08-01--Bob
+1	1	helpers.ts
+6	2	sample.ts
+
+--bbb2222--2025-10-10--Alice
+0	4	helpers.ts
+3	1	sample.ts
+1	0	utils.ts
