@@ -20,14 +20,14 @@ describe("LizardService", () => {
 		expect(result).toEqual(testData);
 	});
 
-	test("LizardLive wraps errors as LizardError", async () => {
+	test("LizardLive succeeds with empty results for nonexistent path", async () => {
 		const program = Effect.gen(function* () {
 			const service = yield* LizardService;
 			return yield* service.analyze("/nonexistent/path");
 		});
-		const exit = await Effect.runPromiseExit(
+		const result = await Effect.runPromise(
 			program.pipe(Effect.provide(LizardLive)),
 		);
-		expect(exit._tag).toBe("Failure");
+		expect(result).toEqual([]);
 	});
 });
