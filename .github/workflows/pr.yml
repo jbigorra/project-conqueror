@@ -34,7 +34,9 @@ jobs:
         uses: actions/cache@v5
         with:
           path: .turbo
-          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          key: ${{ runner.os }}-turbo-${{ hashFiles('**/package.json', '**/pnpm-lock.yaml', 'turbo.json', '**/bunup.config.ts') }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2.2.0
@@ -115,7 +117,9 @@ jobs:
         uses: actions/cache@v5
         with:
           path: .turbo
-          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          key: ${{ runner.os }}-turbo-${{ hashFiles('**/package.json', '**/pnpm-lock.yaml', 'turbo.json', '**/bunup.config.ts') }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
 
       - name: Install dependencies (if cache miss)
         run: pnpm install --frozen-lockfile
