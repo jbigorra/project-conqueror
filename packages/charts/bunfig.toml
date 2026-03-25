@@ -1,0 +1,10 @@
+[test]
+root = "tests"
+coverageReporter = ["text", "lcov"]
+coverageDir = "coverage"
+coverageSkipTestFiles = true
+coveragePathIgnorePatterns = [
+  "tests/helpers/*",
+  "**/*/*.js",
+  "tests/fixtures/*",
+]
