@@ -1,1 +1,1 @@
-// Generic chart components — exported as they are implemented
+export { PqRankedBar } from "./ranked-bar";

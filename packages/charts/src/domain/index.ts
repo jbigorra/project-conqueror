@@ -1,1 +1,1 @@
-// Domain wrapper components — exported as they are implemented
+export { PqRevisionsChart } from "./revisions-chart";
