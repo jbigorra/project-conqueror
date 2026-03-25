@@ -3,8 +3,9 @@ import { customElement, property } from "lit/decorators.js";
 import type { Revision } from "@prj-conq/behave";
 import type { ThemePreset } from "../types";
 import { DataFetchController } from "../controllers/data-fetch.controller";
-import { mapRevisionsToBar } from "../mappers/revisions.mapper";
+import { mapRevisionsToBar, mapRevisionsToTreemap } from "../mappers/revisions.mapper";
 import "../generic/ranked-bar";
+import "../generic/treemap";
 
 type RevisionsVariant = "bar" | "treemap";
 
@@ -28,7 +29,13 @@ export class PqRevisionsChart extends LitElement {
   }
 
   protected override render() {
-    // NOTE: treemap variant temporarily renders as bar until pq-treemap is implemented
+    if (this.variant === "treemap") {
+      return html`<pq-treemap
+        .data=${mapRevisionsToTreemap(this.resolvedData)}
+        .theme=${this.theme}
+        show-labels
+      ></pq-treemap>`;
+    }
     return html`<pq-ranked-bar
       .data=${mapRevisionsToBar(this.resolvedData)}
       .limit=${this.limit}
