@@ -11,3 +11,24 @@ export type {
 	OutputFormat,
 	SimpleAnalysisInput,
 } from "./types";
+// Analysis record types — for consumers that need typed analysis results
+export type {
+	Revision,
+	Author,
+	Coupling,
+	Soc,
+	SummaryEntry,
+	AbsChurn,
+	AuthorChurn,
+	EntityChurn,
+	EntityOwnership,
+	MainDev,
+	RefactoringMainDev,
+	EntityEffort,
+	MainDevByRevs,
+	Fragmentation,
+	Communication,
+	MessageEntry,
+	CodeAge,
+} from "./schemas/code-maat";
+export type { ComplexityHotspot } from "./pipeline/transform/merge-by-entity";
