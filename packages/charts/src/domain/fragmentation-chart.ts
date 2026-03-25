@@ -1,9 +1,9 @@
-import { LitElement, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
 import type { Fragmentation } from "@prj-conq/behave";
-import type { ThemePreset } from "../types";
+import { html, LitElement } from "lit";
+import { customElement, property } from "lit/decorators.js";
 import { DataFetchController } from "../controllers/data-fetch.controller";
 import { mapFragmentationToBar, mapFragmentationToDoughnut } from "../mappers/fragmentation.mapper";
+import type { ThemePreset } from "../types";
 import "../generic/ranked-bar";
 import "../generic/doughnut";
 

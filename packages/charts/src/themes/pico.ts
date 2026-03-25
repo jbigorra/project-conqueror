@@ -9,14 +9,5 @@ export const pico: ThemeValues = {
   fontFamily: "system-ui, sans-serif",
   fontSize: "12px",
   danger: "#b03a3e",
-  accents: [
-    "#0172ad",
-    "#c27a2c",
-    "#b03a3e",
-    "#3874d8",
-    "#8e44ad",
-    "#27ae60",
-    "#d35400",
-    "#16a085",
-  ],
+  accents: ["#0172ad", "#c27a2c", "#b03a3e", "#3874d8", "#8e44ad", "#27ae60", "#d35400", "#16a085"],
 };

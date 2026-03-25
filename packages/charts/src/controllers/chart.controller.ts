@@ -1,11 +1,10 @@
+import { Chart, type ChartConfiguration, type ChartType } from "chart.js";
 import type { ReactiveController, ReactiveControllerHost } from "lit";
 import { createRef, type Ref } from "lit/directives/ref.js";
-import { Chart, type ChartConfiguration, type ChartType } from "chart.js";
 
 export class ChartController implements ReactiveController {
   private host: ReactiveControllerHost & HTMLElement;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private chart?: Chart<any, any, any>;
+  private chart?: Chart;
   private resizeObserver?: ResizeObserver;
   private _animate = true;
 
@@ -37,8 +36,7 @@ export class ChartController implements ReactiveController {
     const canvas = this.canvasRef.value;
     if (!canvas) return;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const cfg = config as ChartConfiguration<any, any, any>;
+    const cfg = config as ChartConfiguration;
 
     if (!this._animate) {
       cfg.options = { ...cfg.options, animation: false };
@@ -46,7 +44,11 @@ export class ChartController implements ReactiveController {
 
     cfg.options = {
       ...cfg.options,
-      onClick: (_event: unknown, elements: Array<{ datasetIndex: number; index: number }>, chart: Chart) => {
+      onClick: (
+        _event: unknown,
+        elements: Array<{ datasetIndex: number; index: number }>,
+        chart: Chart,
+      ) => {
         if (elements.length > 0) {
           const element = elements[0];
           if (!element) return;

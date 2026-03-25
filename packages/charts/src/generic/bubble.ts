@@ -1,10 +1,11 @@
-import { LitElement, html, css } from "lit";
+import type { TooltipItem } from "chart.js";
+import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ref } from "lit/directives/ref.js";
-import type { BubbleItem, ThemePreset } from "../types";
 import { ChartController } from "../controllers/chart.controller";
 import { DataFetchController } from "../controllers/data-fetch.controller";
 import { ThemeController } from "../controllers/theme.controller";
+import type { BubbleItem, ThemePreset } from "../types";
 
 @customElement("pq-bubble")
 export class PqBubble extends LitElement {
@@ -33,7 +34,8 @@ export class PqBubble extends LitElement {
   protected override async updated(changed: Map<string, unknown>): Promise<void> {
     if (changed.has("theme")) this.themeCtrl.update(this.theme);
     if (changed.has("animated")) this.chartCtrl.animate = this.animated;
-    if (changed.has("src") || changed.has("data")) await this.fetcher.fetch(this.src ?? "", !!this.data);
+    if (changed.has("src") || changed.has("data"))
+      await this.fetcher.fetch(this.src ?? "", !!this.data);
     this.renderChart();
   }
 
@@ -41,8 +43,8 @@ export class PqBubble extends LitElement {
     const resolved = this.data ?? this.fetcher.data;
     if (!resolved?.length) return;
 
-    const themePlugins = this.themeCtrl.options["plugins"] as object | undefined;
-    const themeScales = this.themeCtrl.options["scales"] as object | undefined;
+    const themePlugins = this.themeCtrl.options.plugins;
+    const themeScales = this.themeCtrl.options.scales;
 
     this.chartCtrl.update({
       type: "bubble",
@@ -59,26 +61,28 @@ export class PqBubble extends LitElement {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: { display: false },
+          ...themePlugins,
+          legend: { ...themePlugins.legend, display: false },
           tooltip: {
+            ...themePlugins.tooltip,
             callbacks: {
-              label: (ctx: any) => {
+              label: (ctx: TooltipItem<"bubble">) => {
                 const item = resolved[ctx.dataIndex];
                 const label = item ? item.label : "";
-                return `${label}: (${ctx.parsed.x}, ${ctx.parsed.y}, r=${(ctx.raw as any).r})`;
+                const raw = ctx.raw as { r?: number };
+                return `${label}: (${ctx.parsed.x}, ${ctx.parsed.y}, r=${raw.r})`;
               },
             },
           },
-          ...themePlugins,
         },
         scales: {
-          ...(themeScales as object),
+          ...themeScales,
           x: {
-            ...((themeScales as any)?.x ?? {}),
+            ...themeScales.x,
             title: { display: !!this.xLabel, text: this.xLabel },
           },
           y: {
-            ...((themeScales as any)?.y ?? {}),
+            ...themeScales.y,
             title: { display: !!this.yLabel, text: this.yLabel },
           },
         },

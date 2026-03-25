@@ -4,6 +4,7 @@
     "composite": true,
     "experimentalDecorators": true,
     "useDefineForClassFields": false,
+    "lib": ["ES2022", "DOM"],
     "types": ["@types/bun"]
   },
   "include": ["src/**/*"],

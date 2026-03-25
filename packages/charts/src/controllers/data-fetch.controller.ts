@@ -48,7 +48,7 @@ export class DataFetchController<T = unknown> implements ReactiveController {
       }
 
       const json = await response.json();
-      const data: T[] = Array.isArray(json) ? json : (json as any).data;
+      const data: T[] = Array.isArray(json) ? json : (json as { data: T[] }).data;
 
       this.state = "success";
       this.data = data;
@@ -62,7 +62,7 @@ export class DataFetchController<T = unknown> implements ReactiveController {
         }),
       );
     } catch (err) {
-      if ((err as any)?.name === "AbortError") {
+      if ((err as Error)?.name === "AbortError") {
         // Silently ignore aborted requests — do not flip state
         return;
       }

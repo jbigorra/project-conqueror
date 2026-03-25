@@ -1,9 +1,9 @@
-import { LitElement, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
 import type { MessageEntry } from "@prj-conq/behave";
-import type { ThemePreset } from "../types";
+import { html, LitElement } from "lit";
+import { customElement, property } from "lit/decorators.js";
 import { DataFetchController } from "../controllers/data-fetch.controller";
 import { mapMessagesToBar } from "../mappers/messages.mapper";
+import type { ThemePreset } from "../types";
 import "../generic/ranked-bar";
 
 @customElement("pq-messages-chart")

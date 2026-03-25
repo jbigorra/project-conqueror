@@ -1,6 +1,6 @@
-import { LitElement, html, css } from "lit";
-import { customElement, property } from "lit/decorators.js";
 import type { SummaryEntry } from "@prj-conq/behave";
+import { css, html, LitElement } from "lit";
+import { customElement, property } from "lit/decorators.js";
 import { DataFetchController } from "../controllers/data-fetch.controller";
 
 @customElement("pq-summary-cards")
@@ -85,7 +85,7 @@ export class PqSummaryCards extends LitElement {
               <div class="card-value">${this.formatValue(entry.value)}</div>
               <div class="card-label">${entry.statistic.replace(/-/g, " ")}</div>
             </div>
-          `
+          `,
         )}
       </div>
     `;

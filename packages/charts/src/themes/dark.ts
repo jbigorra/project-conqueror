@@ -9,14 +9,5 @@ export const dark: ThemeValues = {
   fontFamily: "system-ui, sans-serif",
   fontSize: "12px",
   danger: "#e06c75",
-  accents: [
-    "#4ecdc4",
-    "#f5a623",
-    "#e06c75",
-    "#61afef",
-    "#c678dd",
-    "#98c379",
-    "#d19a66",
-    "#56b6c2",
-  ],
+  accents: ["#4ecdc4", "#f5a623", "#e06c75", "#61afef", "#c678dd", "#98c379", "#d19a66", "#56b6c2"],
 };

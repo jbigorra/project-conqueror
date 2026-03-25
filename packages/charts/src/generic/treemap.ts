@@ -1,10 +1,12 @@
-import { LitElement, html, css } from "lit";
+import type { ScriptableContext, TooltipItem } from "chart.js";
+import type { TreemapDataPoint } from "chartjs-chart-treemap";
+import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ref } from "lit/directives/ref.js";
-import type { TreemapItem, ThemePreset } from "../types";
 import { ChartController } from "../controllers/chart.controller";
 import { DataFetchController } from "../controllers/data-fetch.controller";
 import { ThemeController } from "../controllers/theme.controller";
+import type { ThemePreset, TreemapItem } from "../types";
 
 @customElement("pq-treemap")
 export class PqTreemap extends LitElement {
@@ -33,7 +35,8 @@ export class PqTreemap extends LitElement {
   protected override async updated(changed: Map<string, unknown>): Promise<void> {
     if (changed.has("theme")) this.themeCtrl.update(this.theme);
     if (changed.has("animated")) this.chartCtrl.animate = this.animated;
-    if (changed.has("src") || changed.has("data")) await this.fetcher.fetch(this.src ?? "", !!this.data);
+    if (changed.has("src") || changed.has("data"))
+      await this.fetcher.fetch(this.src ?? "", !!this.data);
     this.renderChart();
   }
 
@@ -41,7 +44,7 @@ export class PqTreemap extends LitElement {
     const resolved = this.data ?? this.fetcher.data;
     if (!resolved?.length) return;
 
-    const themePlugins = this.themeCtrl.options["plugins"] as object | undefined;
+    const themePlugins = this.themeCtrl.options.plugins;
     const colors = this.themeCtrl.colors;
 
     // Build flat tree objects for chartjs-chart-treemap
@@ -62,13 +65,14 @@ export class PqTreemap extends LitElement {
             key: "value",
             groups: ["group", "label"],
             data: [],
-            backgroundColor: (ctx: any) => {
-              const raw = ctx.raw;
+            backgroundColor: (ctx: ScriptableContext<"treemap">) => {
+              const raw = ctx.raw as (TreemapDataPoint & { colorIndex?: number }) | undefined;
               if (!raw) return colors[0];
               // Use colorIndex if available, otherwise cycle through accent colors
-              const idx = typeof raw.colorIndex === "number"
-                ? raw.colorIndex % colors.length
-                : ctx.dataIndex % colors.length;
+              const idx =
+                typeof raw.colorIndex === "number"
+                  ? raw.colorIndex % colors.length
+                  : ctx.dataIndex % colors.length;
               return colors[idx] ?? colors[0];
             },
             borderColor: this.themeCtrl.theme.border,
@@ -81,7 +85,8 @@ export class PqTreemap extends LitElement {
                 family: this.themeCtrl.theme.fontFamily,
                 size: parseInt(this.themeCtrl.theme.fontSize, 10),
               },
-              formatter: (ctx: any) => ctx.raw?.g ?? ctx.raw?.label ?? "",
+              formatter: (ctx: ScriptableContext<"treemap">) =>
+                (ctx.raw as TreemapDataPoint | undefined)?.g ?? "",
             },
           },
         ],
@@ -90,16 +95,17 @@ export class PqTreemap extends LitElement {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: { display: false },
+          ...themePlugins,
+          legend: { ...themePlugins.legend, display: false },
           tooltip: {
+            ...themePlugins.tooltip,
             callbacks: {
-              label: (ctx: any) => {
-                const raw = ctx.raw;
-                return `${raw?.g ?? raw?.label ?? ""}: ${raw?.v ?? ""}`;
+              label: (ctx: TooltipItem<"treemap">) => {
+                const raw = ctx.raw as TreemapDataPoint | undefined;
+                return `${raw?.g ?? ""}: ${raw?.v ?? ""}`;
               },
             },
           },
-          ...themePlugins,
         },
       },
     });

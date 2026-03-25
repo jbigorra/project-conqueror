@@ -1,5 +1,5 @@
 import type { AbsChurn, AuthorChurn, EntityChurn } from "@prj-conq/behave";
-import type { LineAreaPoint, GroupedBarItem, StackedBarItem } from "../types";
+import type { GroupedBarItem, LineAreaPoint, StackedBarItem } from "../types";
 
 export function mapAbsChurnToLineArea(data: AbsChurn[]): LineAreaPoint[] {
   return data.map((r) => ({

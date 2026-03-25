@@ -1,11 +1,11 @@
-import { LitElement, html, css } from "lit";
+import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ref } from "lit/directives/ref.js";
-import type { StackedBarItem, ThemePreset } from "../types";
 import { ChartController } from "../controllers/chart.controller";
 import { DataFetchController } from "../controllers/data-fetch.controller";
 import { ThemeController } from "../controllers/theme.controller";
 import { buildStackedDatasets } from "../mappers/stacked-bar.mapper";
+import type { StackedBarItem, ThemePreset } from "../types";
 
 @customElement("pq-stacked-bar")
 export class PqStackedBar extends LitElement {
@@ -35,7 +35,8 @@ export class PqStackedBar extends LitElement {
   protected override async updated(changed: Map<string, unknown>): Promise<void> {
     if (changed.has("theme")) this.themeCtrl.update(this.theme);
     if (changed.has("animated")) this.chartCtrl.animate = this.animated;
-    if (changed.has("src") || changed.has("data")) await this.fetcher.fetch(this.src ?? "", !!this.data);
+    if (changed.has("src") || changed.has("data"))
+      await this.fetcher.fetch(this.src ?? "", !!this.data);
     this.renderChart();
   }
 
@@ -46,8 +47,8 @@ export class PqStackedBar extends LitElement {
     const sliced = this.limit > 0 ? resolved.slice(0, this.limit) : resolved;
     const { labels, datasets } = buildStackedDatasets(sliced);
 
-    const themePlugins = this.themeCtrl.options["plugins"] as object | undefined;
-    const themeScales = this.themeCtrl.options["scales"] as object | undefined;
+    const themePlugins = this.themeCtrl.options.plugins;
+    const themeScales = this.themeCtrl.options.scales;
 
     this.chartCtrl.update({
       type: "bar",
@@ -66,13 +67,13 @@ export class PqStackedBar extends LitElement {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: { display: this.showLegend },
           ...themePlugins,
+          legend: { ...themePlugins.legend, display: this.showLegend },
         },
         scales: {
-          ...(themeScales as object),
-          x: { ...((themeScales as any)?.x ?? {}), stacked: true },
-          y: { ...((themeScales as any)?.y ?? {}), stacked: true },
+          ...themeScales,
+          x: { ...themeScales.x, stacked: true },
+          y: { ...themeScales.y, stacked: true },
         },
       },
     });

@@ -1,9 +1,9 @@
-import { LitElement, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
 import type { AbsChurn } from "@prj-conq/behave";
-import type { ThemePreset } from "../types";
+import { html, LitElement } from "lit";
+import { customElement, property } from "lit/decorators.js";
 import { DataFetchController } from "../controllers/data-fetch.controller";
 import { mapAbsChurnToLineArea } from "../mappers/churn.mapper";
+import type { ThemePreset } from "../types";
 import "../generic/line-area";
 
 type AbsChurnVariant = "area" | "line";

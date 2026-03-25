@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { sortItems, sliceItems } from "../../src/mappers/ranked-bar.mapper";
+import { sliceItems, sortItems } from "../../src/mappers/ranked-bar.mapper";
 import { mapRevisionsToBar, mapRevisionsToTreemap } from "../../src/mappers/revisions.mapper";
 import type { RankedBarItem } from "../../src/types";
 import { revisionsFixture } from "../fixtures/revisions.fixture";

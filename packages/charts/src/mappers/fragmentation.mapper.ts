@@ -1,5 +1,5 @@
 import type { Fragmentation } from "@prj-conq/behave";
-import type { RankedBarItem, DoughnutItem } from "../types";
+import type { DoughnutItem, RankedBarItem } from "../types";
 
 export function mapFragmentationToBar(data: Fragmentation[]): RankedBarItem[] {
   return data.map((r) => ({ label: r.entity, value: r.fractalValue }));

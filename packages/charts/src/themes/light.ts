@@ -9,14 +9,5 @@ export const light: ThemeValues = {
   fontFamily: "system-ui, sans-serif",
   fontSize: "12px",
   danger: "#dc2626",
-  accents: [
-    "#0891b2",
-    "#d97706",
-    "#dc2626",
-    "#2563eb",
-    "#9333ea",
-    "#16a34a",
-    "#ea580c",
-    "#0d9488",
-  ],
+  accents: ["#0891b2", "#d97706", "#dc2626", "#2563eb", "#9333ea", "#16a34a", "#ea580c", "#0d9488"],
 };

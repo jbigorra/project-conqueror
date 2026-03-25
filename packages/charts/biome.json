@@ -8,7 +8,9 @@
     "enabled": true,
     "rules": {
       "recommended": true,
-      "correctness": { "noUnusedVariables": "error" }
+      "correctness": { "noUnusedVariables": "error" },
+      "suspicious": { "noExplicitAny": "error" },
+      "style": { "noNonNullAssertion": "off" }
     }
   },
   "formatter": {

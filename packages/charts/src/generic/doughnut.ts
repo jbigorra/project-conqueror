@@ -1,10 +1,11 @@
-import { LitElement, html, css } from "lit";
+import type { Chart } from "chart.js";
+import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ref } from "lit/directives/ref.js";
-import type { DoughnutItem, ThemePreset } from "../types";
 import { ChartController } from "../controllers/chart.controller";
 import { DataFetchController } from "../controllers/data-fetch.controller";
 import { ThemeController } from "../controllers/theme.controller";
+import type { DoughnutItem, ThemePreset } from "../types";
 
 @customElement("pq-doughnut")
 export class PqDoughnut extends LitElement {
@@ -33,7 +34,8 @@ export class PqDoughnut extends LitElement {
   protected override async updated(changed: Map<string, unknown>): Promise<void> {
     if (changed.has("theme")) this.themeCtrl.update(this.theme);
     if (changed.has("animated")) this.chartCtrl.animate = this.animated;
-    if (changed.has("src") || changed.has("data")) await this.fetcher.fetch(this.src ?? "", !!this.data);
+    if (changed.has("src") || changed.has("data"))
+      await this.fetcher.fetch(this.src ?? "", !!this.data);
     this.renderChart();
   }
 
@@ -41,7 +43,7 @@ export class PqDoughnut extends LitElement {
     const resolved = this.data ?? this.fetcher.data;
     if (!resolved?.length) return;
 
-    const themePlugins = this.themeCtrl.options["plugins"] as object | undefined;
+    const themePlugins = this.themeCtrl.options.plugins;
     const centerLabel = this.centerLabel;
     const themeText = this.themeCtrl.theme.text;
     const themeFontFamily = this.themeCtrl.theme.fontFamily;
@@ -49,7 +51,7 @@ export class PqDoughnut extends LitElement {
     const centerLabelPlugin = centerLabel
       ? {
           id: "centerLabel",
-          beforeDraw(chart: any) {
+          beforeDraw(chart: Chart) {
             const { ctx, chartArea } = chart;
             if (!chartArea) return;
             const cx = (chartArea.left + chartArea.right) / 2;
@@ -82,8 +84,8 @@ export class PqDoughnut extends LitElement {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: { display: this.showLegend },
           ...themePlugins,
+          legend: { ...themePlugins.legend, display: this.showLegend },
           ...(centerLabelPlugin ? { centerLabel: centerLabelPlugin } : {}),
         },
       },

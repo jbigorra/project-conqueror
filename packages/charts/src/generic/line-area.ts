@@ -1,11 +1,11 @@
-import { LitElement, html, css } from "lit";
+import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ref } from "lit/directives/ref.js";
-import type { LineAreaPoint, ThemePreset } from "../types";
 import { ChartController } from "../controllers/chart.controller";
 import { DataFetchController } from "../controllers/data-fetch.controller";
 import { ThemeController } from "../controllers/theme.controller";
 import { buildLineAreaDatasets } from "../mappers/line-area.mapper";
+import type { LineAreaPoint, ThemePreset } from "../types";
 
 @customElement("pq-line-area")
 export class PqLineArea extends LitElement {
@@ -37,7 +37,8 @@ export class PqLineArea extends LitElement {
   protected override async updated(changed: Map<string, unknown>): Promise<void> {
     if (changed.has("theme")) this.themeCtrl.update(this.theme);
     if (changed.has("animated")) this.chartCtrl.animate = this.animated;
-    if (changed.has("src") || changed.has("data")) await this.fetcher.fetch(this.src ?? "", !!this.data);
+    if (changed.has("src") || changed.has("data"))
+      await this.fetcher.fetch(this.src ?? "", !!this.data);
     this.renderChart();
   }
 
@@ -47,8 +48,8 @@ export class PqLineArea extends LitElement {
 
     const { labels, datasets } = buildLineAreaDatasets(resolved);
 
-    const themePlugins = this.themeCtrl.options["plugins"] as object | undefined;
-    const themeScales = this.themeCtrl.options["scales"] as object | undefined;
+    const themePlugins = this.themeCtrl.options.plugins;
+    const themeScales = this.themeCtrl.options.scales;
 
     this.chartCtrl.update({
       type: "line",
@@ -67,18 +68,18 @@ export class PqLineArea extends LitElement {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: { display: this.showLegend },
           ...themePlugins,
+          legend: { ...themePlugins.legend, display: this.showLegend },
         },
         scales: {
-          ...(themeScales as object),
+          ...themeScales,
           x: {
-            ...((themeScales as any)?.x ?? {}),
+            ...themeScales.x,
             stacked: this.stacked,
             title: { display: !!this.xLabel, text: this.xLabel },
           },
           y: {
-            ...((themeScales as any)?.y ?? {}),
+            ...themeScales.y,
             stacked: this.stacked,
             title: { display: !!this.yLabel, text: this.yLabel },
           },

@@ -5,13 +5,13 @@ import { createMockHost } from "../helpers/mock-host";
 describe("DataFetchController", () => {
   it("registers itself with the host on construction", () => {
     const host = createMockHost();
-    const ctrl = new DataFetchController(host as any);
+    const ctrl = new DataFetchController(host);
     expect(host.controllers).toContain(ctrl);
   });
 
   it("starts in idle state", () => {
     const host = createMockHost();
-    const ctrl = new DataFetchController(host as any);
+    const ctrl = new DataFetchController(host);
     expect(ctrl.state).toBe("idle");
     expect(ctrl.data).toBeUndefined();
     expect(ctrl.error).toBeUndefined();
@@ -19,14 +19,14 @@ describe("DataFetchController", () => {
 
   it("stays idle when hasPropertyData is true", async () => {
     const host = createMockHost();
-    const ctrl = new DataFetchController(host as any);
+    const ctrl = new DataFetchController(host);
     await ctrl.fetch("http://example.com/data.json", true);
     expect(ctrl.state).toBe("idle");
   });
 
   it("stays idle when no src is provided", async () => {
     const host = createMockHost();
-    const ctrl = new DataFetchController(host as any);
+    const ctrl = new DataFetchController(host);
     await ctrl.fetch("", false);
     expect(ctrl.state).toBe("idle");
   });
@@ -37,10 +37,10 @@ describe("DataFetchController", () => {
     globalThis.fetch = mock(async () => ({
       ok: true,
       json: async () => mockData,
-    })) as any;
+    })) as typeof globalThis.fetch;
 
     const host = createMockHost();
-    const ctrl = new DataFetchController(host as any);
+    const ctrl = new DataFetchController(host);
     await ctrl.fetch("http://example.com/data.json", false);
 
     expect(ctrl.state).toBe("success");
@@ -55,10 +55,10 @@ describe("DataFetchController", () => {
     globalThis.fetch = mock(async () => ({
       ok: false,
       status: 404,
-    })) as any;
+    })) as typeof globalThis.fetch;
 
     const host = createMockHost();
-    const ctrl = new DataFetchController(host as any);
+    const ctrl = new DataFetchController(host);
     await ctrl.fetch("http://example.com/data.json", false);
 
     expect(ctrl.state).toBe("error");
@@ -71,10 +71,10 @@ describe("DataFetchController", () => {
     const originalFetch = globalThis.fetch;
     globalThis.fetch = mock(async () => {
       throw new Error("Network error");
-    }) as any;
+    }) as typeof globalThis.fetch;
 
     const host = createMockHost();
-    const ctrl = new DataFetchController(host as any);
+    const ctrl = new DataFetchController(host);
     await ctrl.fetch("http://example.com/data.json", false);
 
     expect(ctrl.state).toBe("error");
@@ -89,10 +89,10 @@ describe("DataFetchController", () => {
     globalThis.fetch = mock(async () => ({
       ok: true,
       json: async () => ({ data: items }),
-    })) as any;
+    })) as typeof globalThis.fetch;
 
     const host = createMockHost();
-    const ctrl = new DataFetchController(host as any);
+    const ctrl = new DataFetchController(host);
     await ctrl.fetch("http://example.com/data.json", false);
 
     expect(ctrl.state).toBe("success");
@@ -107,10 +107,10 @@ describe("DataFetchController", () => {
     globalThis.fetch = mock(async () => ({
       ok: true,
       json: async () => mockData,
-    })) as any;
+    })) as typeof globalThis.fetch;
 
     const host = createMockHost();
-    const ctrl = new DataFetchController(host as any);
+    const ctrl = new DataFetchController(host);
     await ctrl.fetch("http://example.com/data.json", false);
 
     expect(host.updateCount).toBeGreaterThan(0);
@@ -124,10 +124,10 @@ describe("DataFetchController", () => {
     globalThis.fetch = mock(async () => ({
       ok: true,
       json: async () => mockData,
-    })) as any;
+    })) as typeof globalThis.fetch;
 
     const host = createMockHost();
-    const ctrl = new DataFetchController(host as any);
+    const ctrl = new DataFetchController(host);
     await ctrl.fetch("http://example.com/data.json", false);
 
     const events = host.dispatchedEvents.filter((e) => e.type === "chart-data-loaded");
@@ -142,23 +142,23 @@ describe("DataFetchController", () => {
     let abortedSignal: AbortSignal | undefined;
 
     // first call: slow, captures signal
-    let resolveFirst!: (v: any) => void;
-    const firstPromise = new Promise<any>((res) => {
+    let resolveFirst!: (v: Response) => void;
+    const firstPromise = new Promise<Response>((res) => {
       resolveFirst = res;
     });
 
     let callCount = 0;
-    globalThis.fetch = mock(async (url: string, init?: RequestInit) => {
+    globalThis.fetch = mock(async (_url: string, init?: RequestInit) => {
       callCount++;
       if (callCount === 1) {
         abortedSignal = init?.signal;
         return firstPromise;
       }
-      return { ok: true, json: async () => [] };
-    }) as any;
+      return { ok: true, json: async () => [] } as unknown as Response;
+    }) as typeof globalThis.fetch;
 
     const host = createMockHost();
-    const ctrl = new DataFetchController(host as any);
+    const ctrl = new DataFetchController(host);
 
     // start first (don't await)
     const p1 = ctrl.fetch("http://example.com/slow.json", false);
@@ -167,7 +167,7 @@ describe("DataFetchController", () => {
 
     await p2;
     // resolve the first deferred to avoid hanging
-    resolveFirst({ ok: true, json: async () => [] });
+    resolveFirst({ ok: true, json: async () => [] } as unknown as Response);
     await p1;
 
     expect(abortedSignal?.aborted).toBe(true);

@@ -1,9 +1,9 @@
-import { LitElement, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
 import type { ComplexityHotspot } from "@prj-conq/behave";
-import type { ThemePreset } from "../types";
+import { html, LitElement } from "lit";
+import { customElement, property } from "lit/decorators.js";
 import { DataFetchController } from "../controllers/data-fetch.controller";
 import { mapHotspotsToBubble, mapHotspotsToTreemap } from "../mappers/hotspots.mapper";
+import type { ThemePreset } from "../types";
 import "../generic/bubble";
 import "../generic/treemap";
 

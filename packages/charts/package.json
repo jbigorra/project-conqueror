@@ -4,7 +4,9 @@
   "version": "0.1.0",
   "type": "module",
   "private": true,
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "exports": {
     ".": {
       "import": {
@@ -27,7 +29,9 @@
     "./themes/*": "./src/themes/*.css",
     "./package.json": "./package.json"
   },
-  "engines": { "bun": ">=1.3.11" },
+  "engines": {
+    "bun": ">=1.3.11"
+  },
   "scripts": {
     "build": "CI=true bunup && tsc -p tsconfig.build.json",
     "dev": "bunup --watch",
@@ -40,7 +44,14 @@
     "lint": "biome check src/ tests/",
     "format": "biome format --write src/ tests/"
   },
-  "keywords": ["charts", "web-components", "lit", "chart.js", "code-analysis", "visualization"],
+  "keywords": [
+    "charts",
+    "web-components",
+    "lit",
+    "chart.js",
+    "code-analysis",
+    "visualization"
+  ],
   "author": "Juan Bigorra <jbigorra.soft.eng@pm.me>",
   "license": "ISC",
   "packageManager": "pnpm@10.32.1",
@@ -54,6 +65,7 @@
     "@prj-conq/behave": "workspace:*",
     "@prj-conq/typescript-config": "workspace:*",
     "@storybook/addon-essentials": "^8.6.0",
+    "@storybook/web-components": "^8.6.18",
     "@storybook/web-components-vite": "^8.6.0",
     "@types/bun": "^1.3.11",
     "bun-automock": "^0.2.5",

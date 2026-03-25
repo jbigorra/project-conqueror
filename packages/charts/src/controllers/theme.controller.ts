@@ -1,9 +1,38 @@
 import type { ReactiveController, ReactiveControllerHost } from "lit";
-import type { ThemePreset } from "../types";
 import { dark } from "../themes/dark";
 import { light } from "../themes/light";
 import { pico } from "../themes/pico";
 import type { ThemeValues } from "../themes/types";
+import type { ThemePreset } from "../types";
+
+/** Shape returned by toChartJsOptions — explicit properties avoid TS4111 index-signature errors */
+export interface ChartJsThemeOptions {
+  color: string;
+  borderColor: string;
+  backgroundColor: string;
+  font: { family: string; size: number };
+  scales: {
+    x: {
+      ticks: { color: string; font: { size: number } };
+      grid: { color: string };
+      border: { color: string };
+    };
+    y: {
+      ticks: { color: string; font: { size: number } };
+      grid: { color: string };
+      border: { color: string };
+    };
+  };
+  plugins: {
+    legend: { labels: { color: string; font: { size: number } } };
+    tooltip: {
+      backgroundColor: string;
+      titleColor: string;
+      bodyColor: string;
+      borderColor: string;
+    };
+  };
+}
 
 /** Map from CSS custom property name to ThemeValues key */
 const CSS_VAR_MAP: Record<string, keyof ThemeValues> = {
@@ -34,7 +63,7 @@ export function resolveTheme(
 
     const key = CSS_VAR_MAP[prop];
     if (key) {
-      (base as any)[key] = value;
+      (base as Record<keyof ThemeValues, string | string[]>)[key] = value;
     } else {
       // Handle accent overrides: --pq-chart-accent-1 through -8
       const accentMatch = prop.match(/^--pq-chart-accent-(\d+)$/);
@@ -54,7 +83,7 @@ export function resolveTheme(
 /**
  * Maps ThemeValues to Chart.js global options structure.
  */
-export function toChartJsOptions(theme: ThemeValues): Record<string, unknown> {
+export function toChartJsOptions(theme: ThemeValues): ChartJsThemeOptions {
   const fontSize = parseInt(theme.fontSize, 10);
 
   return {
@@ -111,7 +140,7 @@ export class ThemeController implements ReactiveController {
 
   theme: ThemeValues = dark;
   colors: string[] = dark.accents;
-  options: Record<string, unknown> = {};
+  options: ChartJsThemeOptions = toChartJsOptions(dark);
 
   constructor(host: ReactiveControllerHost & HTMLElement) {
     this.host = host;
@@ -132,10 +161,7 @@ export class ThemeController implements ReactiveController {
       this._preset = preset;
     }
 
-    const styles =
-      typeof getComputedStyle !== "undefined"
-        ? getComputedStyle(this.host)
-        : null;
+    const styles = typeof getComputedStyle !== "undefined" ? getComputedStyle(this.host) : null;
 
     const cssOverrides: Record<string, string> = {};
 

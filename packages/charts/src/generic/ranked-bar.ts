@@ -1,11 +1,11 @@
-import { LitElement, html, css } from "lit";
+import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ref } from "lit/directives/ref.js";
-import type { RankedBarItem, SortDirection, ThemePreset } from "../types";
 import { ChartController } from "../controllers/chart.controller";
 import { DataFetchController } from "../controllers/data-fetch.controller";
 import { ThemeController } from "../controllers/theme.controller";
-import { sortItems, sliceItems } from "../mappers/ranked-bar.mapper";
+import { sliceItems, sortItems } from "../mappers/ranked-bar.mapper";
+import type { RankedBarItem, SortDirection, ThemePreset } from "../types";
 
 @customElement("pq-ranked-bar")
 export class PqRankedBar extends LitElement {
@@ -35,7 +35,8 @@ export class PqRankedBar extends LitElement {
   protected override async updated(changed: Map<string, unknown>): Promise<void> {
     if (changed.has("theme")) this.themeCtrl.update(this.theme);
     if (changed.has("animated")) this.chartCtrl.animate = this.animated;
-    if (changed.has("src") || changed.has("data")) await this.fetcher.fetch(this.src ?? "", !!this.data);
+    if (changed.has("src") || changed.has("data"))
+      await this.fetcher.fetch(this.src ?? "", !!this.data);
     this.renderChart();
   }
 
@@ -44,8 +45,8 @@ export class PqRankedBar extends LitElement {
     if (!resolved?.length) return;
     const sorted = sortItems(resolved, this.sort);
     const sliced = sliceItems(sorted, this.limit);
-    const themePlugins = this.themeCtrl.options["plugins"] as object | undefined;
-    const themeScales = this.themeCtrl.options["scales"] as object | undefined;
+    const themePlugins = this.themeCtrl.options.plugins;
+    const themeScales = this.themeCtrl.options.scales;
     this.chartCtrl.update({
       type: "bar",
       data: {
@@ -64,8 +65,8 @@ export class PqRankedBar extends LitElement {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: { display: false },
           ...themePlugins,
+          legend: { ...themePlugins.legend, display: false },
         },
         scales: themeScales,
       },
