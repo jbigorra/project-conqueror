@@ -1,0 +1,53 @@
+import { LitElement, html } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import type { MainDev } from "@prj-conq/behave";
+import type { ThemePreset } from "../types";
+import { DataFetchController } from "../controllers/data-fetch.controller";
+import { mapMainDevToBar, mapMainDevToTreemap } from "../mappers/main-dev.mapper";
+import "../generic/ranked-bar";
+import "../generic/treemap";
+
+type MainDevVariant = "bar" | "treemap";
+
+@customElement("pq-main-dev-chart")
+export class PqMainDevChart extends LitElement {
+  private fetcher = new DataFetchController<MainDev>(this);
+
+  @property({ type: Array }) data?: MainDev[];
+  @property() src?: string;
+  @property() theme?: ThemePreset;
+  @property() variant: MainDevVariant = "bar";
+  @property({ type: Number }) limit = 20;
+
+  protected override async updated(changed: Map<string, unknown>): Promise<void> {
+    if (changed.has("src") || changed.has("data"))
+      await this.fetcher.fetch(this.src ?? "", !!this.data);
+  }
+
+  private get resolvedData(): MainDev[] {
+    return this.data ?? this.fetcher.data ?? [];
+  }
+
+  protected override render() {
+    if (this.variant === "treemap") {
+      return html`<pq-treemap
+        .data=${mapMainDevToTreemap(this.resolvedData)}
+        .theme=${this.theme}
+        show-labels
+      ></pq-treemap>`;
+    }
+    return html`<pq-ranked-bar
+      .data=${mapMainDevToBar(this.resolvedData)}
+      .limit=${this.limit}
+      .theme=${this.theme}
+      sort="desc"
+      horizontal
+    ></pq-ranked-bar>`;
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    "pq-main-dev-chart": PqMainDevChart;
+  }
+}
