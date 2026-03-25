@@ -1,0 +1,18 @@
+:root {
+  --pq-chart-bg: transparent;
+  --pq-chart-text: #c5d0dc;
+  --pq-chart-grid: rgba(197, 208, 220, 0.1);
+  --pq-chart-border: rgba(197, 208, 220, 0.2);
+  --pq-chart-tooltip-bg: #13171f;
+  --pq-chart-font-family: system-ui, sans-serif;
+  --pq-chart-font-size: 12px;
+  --pq-chart-danger: #b03a3e;
+  --pq-chart-accent-1: #0172ad;
+  --pq-chart-accent-2: #c27a2c;
+  --pq-chart-accent-3: #b03a3e;
+  --pq-chart-accent-4: #3874d8;
+  --pq-chart-accent-5: #8e44ad;
+  --pq-chart-accent-6: #27ae60;
+  --pq-chart-accent-7: #d35400;
+  --pq-chart-accent-8: #16a085;
+}

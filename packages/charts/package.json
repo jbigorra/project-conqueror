@@ -24,6 +24,7 @@
         "default": "./dist/domain/index.js"
       }
     },
+    "./themes/*": "./src/themes/*.css",
     "./package.json": "./package.json"
   },
   "engines": { "bun": ">=1.3.11" },
