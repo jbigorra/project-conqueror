@@ -9,7 +9,8 @@ node_modules
 # Build
 dist
 .turbo
-**/tsconfig.tsbuildinfo
+**/*.tsbuildinfo
+**/storybook-static
 
 # Environment
 .env
@@ -32,3 +33,5 @@ yarn-error.log*
 **/coverage
 
 packages/code-maat-port/tmp/
+
+.superpowers/

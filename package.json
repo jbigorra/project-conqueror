@@ -13,7 +13,8 @@
     "test:coverage": "turbo test:coverage",
     "tdd": "turbo tdd",
     "lint": "turbo lint",
-    "format": "turbo format"
+    "format": "turbo format",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
@@ -22,6 +23,7 @@
   "devDependencies": {
     "@oxc-minify/binding-darwin-arm64": "0.93.0",
     "@oxc-transform/binding-darwin-arm64": "0.93.0",
+    "husky": "^9.1.7",
     "turbo": "2.6.1",
     "typescript": "^5.9.3"
   },
