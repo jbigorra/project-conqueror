@@ -1,1 +1,17 @@
 export { revisionsFixture } from "./revisions.fixture";
+export { authorsFixture } from "./authors.fixture";
+export { couplingFixture } from "./coupling.fixture";
+export { socFixture } from "./soc.fixture";
+export { absChurnFixture } from "./abs-churn.fixture";
+export { authorChurnFixture } from "./author-churn.fixture";
+export { entityChurnFixture } from "./entity-churn.fixture";
+export { entityOwnershipFixture } from "./entity-ownership.fixture";
+export { mainDevFixture } from "./main-dev.fixture";
+export { refactoringMainDevFixture } from "./refactoring-main-dev.fixture";
+export { entityEffortFixture } from "./entity-effort.fixture";
+export { fragmentationFixture } from "./fragmentation.fixture";
+export { communicationFixture } from "./communication.fixture";
+export { messagesFixture } from "./messages.fixture";
+export { ageFixture } from "./age.fixture";
+export { hotspotsFixture } from "./hotspots.fixture";
+export { summaryFixture } from "./summary.fixture";
