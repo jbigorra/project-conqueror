@@ -36,6 +36,9 @@
     "tdd": {
       "cache": false,
       "persistent": true
+    },
+    "check": {
+      "cache": false
     }
   }
 }

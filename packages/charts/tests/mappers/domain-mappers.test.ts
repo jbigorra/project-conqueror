@@ -83,8 +83,8 @@ describe("mapAuthorsToTreemap", () => {
 describe("mapCouplingToBubble", () => {
   it("uses entity↔coupled as label, averageRevs as x, degree as y and r", () => {
     const result = mapCouplingToBubble(couplingFixture);
-    const first = result[0]!;
-    const src = couplingFixture[0]!;
+    const first = result[0];
+    const src = couplingFixture[0];
     expect(first.label).toBe(`${src.entity}↔${src.coupled}`);
     expect(first.x).toBe(src.averageRevs);
     expect(first.y).toBe(src.degree);
@@ -101,8 +101,8 @@ describe("mapCouplingToBubble", () => {
 describe("mapCouplingToBar", () => {
   it("uses entity↔coupled as label and degree as value", () => {
     const result = mapCouplingToBar(couplingFixture);
-    const first = result[0]!;
-    const src = couplingFixture[0]!;
+    const first = result[0];
+    const src = couplingFixture[0];
     expect(first.label).toBe(`${src.entity}↔${src.coupled}`);
     expect(first.value).toBe(src.degree);
   });
@@ -134,7 +134,7 @@ describe("mapSocToBar", () => {
 describe("mapAbsChurnToLineArea", () => {
   it("maps date to x with added and deleted series", () => {
     const result = mapAbsChurnToLineArea(absChurnFixture);
-    const first = result[0]!;
+    const first = result[0];
     expect(first.x).toBe(absChurnFixture[0]?.date);
     const addedSeries = first.series.find((s) => s.key === "added");
     const deletedSeries = first.series.find((s) => s.key === "deleted");
@@ -152,7 +152,7 @@ describe("mapAbsChurnToLineArea", () => {
 describe("mapAuthorChurnToGrouped", () => {
   it("maps author to label with added, deleted, commits groups", () => {
     const result = mapAuthorChurnToGrouped(authorChurnFixture);
-    const first = result[0]!;
+    const first = result[0];
     expect(first.label).toBe(authorChurnFixture[0]?.author);
     const keys = first.groups.map((g) => g.key);
     expect(keys).toContain("added");
@@ -170,7 +170,7 @@ describe("mapAuthorChurnToGrouped", () => {
 describe("mapAuthorChurnToStacked", () => {
   it("maps author to label with added, deleted, commits segments", () => {
     const result = mapAuthorChurnToStacked(authorChurnFixture);
-    const first = result[0]!;
+    const first = result[0];
     expect(first.label).toBe(authorChurnFixture[0]?.author);
     const keys = first.segments.map((s) => s.key);
     expect(keys).toContain("added");
@@ -188,7 +188,7 @@ describe("mapAuthorChurnToStacked", () => {
 describe("mapEntityChurnToGrouped", () => {
   it("maps entity to label with added, deleted, commits groups", () => {
     const result = mapEntityChurnToGrouped(entityChurnFixture);
-    const first = result[0]!;
+    const first = result[0];
     expect(first.label).toBe(entityChurnFixture[0]?.entity);
     expect(first.groups.map((g) => g.key)).toContain("added");
   });
@@ -203,7 +203,7 @@ describe("mapEntityChurnToGrouped", () => {
 describe("mapEntityChurnToStacked", () => {
   it("maps entity to label with added, deleted, commits segments", () => {
     const result = mapEntityChurnToStacked(entityChurnFixture);
-    const first = result[0]!;
+    const first = result[0];
     expect(first.label).toBe(entityChurnFixture[0]?.entity);
     expect(first.segments.map((s) => s.key)).toContain("deleted");
   });
@@ -222,14 +222,14 @@ describe("mapOwnershipToStacked", () => {
     const result = mapOwnershipToStacked(entityOwnershipFixture);
     const entities = [...new Set(entityOwnershipFixture.map((r) => r.entity))];
     expect(result).toHaveLength(entities.length);
-    const first = result[0]!;
+    const first = result[0];
     expect(first.segments.length).toBeGreaterThan(0);
   });
   it("segment values are the added amounts per author", () => {
     const result = mapOwnershipToStacked(entityOwnershipFixture);
-    const engineRow = result.find((r) => r.label === "src/core/analysis-engine.ts")!;
-    const aliceSeg = engineRow.segments.find((s) => s.key === "alice@example.com")!;
-    expect(aliceSeg.value).toBe(890);
+    const engineRow = result.find((r) => r.label === "src/core/analysis-engine.ts");
+    const aliceSeg = engineRow?.segments.find((s) => s.key === "alice@example.com");
+    expect(aliceSeg?.value).toBe(890);
   });
   it("returns empty array for empty input", () => {
     expect(mapOwnershipToStacked([])).toEqual([]);
@@ -323,9 +323,9 @@ describe("mapEffortToStacked", () => {
   });
   it("segment value is authorRevs for that author", () => {
     const result = mapEffortToStacked(entityEffortFixture);
-    const engineRow = result.find((r) => r.label === "src/core/analysis-engine.ts")!;
-    const aliceSeg = engineRow.segments.find((s) => s.key === "alice@example.com")!;
-    expect(aliceSeg.value).toBe(62);
+    const engineRow = result.find((r) => r.label === "src/core/analysis-engine.ts");
+    const aliceSeg = engineRow?.segments.find((s) => s.key === "alice@example.com");
+    expect(aliceSeg?.value).toBe(62);
   });
   it("returns empty array for empty input", () => {
     expect(mapEffortToStacked([])).toEqual([]);
@@ -388,8 +388,8 @@ describe("mapFragmentationToDoughnut", () => {
 describe("mapCommunicationToBubble", () => {
   it("uses author↔peer as label, shared as x, average as y, strength as r", () => {
     const result = mapCommunicationToBubble(communicationFixture);
-    const first = result[0]!;
-    const src = communicationFixture[0]!;
+    const first = result[0];
+    const src = communicationFixture[0];
     expect(first.label).toBe(`${src.author}↔${src.peer}`);
     expect(first.x).toBe(src.shared);
     expect(first.y).toBe(src.average);
@@ -408,8 +408,8 @@ describe("mapCommunicationToBubble", () => {
 describe("mapCommunicationToBar", () => {
   it("uses author↔peer as label and strength as value", () => {
     const result = mapCommunicationToBar(communicationFixture);
-    const first = result[0]!;
-    const src = communicationFixture[0]!;
+    const first = result[0];
+    const src = communicationFixture[0];
     expect(first.label).toBe(`${src.author}↔${src.peer}`);
     expect(first.value).toBe(src.strength);
   });
@@ -470,8 +470,8 @@ describe("mapAgeToBar", () => {
 describe("mapHotspotsToBubble", () => {
   it("maps entity to label, nRevs to x and r, cyclomaticComplexity to y", () => {
     const result = mapHotspotsToBubble(hotspotsFixture);
-    const first = result[0]!;
-    const src = hotspotsFixture[0]!;
+    const first = result[0];
+    const src = hotspotsFixture[0];
     expect(first.label).toBe(src.entity);
     expect(first.x).toBe(src.nRevs);
     expect(first.y).toBe(src.cyclomaticComplexity);
@@ -488,8 +488,8 @@ describe("mapHotspotsToBubble", () => {
 describe("mapHotspotsToTreemap", () => {
   it("maps entity path as path, nRevs as value, cyclomaticComplexity as color", () => {
     const result = mapHotspotsToTreemap(hotspotsFixture);
-    const first = result[0]!;
-    const src = hotspotsFixture[0]!;
+    const first = result[0];
+    const src = hotspotsFixture[0];
     expect(first.path).toEqual(src.entity.split("/"));
     expect(first.value).toBe(src.nRevs);
     expect(first.color).toBe(src.cyclomaticComplexity);

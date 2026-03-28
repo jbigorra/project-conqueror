@@ -12,8 +12,7 @@
     "test": "turbo test",
     "test:coverage": "turbo test:coverage",
     "tdd": "turbo tdd",
-    "lint": "turbo lint",
-    "format": "turbo format",
+    "check": "turbo check",
     "prepare": "husky"
   },
   "keywords": [],
