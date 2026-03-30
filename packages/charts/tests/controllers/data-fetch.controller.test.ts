@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, mock } from "bun:test";
 import { DataFetchController } from "../../src/controllers/data-fetch.controller";
+import { mockFetchHttpError, mockFetchNetworkError, mockFetchSuccess } from "../helpers/mock-fetch";
 import { createMockHost, type MockHost } from "../helpers/mock-host";
 
 describe("DataFetchController", () => {
@@ -39,10 +40,7 @@ describe("DataFetchController", () => {
 
   it("fetches data and transitions to success on 200", async () => {
     const mockData = [{ label: "a", value: 1 }];
-    globalThis.fetch = mock(async () => ({
-      ok: true,
-      json: async () => mockData,
-    })) as unknown as typeof globalThis.fetch;
+    mockFetchSuccess(mockData);
 
     await ctrl.fetch("http://example.com/data.json", false);
 
@@ -52,10 +50,7 @@ describe("DataFetchController", () => {
   });
 
   it("transitions to error state on non-200 response", async () => {
-    globalThis.fetch = mock(async () => ({
-      ok: false,
-      status: 404,
-    })) as unknown as typeof globalThis.fetch;
+    mockFetchHttpError(404);
 
     await ctrl.fetch("http://example.com/data.json", false);
 
@@ -64,9 +59,7 @@ describe("DataFetchController", () => {
   });
 
   it("transitions to error state on network failure", async () => {
-    globalThis.fetch = mock(async () => {
-      throw new Error("Network error");
-    }) as unknown as typeof globalThis.fetch;
+    mockFetchNetworkError("Network error");
 
     await ctrl.fetch("http://example.com/data.json", false);
 
@@ -76,10 +69,7 @@ describe("DataFetchController", () => {
 
   it("unwraps {data: [...]} response format", async () => {
     const items = [{ label: "b", value: 2 }];
-    globalThis.fetch = mock(async () => ({
-      ok: true,
-      json: async () => ({ data: items }),
-    })) as unknown as typeof globalThis.fetch;
+    mockFetchSuccess({ data: items });
 
     await ctrl.fetch("http://example.com/data.json", false);
 
@@ -88,10 +78,7 @@ describe("DataFetchController", () => {
   });
 
   it("requests host update after fetch completes", async () => {
-    globalThis.fetch = mock(async () => ({
-      ok: true,
-      json: async () => [{ label: "c", value: 3 }],
-    })) as unknown as typeof globalThis.fetch;
+    mockFetchSuccess([{ label: "c", value: 3 }]);
 
     await ctrl.fetch("http://example.com/data.json", false);
 
@@ -100,10 +87,7 @@ describe("DataFetchController", () => {
 
   it("emits chart-data-loaded event on success", async () => {
     const mockData = [{ label: "d", value: 4 }];
-    globalThis.fetch = mock(async () => ({
-      ok: true,
-      json: async () => mockData,
-    })) as unknown as typeof globalThis.fetch;
+    mockFetchSuccess(mockData);
 
     await ctrl.fetch("http://example.com/data.json", false);
 
