@@ -1,4 +1,4 @@
-import { describe, expect, it } from "bun:test";
+import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import type { ReactiveControllerHost } from "lit";
 import {
   resolveTheme,
@@ -8,8 +8,7 @@ import {
 import { dark } from "../../src/themes/dark";
 import { light } from "../../src/themes/light";
 import { pico } from "../../src/themes/pico";
-import type { MockHost } from "../helpers/mock-host";
-import { createMockHost } from "../helpers/mock-host";
+import { createMockHost, type MockHost } from "../helpers/mock-host";
 
 type MockHostAsElement = MockHost & ReactiveControllerHost & HTMLElement;
 
@@ -42,7 +41,6 @@ describe("resolveTheme", () => {
     const theme = resolveTheme("dark", overrides);
     expect(theme.bg).toBe("#123456");
     expect(theme.text).toBe("#abcdef");
-    // unoverridden values stay from preset
     expect(theme.grid).toBe(dark.grid);
   });
 });
@@ -75,30 +73,34 @@ describe("toChartJsOptions", () => {
 });
 
 describe("ThemeController", () => {
+  let host: MockHost;
+  let ctrl: ThemeController;
+
+  beforeEach(() => {
+    host = createMockHost();
+    ctrl = new ThemeController(host as unknown as MockHostAsElement);
+  });
+
+  afterEach(() => {
+    host._reset();
+  });
+
   it("registers itself with the host on construction", () => {
-    const host = createMockHost();
-    const ctrl = new ThemeController(host as unknown as MockHostAsElement);
     expect(host.controllers).toContain(ctrl);
   });
 
   it("has dark theme values by default after hostConnected", () => {
-    const host = createMockHost();
-    const ctrl = new ThemeController(host as unknown as MockHostAsElement);
     ctrl.hostConnected();
     expect(ctrl.theme).toEqual(dark);
   });
 
   it("switches preset when update() is called with a different preset", () => {
-    const host = createMockHost();
-    const ctrl = new ThemeController(host as unknown as MockHostAsElement);
     ctrl.hostConnected();
     ctrl.update("light");
     expect(ctrl.theme).toEqual(light);
   });
 
   it("exposes chart.js options via the options property", () => {
-    const host = createMockHost();
-    const ctrl = new ThemeController(host as unknown as MockHostAsElement);
     ctrl.hostConnected();
     expect(ctrl.options.color).toBe(dark.text);
   });

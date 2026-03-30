@@ -5,11 +5,12 @@ export type MockHost = ReactiveControllerHost &
     controllers: ReactiveController[];
     dispatchedEvents: CustomEvent[];
     updateCount: number;
+    _reset(): void;
   };
 
 export function createMockHost(): MockHost {
-  const controllers: ReactiveController[] = [];
-  const dispatchedEvents: CustomEvent[] = [];
+  let controllers: ReactiveController[] = [];
+  let dispatchedEvents: CustomEvent[] = [];
   let updateCount = 0;
 
   const host: MockHost = {
@@ -36,6 +37,11 @@ export function createMockHost(): MockHost {
       return true;
     },
     style: {} as CSSStyleDeclaration,
+    _reset() {
+      controllers = [];
+      dispatchedEvents = [];
+      updateCount = 0;
+    },
   };
 
   return host;
