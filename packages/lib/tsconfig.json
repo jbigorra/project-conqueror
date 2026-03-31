@@ -2,16 +2,8 @@
   "extends": "@prj-conq/typescript-config/tsconfig.base.json",
   "compilerOptions": {
     "composite": true,
-    "types": [
-      "@types/bun"
-    ]
+    "types": ["@types/bun"]
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "**/*.test.ts"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts"]
 }

@@ -15,17 +15,32 @@ export default meta;
 type Story = StoryObj;
 
 export const Default: Story = {
-  render: (args) => html`
-    <div style="height: 400px;">
-      <pq-abs-churn-chart .data=${absChurnFixture} variant=${args.variant ?? "area"} theme=${args.theme ?? "dark"}></pq-abs-churn-chart>
+  render: (args) =>
+    html` <div style="height: 400px;">
+      <pq-abs-churn-chart
+        .data=${absChurnFixture}
+        variant=${args.variant ?? "area"}
+        theme=${args.theme ?? "dark"}
+      ></pq-abs-churn-chart>
     </div>`,
 };
 
 export const LineVariant: Story = {
-  render: () => html`<div style="height: 400px;"><pq-abs-churn-chart .data=${absChurnFixture} variant="line"></pq-abs-churn-chart></div>`,
+  render: () =>
+    html`<div style="height: 400px;">
+      <pq-abs-churn-chart
+        .data=${absChurnFixture}
+        variant="line"
+      ></pq-abs-churn-chart>
+    </div>`,
 };
 
 export const LightTheme: Story = {
-  render: () => html`<div style="height: 400px; background: white; padding: 1rem;">
-    <pq-abs-churn-chart .data=${absChurnFixture} theme="light"></pq-abs-churn-chart></div>`,
+  render: () =>
+    html`<div style="height: 400px; background: white; padding: 1rem;">
+      <pq-abs-churn-chart
+        .data=${absChurnFixture}
+        theme="light"
+      ></pq-abs-churn-chart>
+    </div>`,
 };

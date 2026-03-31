@@ -20,6 +20,12 @@
  * });
  */
 
+// --- Analysis (aliased to avoid conflicts) ---
+export {
+  all as allAuthors,
+  byCount,
+  ofModule,
+} from "./code_maat/analysis/authors";
 // --- Analysis (no naming conflicts) ---
 export * from "./code_maat/analysis/churn";
 export * from "./code_maat/analysis/code-age";
@@ -27,51 +33,39 @@ export * from "./code_maat/analysis/commit-messages";
 export * from "./code_maat/analysis/communication";
 export * from "./code_maat/analysis/coupling-algos";
 export * from "./code_maat/analysis/effort";
-export * from "./code_maat/analysis/math";
-export * from "./code_maat/analysis/summary";
-
-// --- Analysis (aliased to avoid conflicts) ---
 export {
-  all as allAuthors,
-  ofModule,
-  byCount,
-} from "./code_maat/analysis/authors";
-
-export {
-  type EntityRevCount,
   all as allEntities,
   allRevisions,
   byRevision,
+  type EntityRevCount,
   revisionsOf,
 } from "./code_maat/analysis/entities";
-
 export {
-  type CouplingResult,
   byDegree as couplingByDegree,
+  type CouplingResult,
 } from "./code_maat/analysis/logical-coupling";
-
+export * from "./code_maat/analysis/math";
 export {
-  type SocResult,
   asSoc,
   byDegree as socByDegree,
+  type SocResult,
 } from "./code_maat/analysis/sum-of-coupling";
+export * from "./code_maat/analysis/summary";
 
 // --- App (no naming conflicts) ---
 export * from "./code_maat/app/app";
-export * from "./code_maat/app/time-based-grouper";
-
 // --- App (aliased to avoid conflicts) ---
 export {
   type GroupSpec,
-  textToGroupSpecification,
   mapEntitiesToGroups,
   run as runGrouper,
+  textToGroupSpecification,
 } from "./code_maat/app/grouper";
-
 export {
   fileToAuthorTeamLookup,
   run as runTeamMapper,
 } from "./code_maat/app/team-mapper";
+export * from "./code_maat/app/time-based-grouper";
 
 // --- Infrastructure ---
 export * from "./code_maat/cmd-line";
@@ -80,41 +74,41 @@ export * from "./code_maat/dataset/dataset";
 // --- Parsers (aliased to avoid conflicts) ---
 export {
   type ParsedEntry as GitParsedEntry,
-  parseReadLog as parseGitReadLog,
   parseLog as parseGitLog,
+  parseReadLog as parseGitReadLog,
 } from "./code_maat/parsers/git";
 
 export {
   type ParsedEntry as Git2ParsedEntry,
-  parseReadLog as parseGit2ReadLog,
   parseLog as parseGit2Log,
+  parseReadLog as parseGit2ReadLog,
 } from "./code_maat/parsers/git2";
 
 export {
   type MercurialEntry,
-  parseReadLog as parseMercurialReadLog,
   parseLog as parseMercurialLog,
+  parseReadLog as parseMercurialReadLog,
 } from "./code_maat/parsers/mercurial";
 
 export {
   type PerforceEntry,
-  parseReadLog as parsePerforceReadLog,
   parseLog as parsePerforceLog,
+  parseReadLog as parsePerforceReadLog,
 } from "./code_maat/parsers/perforce";
 
 export {
-  type SvnEntry,
-  type SvnLogEntry,
-  parseXml as parseSvnXml,
   asRows as svnAsRows,
   parseLog as parseSvnLog,
   parseReadLog as parseSvnReadLog,
+  parseXml as parseSvnXml,
+  type SvnEntry,
+  type SvnLogEntry,
 } from "./code_maat/parsers/svn";
 
 export {
-  type TfsEntry,
-  parseReadLog as parseTfsReadLog,
   parseLog as parseTfsLog,
+  parseReadLog as parseTfsReadLog,
+  type TfsEntry,
 } from "./code_maat/parsers/tfs";
 
 export * from "./code_maat/parsers/time-parser";

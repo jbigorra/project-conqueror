@@ -21,7 +21,7 @@
   "scripts": {
     "build": "CI=true bunup",
     "test": "bun test tests/code_maat/*",
-    "test:tdd": "bun test tests/code_maat/* --watch",
+    "tdd": "bun test tests/code_maat/* --watch",
     "test:coverage": "bun test tests/code_maat/* --coverage",
     "test:parity": "bun test",
     "typecheck": "tsc --noEmit",

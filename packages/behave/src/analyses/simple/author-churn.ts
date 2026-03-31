@@ -8,17 +8,15 @@ import { CodeMaatService } from "../../services/code-maat";
 import type { SimpleAnalysisInput } from "../../types";
 
 export const authorChurnEffect = (input: SimpleAnalysisInput) =>
-	Effect.gen(function* () {
-		const codeMaat = yield* CodeMaatService;
-		const raw = yield* codeMaat.runAnalysis(
-			input.gitLogPath,
-			buildAppOptions("author-churn", input),
-		);
-		const data = yield* Schema.decodeUnknown(AuthorChurnSchema)(raw);
-		return yield* toAnalysis("author-churn", data, input);
-	});
+  Effect.gen(function* () {
+    const codeMaat = yield* CodeMaatService;
+    const raw = yield* codeMaat.runAnalysis(
+      input.gitLogPath,
+      buildAppOptions("author-churn", input),
+    );
+    const data = yield* Schema.decodeUnknown(AuthorChurnSchema)(raw);
+    return yield* toAnalysis("author-churn", data, input);
+  });
 
-export const authorChurn = (
-	input: SimpleAnalysisInput,
-): Promise<Analysis<AuthorChurn>> =>
-	Effect.runPromise(authorChurnEffect(input).pipe(Effect.provide(BehaveLive)));
+export const authorChurn = (input: SimpleAnalysisInput): Promise<Analysis<AuthorChurn>> =>
+  Effect.runPromise(authorChurnEffect(input).pipe(Effect.provide(BehaveLive)));

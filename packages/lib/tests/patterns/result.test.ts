@@ -1,5 +1,5 @@
-import { Result } from "#lib/patterns/index.ts";
 import { describe, expect, it } from "bun:test";
+import { Result } from "#lib/patterns/index.ts";
 
 describe("Result", () => {
   describe("Success", () => {
@@ -128,7 +128,9 @@ describe("Result", () => {
       const error2 = new Error("second error");
 
       const result = Result.success(5);
-      const chained = result.flatMap(() => Result.error(error1)).flatMap(() => Result.error(error2)); // This should not execute
+      const chained = result
+        .flatMap(() => Result.error(error1))
+        .flatMap(() => Result.error(error2)); // This should not execute
 
       expect(chained.isError()).toBe(true);
       expect(chained.getError()).toBe(error1);

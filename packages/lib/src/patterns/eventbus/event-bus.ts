@@ -41,7 +41,9 @@ export class EventBus {
     const isDuplicate = existingHandlers.some((h) => h.handlerName === handler.handlerName);
 
     if (isDuplicate) {
-      throw new Error(`Handler '${handler.handlerName}' is already registered for event '${eventType}'`);
+      throw new Error(
+        `Handler '${handler.handlerName}' is already registered for event '${eventType}'`,
+      );
     }
 
     existingHandlers.push(handler);
@@ -128,7 +130,9 @@ export class EventBus {
       errors,
     };
 
-    this.log(`Event '${event.eventType}' processed: ${handledCount} successful, ${errors.length} failed`);
+    this.log(
+      `Event '${event.eventType}' processed: ${handledCount} successful, ${errors.length} failed`,
+    );
 
     return result;
   }
@@ -155,7 +159,10 @@ export class EventBus {
     this.log("Cleared all event handlers");
   }
 
-  private async executeHandlerWithRetry(handler: EventHandler, event: DomainEvent): Promise<EventHandlerResult> {
+  private async executeHandlerWithRetry(
+    handler: EventHandler,
+    event: DomainEvent,
+  ): Promise<EventHandlerResult> {
     let lastError: Error | undefined;
 
     for (let attempt = 0; attempt <= this.config.maxRetries; attempt++) {

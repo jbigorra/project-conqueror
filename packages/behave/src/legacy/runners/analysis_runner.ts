@@ -9,36 +9,34 @@ import type { ICLIExecutor, ICSVParser } from "#infra/interfaces.ts";
 export type TAnalysisResult = Record<string, string>[];
 
 export interface IAnalysisRunner {
-	run(options: AnalysisOptions): Promise<Result<TAnalysisResult>>;
+  run(options: AnalysisOptions): Promise<Result<TAnalysisResult>>;
 }
 
 export class AnalysisRunner implements IAnalysisRunner {
-	constructor(
-		private readonly cliExecutor: ICLIExecutor,
-		private readonly csvParser: ICSVParser,
-	) {}
+  constructor(
+    private readonly cliExecutor: ICLIExecutor,
+    private readonly csvParser: ICSVParser,
+  ) {}
 
-	static create(dependencies: {
-		cliExecutor?: ICLIExecutor;
-		csvParser?: ICSVParser;
-	}): IAnalysisRunner {
-		const {
-			cliExecutor = new CodeMaat(spawnAsync({ spawn })),
-			csvParser = new CSVParser(),
-		} = dependencies;
+  static create(dependencies: {
+    cliExecutor?: ICLIExecutor;
+    csvParser?: ICSVParser;
+  }): IAnalysisRunner {
+    const { cliExecutor = new CodeMaat(spawnAsync({ spawn })), csvParser = new CSVParser() } =
+      dependencies;
 
-		return new AnalysisRunner(cliExecutor, csvParser);
-	}
+    return new AnalysisRunner(cliExecutor, csvParser);
+  }
 
-	async run(options: AnalysisOptions): Promise<Result<TAnalysisResult>> {
-		const cliResult = await this.cliExecutor.execute(options.toArgs());
+  async run(options: AnalysisOptions): Promise<Result<TAnalysisResult>> {
+    const cliResult = await this.cliExecutor.execute(options.toArgs());
 
-		if (cliResult.isError()) {
-			return Result.error(cliResult.getError());
-		}
+    if (cliResult.isError()) {
+      return Result.error(cliResult.getError());
+    }
 
-		const csvResult = await this.csvParser.parse(cliResult.getValue().stdout);
+    const csvResult = await this.csvParser.parse(cliResult.getValue().stdout);
 
-		return csvResult;
-	}
+    return csvResult;
+  }
 }

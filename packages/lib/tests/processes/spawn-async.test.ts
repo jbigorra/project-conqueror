@@ -1,7 +1,7 @@
-import { CLIResult, spawnAsync } from "#lib/processes/index.ts";
 import { beforeEach, describe, expect, it, mock } from "bun:test";
-import { spawn } from "child_process";
-import { EventEmitter } from "events";
+import type { spawn } from "node:child_process";
+import { EventEmitter } from "node:events";
+import { CLIResult, spawnAsync } from "#lib/processes/index.ts";
 
 class CustomChildProcessFake extends EventEmitter {
   stdout: EventEmitter = new EventEmitter();
@@ -44,8 +44,8 @@ describe("spawAsync", () => {
     const resultPromise = SUT(command, args);
 
     process.nextTick(() => {
-      mockChildProcess.stdout!.emit("data", "hello");
-      mockChildProcess.stdout!.emit("data", " world\n");
+      mockChildProcess.stdout?.emit("data", "hello");
+      mockChildProcess.stdout?.emit("data", " world\n");
       mockChildProcess.emit("close", 0);
     });
 
@@ -59,7 +59,7 @@ describe("spawAsync", () => {
     const resultPromise = SUT("false", []);
 
     process.nextTick(() => {
-      mockChildProcess.stderr!.emit("data", "command failed");
+      mockChildProcess.stderr?.emit("data", "command failed");
       mockChildProcess.emit("close", 1);
     });
 

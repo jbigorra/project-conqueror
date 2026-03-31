@@ -4,31 +4,31 @@ export * as simple from "./analyses/simple";
 export { CodeMaatError, FormatError, LizardError } from "./errors";
 // Legacy (deprecated) — existing consumers keep working
 export { AnalysisOptions, Behave, default } from "./legacy/index";
+export type { ComplexityHotspot } from "./pipeline/transform/merge-by-entity";
 // New API — types for consumers
 export type { Analysis, AnalysisMetadata } from "./schemas/analysis";
-export type {
-	ComplexityHotspotsInput,
-	OutputFormat,
-	SimpleAnalysisInput,
-} from "./types";
 // Analysis record types — for consumers that need typed analysis results
 export type {
-	Revision,
-	Author,
-	Coupling,
-	Soc,
-	SummaryEntry,
-	AbsChurn,
-	AuthorChurn,
-	EntityChurn,
-	EntityOwnership,
-	MainDev,
-	RefactoringMainDev,
-	EntityEffort,
-	MainDevByRevs,
-	Fragmentation,
-	Communication,
-	MessageEntry,
-	CodeAge,
+  AbsChurn,
+  Author,
+  AuthorChurn,
+  CodeAge,
+  Communication,
+  Coupling,
+  EntityChurn,
+  EntityEffort,
+  EntityOwnership,
+  Fragmentation,
+  MainDev,
+  MainDevByRevs,
+  MessageEntry,
+  RefactoringMainDev,
+  Revision,
+  Soc,
+  SummaryEntry,
 } from "./schemas/code-maat";
-export type { ComplexityHotspot } from "./pipeline/transform/merge-by-entity";
+export type {
+  ComplexityHotspotsInput,
+  OutputFormat,
+  SimpleAnalysisInput,
+} from "./types";

@@ -47,9 +47,7 @@ export class LizardExecutor implements ICLIExecutor {
       }
       return Result.success(result);
     } catch (error) {
-      return Result.error(
-        error instanceof Error ? error : new Error(String(error)),
-      );
+      return Result.error(error instanceof Error ? error : new Error(String(error)));
     }
   }
 }

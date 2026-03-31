@@ -1,5 +1,10 @@
-import { BaseDomainEvent, BaseEventHandler, EventBus, EventHandlerResult } from "#lib/patterns/index.ts";
 import { beforeEach, describe, expect, it, spyOn } from "bun:test";
+import {
+  BaseDomainEvent,
+  BaseEventHandler,
+  EventBus,
+  type EventHandlerResult,
+} from "#lib/patterns/index.ts";
 
 // Test event classes
 class TestEvent extends BaseDomainEvent {
@@ -49,7 +54,7 @@ class FailingHandler extends BaseEventHandler<TestEvent> {
     super("test.event", name);
   }
 
-  handle(event: TestEvent): EventHandlerResult {
+  handle(_event: TestEvent): EventHandlerResult {
     return this.failure("Handler intentionally failed");
   }
 }
@@ -142,7 +147,7 @@ describe("EventBus", () => {
 
       expect(wasRemoved).toBe(true);
       expect(eventBus.getHandlers("test.event")).toHaveLength(1);
-      expect(eventBus.getHandlers("test.event")[0]!.handlerName).toBe("Handler2");
+      expect(eventBus.getHandlers("test.event")[0]?.handlerName).toBe("Handler2");
     });
 
     it("should return false when unsubscribing non-existent handler", () => {
@@ -235,8 +240,8 @@ describe("EventBus", () => {
       expect(result.success).toBe(false);
       expect(result.handledCount).toBe(1);
       expect(result.errors).toHaveLength(1);
-      expect(result.errors[0]!.handlerName).toBe("FailingHandler");
-      expect(result.errors[0]!.error.message).toBe("Handler intentionally failed");
+      expect(result.errors[0]?.handlerName).toBe("FailingHandler");
+      expect(result.errors[0]?.error.message).toBe("Handler intentionally failed");
     });
 
     it("should handle thrown exceptions in handlers", async () => {
@@ -249,7 +254,7 @@ describe("EventBus", () => {
       expect(result.success).toBe(false);
       expect(result.handledCount).toBe(0);
       expect(result.errors).toHaveLength(1);
-      expect(result.errors[0]!.error.message).toBe("Handler threw an exception");
+      expect(result.errors[0]?.error.message).toBe("Handler threw an exception");
     });
   });
 
@@ -277,7 +282,9 @@ describe("EventBus", () => {
       await eventBusWithLogging.publish(event);
 
       expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining("[EventBus] Subscribed handler 'SyncTestHandler' to event 'test.event'"),
+        expect.stringContaining(
+          "[EventBus] Subscribed handler 'SyncTestHandler' to event 'test.event'",
+        ),
       );
       expect(consoleSpy).toHaveBeenCalledWith(
         expect.stringContaining("[EventBus] Publishing event 'test.event' to 1 handlers"),

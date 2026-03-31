@@ -1,12 +1,4 @@
-import {
-  afterEach,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  type Mock,
-  mock,
-} from "bun:test";
+import { afterEach, beforeEach, describe, expect, it, type Mock, mock } from "bun:test";
 import { CLIResult, type TSpawnAsyncFn } from "@prj-conq/lib/processes";
 import { LizardExecutor } from "#lizard/ts-lizard/infrastructure/lizard-executor.ts";
 
@@ -18,11 +10,7 @@ describe("LizardExecutor", () => {
 
   beforeEach(() => {
     spawnAsyncMock = mock<TSpawnAsyncFn>();
-    executor = new LizardExecutor(
-      spawnAsyncMock,
-      fakeLizardPath,
-      fakePythonBin,
-    );
+    executor = new LizardExecutor(spawnAsyncMock, fakeLizardPath, fakePythonBin);
   });
 
   afterEach(() => {
@@ -35,10 +23,7 @@ describe("LizardExecutor", () => {
 
     await executor.execute(args);
 
-    expect(spawnAsyncMock).toHaveBeenCalledWith(fakePythonBin, [
-      fakeLizardPath,
-      ...args,
-    ]);
+    expect(spawnAsyncMock).toHaveBeenCalledWith(fakePythonBin, [fakeLizardPath, ...args]);
   });
 
   it("should return an error when the command fails", async () => {

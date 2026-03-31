@@ -8,9 +8,7 @@ export class LizardInstance {
   private static instance: Lizard | null = null;
 
   static create(): Lizard {
-    LizardInstance.instance ??= new Lizard(
-      new LizardExecutor(spawnAsync({ spawn })),
-    );
+    LizardInstance.instance ??= new Lizard(new LizardExecutor(spawnAsync({ spawn })));
     return LizardInstance.instance;
   }
 }
