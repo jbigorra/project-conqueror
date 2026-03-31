@@ -1,5 +1,10 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "vcs": {
+    "enabled": false,
+    "clientKind": "git",
+    "useIgnoreFile": false
+  },
   "assist": {
     "enabled": true,
     "actions": {
@@ -29,7 +34,6 @@
   "javascript": {
     "formatter": {
       "quoteStyle": "double",
-      "trailingCommas": "all",
       "semicolons": "always"
     }
   },

@@ -5,17 +5,27 @@
     "clientKind": "git",
     "useIgnoreFile": false
   },
+  "assist": {
+    "enabled": true,
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  },
   "files": {
     "includes": [
       "**",
       "!dist",
       "!src/python-lizard",
-      "!tests/ts-lizard/sample-file-for-integration-test.ts"
+      "!tests/ts-lizard/sample-folder-for-integration-test/sample-file-for-integration-test.ts"
     ]
   },
   "formatter": {
     "enabled": true,
-    "indentStyle": "tab"
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 100
   },
   "linter": {
     "enabled": true,
@@ -25,15 +35,8 @@
   },
   "javascript": {
     "formatter": {
-      "quoteStyle": "double"
-    }
-  },
-  "assist": {
-    "enabled": true,
-    "actions": {
-      "source": {
-        "organizeImports": "on"
-      }
+      "quoteStyle": "double",
+      "semicolons": "always"
     }
   }
 }
