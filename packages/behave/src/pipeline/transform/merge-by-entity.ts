@@ -5,6 +5,7 @@ export type ComplexityHotspot = {
   entity: string;
   nRevs: number;
   cyclomaticComplexity: number;
+  linesOfCode: number;
 };
 
 /**
@@ -22,28 +23,34 @@ export const mergeByEntity = (
   churn: readonly Revision[],
   complexity: readonly LizardFunctionMetric[],
 ): ComplexityHotspot[] => {
-  // Aggregate max complexity per file (using original lizard paths)
+  // Aggregate max complexity and sum LOC per file (using original lizard paths)
   const complexityByFile = new Map<string, number>();
+  const locByFile = new Map<string, number>();
   for (const metric of complexity) {
-    const current = complexityByFile.get(metric.file) ?? 0;
-    complexityByFile.set(metric.file, Math.max(current, metric.cyclomaticComplexity));
+    const currentCC = complexityByFile.get(metric.file) ?? 0;
+    complexityByFile.set(metric.file, Math.max(currentCC, metric.cyclomaticComplexity));
+    const currentLoc = locByFile.get(metric.file) ?? 0;
+    locByFile.set(metric.file, currentLoc + metric.nloc);
   }
 
   const hotspots: ComplexityHotspot[] = [];
   for (const rev of churn) {
     // Find matching lizard file by suffix match
     let maxComplexity: number | undefined;
+    let totalLoc: number | undefined;
     for (const [lizardFile, cc] of complexityByFile) {
       if (pathsMatch(rev.entity, lizardFile)) {
         maxComplexity = cc;
+        totalLoc = locByFile.get(lizardFile);
         break;
       }
     }
-    if (maxComplexity !== undefined) {
+    if (maxComplexity !== undefined && totalLoc !== undefined) {
       hotspots.push({
         entity: rev.entity,
         nRevs: rev.nRevs,
         cyclomaticComplexity: maxComplexity,
+        linesOfCode: totalLoc,
       });
     }
   }

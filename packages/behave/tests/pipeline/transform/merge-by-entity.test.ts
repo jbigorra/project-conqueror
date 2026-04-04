@@ -30,7 +30,56 @@ describe("mergeByEntity", () => {
       entity: "src/foo.ts",
       nRevs: 10,
       cyclomaticComplexity: 8,
+      linesOfCode: 50,
     });
+  });
+  test("sums nloc per file for linesOfCode", () => {
+    const churn: Revision[] = [{ entity: "src/foo.ts", nRevs: 10 }];
+    const complexity: LizardFunctionMetric[] = [
+      {
+        nloc: 10,
+        cyclomaticComplexity: 3,
+        tokenCount: 50,
+        parameters: 1,
+        length: 10,
+        location: "a@1-10@src/foo.ts",
+        file: "src/foo.ts",
+        functionName: "a",
+        longName: "a()",
+        startLine: 1,
+        endLine: 10,
+      },
+      {
+        nloc: 30,
+        cyclomaticComplexity: 12,
+        tokenCount: 150,
+        parameters: 3,
+        length: 30,
+        location: "b@11-40@src/foo.ts",
+        file: "src/foo.ts",
+        functionName: "b",
+        longName: "b(x,y,z)",
+        startLine: 11,
+        endLine: 40,
+      },
+      {
+        nloc: 5,
+        cyclomaticComplexity: 1,
+        tokenCount: 20,
+        parameters: 0,
+        length: 5,
+        location: "c@41-45@src/foo.ts",
+        file: "src/foo.ts",
+        functionName: "c",
+        longName: "c()",
+        startLine: 41,
+        endLine: 45,
+      },
+    ];
+    const result = mergeByEntity(churn, complexity);
+    expect(result).toHaveLength(1);
+    // biome-ignore lint/style/noNonNullAssertion: expected to have a value
+    expect(result[0]!.linesOfCode).toBe(45);
   });
   test("takes max cyclomatic complexity per file", () => {
     const churn: Revision[] = [{ entity: "src/foo.ts", nRevs: 10 }];
@@ -127,6 +176,7 @@ describe("mergeByEntity", () => {
       entity: "src/foo.ts",
       nRevs: 10,
       cyclomaticComplexity: 7,
+      linesOfCode: 20,
     });
   });
 });
