@@ -78,11 +78,13 @@ describe("complexity hotspots analysis", () => {
       entity: "/src/foo.ts",
       nRevs: 20,
       cyclomaticComplexity: 15,
+      linesOfCode: 120,
     });
     expect(result.data).toContainEqual({
       entity: "/src/bar.ts",
       nRevs: 8,
       cyclomaticComplexity: 12,
+      linesOfCode: 30,
     });
   });
 
