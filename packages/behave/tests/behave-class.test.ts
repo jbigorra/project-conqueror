@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { Behave } from "../src/behave";
 
 const FIXTURE = join(import.meta.dir, "fixtures/integration-gitlog.txt");
+const SOURCE_DIR = join(import.meta.dir, "fixtures/sample-source");
 
 const RELAXED_OPTIONS = {
   options: {
@@ -55,5 +56,21 @@ describe("Behave class", () => {
 
     expect(r1.metadata.format).toBe("json");
     expect(r2.metadata.format).toBe("csv");
+  });
+
+  test("complexityHotspots merges churn and complexity data", async () => {
+    const behave = new Behave(FIXTURE);
+    const result = await behave.complexityHotspots({
+      sourceDir: SOURCE_DIR,
+      vcsType: "git2",
+      ...RELAXED_OPTIONS,
+    });
+
+    expect(result.metadata.analysisName).toBe("complexity-hotspots");
+    expect(result.data.length).toBeGreaterThan(0);
+    expect(result.data[0]).toHaveProperty("entity");
+    expect(result.data[0]).toHaveProperty("nRevs");
+    expect(result.data[0]).toHaveProperty("cyclomaticComplexity");
+    expect(result.data[0]).toHaveProperty("linesOfCode");
   });
 });
