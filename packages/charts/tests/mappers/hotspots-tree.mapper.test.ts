@@ -64,3 +64,53 @@ describe("buildHotspotsTree", () => {
     expect(tree.children).toBeUndefined();
   });
 });
+
+describe("folder aggregates", () => {
+  const fixture: EnclosureHotspot[] = [
+    { entity: "src/core/engine.ts", nRevs: 10, cyclomaticComplexity: 15, linesOfCode: 200 },
+    { entity: "src/core/parser.ts", nRevs: 5, cyclomaticComplexity: 8, linesOfCode: 100 },
+    { entity: "src/utils/format.ts", nRevs: 3, cyclomaticComplexity: 2, linesOfCode: 50 },
+  ];
+
+  test("leaf folder has correct immediate counts", () => {
+    const tree = buildHotspotsTree(fixture);
+    const core = tree.children![0]!.children![0]!; // src > core
+    expect(core.immediateFiles).toBe(2);
+    expect(core.immediateFolders).toBe(0);
+  });
+
+  test("parent folder counts immediate subfolders", () => {
+    const tree = buildHotspotsTree(fixture);
+    const src = tree.children![0]!; // src
+    expect(src.immediateFiles).toBe(0);
+    expect(src.immediateFolders).toBe(2);
+  });
+
+  test("folder has correct totalFiles and totalFolders", () => {
+    const tree = buildHotspotsTree(fixture);
+    const src = tree.children![0]!;
+    expect(src.totalFiles).toBe(3);
+    expect(src.totalFolders).toBe(2);
+  });
+
+  test("folder totalLinesOfCode is recursive sum", () => {
+    const tree = buildHotspotsTree(fixture);
+    const core = tree.children![0]!.children![0]!;
+    expect(core.totalLinesOfCode).toBe(300);
+  });
+
+  test("folder averageComplexity is mean of descendant file complexities", () => {
+    const tree = buildHotspotsTree(fixture);
+    const src = tree.children![0]!;
+    // (15 + 8 + 2) / 3 ≈ 8.33
+    expect(src.averageComplexity).toBeCloseTo(8.33, 1);
+  });
+
+  test("root has aggregates for all files", () => {
+    const tree = buildHotspotsTree(fixture);
+    expect(tree.totalFiles).toBe(3);
+    expect(tree.totalFolders).toBe(3); // src, core, utils
+    expect(tree.totalLinesOfCode).toBe(350);
+    expect(tree.averageComplexity).toBeCloseTo(8.33, 1);
+  });
+});
