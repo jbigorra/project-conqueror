@@ -33,7 +33,8 @@
         "vitest.explorer",
         "redhat.vscode-yaml",
         "tombi-toml.tombi",
-        "SonarSource.sonarlint-vscode"
+        "SonarSource.sonarlint-vscode",
+        "bierner.markdown-preview-github-styles"
       ],
       "settings": {
         "editor.formatOnSave": true,

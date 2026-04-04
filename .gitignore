@@ -11,6 +11,7 @@ dist
 .turbo
 **/*.tsbuildinfo
 **/storybook-static
+.pnpm-store
 
 # Environment
 .env
