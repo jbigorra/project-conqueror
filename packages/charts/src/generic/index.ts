@@ -6,3 +6,4 @@ export { PqLineArea } from "./line-area";
 export { PqRankedBar } from "./ranked-bar";
 export { PqStackedBar } from "./stacked-bar";
 export { PqTreemap } from "./treemap";
+export { PqEnclosure } from "./enclosure";
