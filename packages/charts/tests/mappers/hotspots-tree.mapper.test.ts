@@ -1,0 +1,66 @@
+import { describe, expect, test } from "bun:test";
+import { buildHotspotsTree } from "../../src/mappers/hotspots-tree.mapper";
+import type { EnclosureHotspot } from "../../src/types/hotspots-tree.types";
+
+describe("buildHotspotsTree", () => {
+  test("single file at root produces root with one file child", () => {
+    const data: EnclosureHotspot[] = [
+      { entity: "index.ts", nRevs: 5, cyclomaticComplexity: 3, linesOfCode: 50 },
+    ];
+
+    const tree = buildHotspotsTree(data);
+
+    expect(tree.name).toBe("root");
+    expect(tree.children).toHaveLength(1);
+    expect(tree.children![0]!.name).toBe("index.ts");
+    expect(tree.children![0]!.complexityScore).toBe(3);
+    expect(tree.children![0]!.linesOfCode).toBe(50);
+    expect(tree.children![0]!.nRevs).toBe(5);
+    expect(tree.children![0]!.children).toBeUndefined();
+  });
+
+  test("nested path creates folder hierarchy", () => {
+    const data: EnclosureHotspot[] = [
+      { entity: "src/core/engine.ts", nRevs: 10, cyclomaticComplexity: 15, linesOfCode: 200 },
+    ];
+
+    const tree = buildHotspotsTree(data);
+
+    expect(tree.name).toBe("root");
+    expect(tree.children).toHaveLength(1);
+
+    const src = tree.children![0]!;
+    expect(src.name).toBe("src");
+    expect(src.children).toHaveLength(1);
+
+    const core = src.children![0]!;
+    expect(core.name).toBe("core");
+    expect(core.children).toHaveLength(1);
+
+    const file = core.children![0]!;
+    expect(file.name).toBe("engine.ts");
+    expect(file.complexityScore).toBe(15);
+    expect(file.linesOfCode).toBe(200);
+  });
+
+  test("multiple files in the same folder share the folder node", () => {
+    const data: EnclosureHotspot[] = [
+      { entity: "src/a.ts", nRevs: 5, cyclomaticComplexity: 3, linesOfCode: 50 },
+      { entity: "src/b.ts", nRevs: 8, cyclomaticComplexity: 7, linesOfCode: 100 },
+    ];
+
+    const tree = buildHotspotsTree(data);
+
+    const src = tree.children![0]!;
+    expect(src.name).toBe("src");
+    expect(src.children).toHaveLength(2);
+    expect(src.children!.map((c) => c.name).sort()).toEqual(["a.ts", "b.ts"]);
+  });
+
+  test("empty input returns root with no children", () => {
+    const tree = buildHotspotsTree([]);
+
+    expect(tree.name).toBe("root");
+    expect(tree.children).toBeUndefined();
+  });
+});
