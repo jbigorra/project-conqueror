@@ -189,9 +189,7 @@ describe("simple analyses integration", () => {
     });
 
     test("messages fails with CodeMaatError (git2 has no commit messages)", async () => {
-      expect(
-        analyse.messages({ ...input, expressionToMatch: "fix" }),
-      ).rejects.toThrow();
+      expect(analyse.messages({ ...input, expressionToMatch: "fix" })).rejects.toThrow();
     });
   });
 

@@ -16,9 +16,7 @@ function findPythonLizardDir(): string {
   for (const dir of candidates) {
     if (Bun.file(path.join(dir, "lizard.py")).size > 0) return dir;
   }
-  throw new Error(
-    `python-lizard directory not found. Searched: ${candidates.join(", ")}`,
-  );
+  throw new Error(`python-lizard directory not found. Searched: ${candidates.join(", ")}`);
 }
 
 export class LizardExecutor implements ICLIExecutor {
@@ -31,10 +29,8 @@ export class LizardExecutor implements ICLIExecutor {
     pythonBin?: string,
   ) {
     const pythonLizardDir = findPythonLizardDir();
-    this.pathToLizard =
-      lizardPath ?? path.resolve(pythonLizardDir, "lizard.py");
-    this.pythonBin =
-      pythonBin ?? path.resolve(pythonLizardDir, ".venv/bin/python");
+    this.pathToLizard = lizardPath ?? path.resolve(pythonLizardDir, "lizard.py");
+    this.pythonBin = pythonBin ?? path.resolve(pythonLizardDir, ".venv/bin/python");
   }
 
   async execute(args: string[]): Promise<Result<TCLIResult>> {
