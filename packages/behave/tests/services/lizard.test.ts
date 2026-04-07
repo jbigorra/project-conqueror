@@ -16,14 +16,12 @@ describe("LizardService", () => {
     expect(result).toEqual(testData);
   });
 
-	test("LizardLive succeeds with empty results for nonexistent path", async () => {
-		const program = Effect.gen(function* () {
-			const service = yield* LizardService;
-			return yield* service.analyze("/nonexistent/path");
-		});
-		const result = await Effect.runPromise(
-			program.pipe(Effect.provide(LizardLive)),
-		);
-		expect(result).toEqual([]);
-	});
+  test("LizardLive succeeds with empty results for nonexistent path", async () => {
+    const program = Effect.gen(function* () {
+      const service = yield* LizardService;
+      return yield* service.analyze("/nonexistent/path");
+    });
+    const result = await Effect.runPromise(program.pipe(Effect.provide(LizardLive)));
+    expect(result).toEqual([]);
+  });
 });
