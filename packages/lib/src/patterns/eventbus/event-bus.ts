@@ -1,22 +1,68 @@
 import type { DomainEvent } from "./domain-event";
 import type { EventHandler, EventHandlerResult } from "./event-handler";
 
+/**
+ * Configuration options for the EventBus.
+ *
+ * @example
+ * ```ts
+ * import type { EventBusConfig } from "@prj-conq/lib/patterns";
+ *
+ * const config: EventBusConfig = {
+ *   enableLogging: true,
+ *   maxRetries: 3,
+ *   retryDelay: 500,
+ * };
+ * ```
+ */
 export interface EventBusConfig {
+  /** Enable console logging of bus activity (default: false) */
   enableLogging?: boolean;
+  /** Number of retry attempts for failed handlers (default: 0) */
   maxRetries?: number;
+  /** Delay in ms between retry attempts (default: 1000) */
   retryDelay?: number;
 }
 
+/**
+ * Result returned after publishing an event to all subscribed handlers.
+ *
+ * @example
+ * ```ts
+ * const result = await eventBus.publish(event);
+ * if (!result.success) {
+ *   console.error(`${result.errors.length} handlers failed`);
+ * }
+ * ```
+ */
 export interface PublishResult {
+  /** true if all handlers succeeded */
   success: boolean;
+  /** Number of handlers that completed successfully */
   handledCount: number;
+  /** List of handler failures with handler name and error */
   errors: Array<{ handlerName: string; error: Error }>;
 }
 
+/**
+ * Publish/subscribe event bus with retry support for domain events.
+ *
+ * @example
+ * ```ts
+ * import { EventBus } from "@prj-conq/lib/patterns";
+ *
+ * const bus = new EventBus({ maxRetries: 2, retryDelay: 500 });
+ * bus.subscribe(myHandler);
+ * const result = await bus.publish(event);
+ * ```
+ */
 export class EventBus {
   private readonly handlers = new Map<string, EventHandler[]>();
   private readonly config: Required<EventBusConfig>;
 
+  /**
+   * @param config - Optional bus configuration (logging, retries, delay)
+   */
   constructor(config: EventBusConfig = {}) {
     this.config = {
       enableLogging: config.enableLogging ?? false,
@@ -26,7 +72,15 @@ export class EventBus {
   }
 
   /**
-   * Subscribe an event handler to a specific event type
+   * Subscribe an event handler to a specific event type.
+   *
+   * @param handler - The event handler to register
+   * @throws {Error} If a handler with the same name is already registered for the event type
+   *
+   * @example
+   * ```ts
+   * bus.subscribe(new AnalysisHandler());
+   * ```
    */
   subscribe<T extends DomainEvent>(handler: EventHandler<T>): void {
     const eventType = handler.eventType;
@@ -52,7 +106,16 @@ export class EventBus {
   }
 
   /**
-   * Unsubscribe a specific handler from an event type
+   * Unsubscribe a specific handler from an event type.
+   *
+   * @param eventType - The event type to unsubscribe from
+   * @param handlerName - The name of the handler to remove
+   * @returns true if the handler was found and removed, false otherwise
+   *
+   * @example
+   * ```ts
+   * const removed = bus.unsubscribe("FileUploaded", "RunAnalysis");
+   * ```
    */
   unsubscribe(eventType: string, handlerName: string): boolean {
     const handlers = this.handlers.get(eventType);
@@ -72,7 +135,15 @@ export class EventBus {
   }
 
   /**
-   * Unsubscribe all handlers for a specific event type
+   * Unsubscribe all handlers for a specific event type.
+   *
+   * @param eventType - The event type to clear handlers for
+   * @returns The number of handlers that were removed
+   *
+   * @example
+   * ```ts
+   * const count = bus.unsubscribeAll("FileUploaded");
+   * ```
    */
   unsubscribeAll(eventType: string): number {
     const handlers = this.handlers.get(eventType);
@@ -86,7 +157,16 @@ export class EventBus {
   }
 
   /**
-   * Publish an event to all subscribed handlers
+   * Publish an event to all subscribed handlers, executing them in parallel.
+   *
+   * @param event - The domain event to publish
+   * @returns Aggregated result with success status, handled count, and errors
+   *
+   * @example
+   * ```ts
+   * const result = await bus.publish(new FileUploadedEvent("file-1", "log.txt"));
+   * console.log(`${result.handledCount} handlers processed`);
+   * ```
    */
   async publish(event: DomainEvent): Promise<PublishResult> {
     const handlers = this.handlers.get(event.eventType) || [];
@@ -138,21 +218,44 @@ export class EventBus {
   }
 
   /**
-   * Get all registered event types
+   * Get all registered event types.
+   *
+   * @returns Array of event type strings that have at least one handler
+   *
+   * @example
+   * ```ts
+   * const types = bus.getRegisteredEventTypes();
+   * // ["FileUploaded", "AnalysisCompleted"]
+   * ```
    */
   getRegisteredEventTypes(): string[] {
     return Array.from(this.handlers.keys());
   }
 
   /**
-   * Get handlers for a specific event type
+   * Get a shallow copy of handlers registered for a specific event type.
+   *
+   * @param eventType - The event type to look up
+   * @returns Array of registered handlers (empty if none)
+   *
+   * @example
+   * ```ts
+   * const handlers = bus.getHandlers("FileUploaded");
+   * ```
    */
   getHandlers(eventType: string): EventHandler[] {
     return [...(this.handlers.get(eventType) || [])];
   }
 
   /**
-   * Clear all handlers (useful for testing)
+   * Clear all handlers (useful for test cleanup).
+   *
+   * @example
+   * ```ts
+   * afterEach(() => {
+   *   bus.clear();
+   * });
+   * ```
    */
   clear(): void {
     this.handlers.clear();
