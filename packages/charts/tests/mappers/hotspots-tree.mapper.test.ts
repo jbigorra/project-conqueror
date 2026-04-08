@@ -9,15 +9,15 @@ describe("buildHotspotsTree", () => {
     ];
 
     const tree = buildHotspotsTree(data);
-    const child = tree.children![0]!;
+    const child = tree.children?.[0];
 
     expect(tree.name).toBe("root");
     expect(tree.children).toHaveLength(1);
-    expect(child.name).toBe("index.ts");
-    expect(child.complexityScore).toBe(3);
-    expect(child.linesOfCode).toBe(50);
-    expect(child.nRevs).toBe(5);
-    expect(child.children).toBeUndefined();
+    expect(child?.name).toBe("index.ts");
+    expect(child?.complexityScore).toBe(3);
+    expect(child?.linesOfCode).toBe(50);
+    expect(child?.nRevs).toBe(5);
+    expect(child?.children).toBeUndefined();
   });
 
   test("nested path creates folder hierarchy", () => {
