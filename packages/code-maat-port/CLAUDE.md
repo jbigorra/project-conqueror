@@ -58,6 +58,14 @@ tmp/code-maat/src/           — original Clojure source (reference only, do not
 
 The barrel `src/index.ts` must use **named exports only** (`export { X } from` or `export * from`). Do NOT use `export * as namespace from` — bun's DTS bundler cannot generate declaration files when `noExternal` is combined with namespace re-exports, which breaks the downstream `@prj-conq/behave` build. Use `export { X as AliasedName } from` to resolve naming conflicts between modules (e.g. `parseReadLog` exists in every parser).
 
+## Standards
+
+- All public API exports MUST have JSDoc with @param, @returns, @example
+- **Parser entry types**: `VCSEntry` and analysis record types need field-level JSDoc comments explaining each field's semantics
+- Biome strict mode: noExplicitAny, noUnusedVariables, noNonNullAssertion
+- Tests mirror src/ structure under tests/
+- VCS-aware formatting: only changed files are linted (--changed flag)
+
 ## Commit style
 
 ```bash

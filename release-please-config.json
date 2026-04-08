@@ -1,0 +1,26 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "release-type": "node",
+  "bump-minor-pre-major": true,
+  "bump-patch-for-minor-pre-major": true,
+  "packages": {
+    "apps/webapp": {
+      "component": "webapp"
+    },
+    "packages/behave": {
+      "component": "behave"
+    },
+    "packages/charts": {
+      "component": "charts"
+    },
+    "packages/code-maat-port": {
+      "component": "code-maat-port"
+    },
+    "packages/lib": {
+      "component": "lib"
+    },
+    "packages/lizard-ts": {
+      "component": "lizard-ts"
+    }
+  }
+}
