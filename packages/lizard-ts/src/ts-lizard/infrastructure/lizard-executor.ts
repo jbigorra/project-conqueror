@@ -19,10 +19,27 @@ function findPythonLizardDir(): string {
   throw new Error(`python-lizard directory not found. Searched: ${candidates.join(", ")}`);
 }
 
+/**
+ * Executes the vendored Python lizard tool as a subprocess.
+ *
+ * Resolves the python-lizard directory at construction time by walking from the
+ * package's `package.json` location, searching `dist/python-lizard` then `src/python-lizard`.
+ *
+ * @example
+ * ```ts
+ * const executor = new LizardExecutor(spawnAsync({ spawn }));
+ * const result = await executor.execute(["src/index.ts", "--csv"]);
+ * ```
+ */
 export class LizardExecutor implements ICLIExecutor {
   private readonly pathToLizard: string;
   private readonly pythonBin: string;
 
+  /**
+   * @param spawnAsync - Async spawn function for creating subprocesses
+   * @param lizardPath - Override path to lizard.py (defaults to vendored copy)
+   * @param pythonBin - Override path to Python binary (defaults to vendored .venv)
+   */
   constructor(
     private readonly spawnAsync: TSpawnAsyncFn,
     lizardPath?: string,
@@ -33,6 +50,12 @@ export class LizardExecutor implements ICLIExecutor {
     this.pythonBin = pythonBin ?? path.resolve(pythonLizardDir, ".venv/bin/python");
   }
 
+  /**
+   * Runs the Python lizard tool with the given arguments.
+   *
+   * @param args - CLI arguments forwarded to lizard.py (e.g. `["src/", "--csv"]`)
+   * @returns A Result wrapping the CLI output on success, or an Error on failure
+   */
   async execute(args: string[]): Promise<Result<TCLIResult>> {
     try {
       const spawnArgs = [this.pathToLizard, ...args];

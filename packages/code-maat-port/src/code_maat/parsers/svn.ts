@@ -1,15 +1,26 @@
+/** A flat VCS entry parsed from an SVN XML log, one row per (revision x file) pair. */
 export type SvnEntry = {
+  /** Author who committed the revision. */
   author: string;
+  /** SVN revision number as a string. */
   rev: string;
+  /** Commit date in `YYYY-MM-DD` format. */
   date: string;
+  /** Full repository path of the changed file. */
   entity: string;
+  /** SVN action code: `"M"` (modified), `"A"` (added), `"D"` (deleted), or `"R"` (replaced). */
   action: string;
 };
 
+/** A structured SVN log entry grouping all changed paths under a single revision. */
 export type SvnLogEntry = {
+  /** SVN revision number as a string. */
   rev: string;
+  /** Author who committed the revision. */
   author: string;
+  /** Commit date in `YYYY-MM-DD` format. */
   date: string;
+  /** Files changed in this revision, each with its entity path and action code. */
   paths: Array<{ entity: string; action: string }>;
 };
 

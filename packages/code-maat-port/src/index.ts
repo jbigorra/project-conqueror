@@ -1,5 +1,5 @@
 /**
- * @module code-mat-port
+ * @module code-maat-port
  *
  * TypeScript port of [code-maat](https://github.com/adamtornhill/code-maat).
  *

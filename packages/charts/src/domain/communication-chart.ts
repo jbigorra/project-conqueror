@@ -9,6 +9,21 @@ import "../generic/ranked-bar";
 
 type CommunicationVariant = "bubble" | "bar";
 
+/**
+ * Communication chart showing author-peer collaboration as bubble or bar.
+ *
+ * @element pq-communication-chart
+ * @attr {Communication[]} data - Inline communication records.
+ * @attr {string} src - URL to fetch data from.
+ * @attr {"dark"|"light"|"pico"} theme - Theme preset name.
+ * @attr {"bubble"|"bar"} variant - Chart variant (default `"bubble"`).
+ * @attr {number} limit - Max items for bar variant (default `20`).
+ *
+ * @example
+ * ```html
+ * <pq-communication-chart src="/api/analysis/communication" variant="bubble"></pq-communication-chart>
+ * ```
+ */
 @customElement("pq-communication-chart")
 export class PqCommunicationChart extends LitElement {
   private fetcher = new DataFetchController<Communication>(this);

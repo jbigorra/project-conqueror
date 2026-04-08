@@ -5,7 +5,12 @@ import { pico } from "../themes/pico";
 import type { ThemeValues } from "../themes/types";
 import type { ThemePreset } from "../types";
 
-/** Shape returned by toChartJsOptions — explicit properties avoid TS4111 index-signature errors */
+/**
+ * Chart.js-compatible options object produced by {@link toChartJsOptions}.
+ *
+ * Explicit properties avoid TS4111 index-signature errors when spreading
+ * into Chart.js configuration.
+ */
 export interface ChartJsThemeOptions {
   color: string;
   borderColor: string;
@@ -49,7 +54,16 @@ const CSS_VAR_MAP: Record<string, keyof ThemeValues> = {
 const PRESETS: Record<ThemePreset, ThemeValues> = { dark, light, pico };
 
 /**
- * Pure function: merges preset + CSS custom property overrides into ThemeValues.
+ * Merge a theme preset with CSS custom property overrides into a final ThemeValues.
+ *
+ * @param preset - Base theme preset name.
+ * @param cssOverrides - Map of CSS custom property names to their resolved values.
+ * @returns Merged theme values with overrides applied.
+ *
+ * @example
+ * ```ts
+ * const theme = resolveTheme("dark", { "--pq-chart-text": "#fff" });
+ * ```
  */
 export function resolveTheme(
   preset: ThemePreset = "dark",
@@ -81,7 +95,16 @@ export function resolveTheme(
 }
 
 /**
- * Maps ThemeValues to Chart.js global options structure.
+ * Convert ThemeValues into a Chart.js-compatible options structure.
+ *
+ * @param theme - Resolved theme values.
+ * @returns Options object ready to spread into a Chart.js config.
+ *
+ * @example
+ * ```ts
+ * const opts = toChartJsOptions(resolveTheme("pico"));
+ * new Chart(canvas, { type: "bar", data, options: { ...opts } });
+ * ```
  */
 export function toChartJsOptions(theme: ThemeValues): ChartJsThemeOptions {
   const fontSize = parseInt(theme.fontSize, 10);
@@ -138,10 +161,16 @@ export class ThemeController implements ReactiveController {
   private readonly host: ReactiveControllerHost & HTMLElement;
   private _preset: ThemePreset = "dark";
 
+  /** Current resolved theme values. */
   theme: ThemeValues = dark;
+  /** Shortcut to `theme.accents` for dataset colouring. */
   colors: string[] = dark.accents;
+  /** Chart.js options derived from the current theme. */
   options: ChartJsThemeOptions = toChartJsOptions(dark);
 
+  /**
+   * @param host - Lit element that owns this controller.
+   */
   constructor(host: ReactiveControllerHost & HTMLElement) {
     this.host = host;
     host.addController(this);

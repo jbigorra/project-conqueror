@@ -1,5 +1,6 @@
 import type { VCSEntry } from "../types";
 
+/** A VCS entry parsed from a git2 log, with `rev` narrowed to `string` (commit hash) and `message` always `"-"`. */
 export type ParsedEntry = Omit<VCSEntry, "rev"> & { rev: string };
 
 // Commit header: --{hash}--{YYYY-MM-dd}--{author}

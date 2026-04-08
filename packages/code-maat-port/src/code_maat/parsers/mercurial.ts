@@ -1,8 +1,14 @@
+/** A VCS entry parsed from a Mercurial log (no churn data — only author, rev, date, entity, and a placeholder message). */
 export type MercurialEntry = {
+  /** Author name from the Mercurial changeset. */
   author: string;
+  /** Numeric revision number as a string. */
   rev: string;
+  /** Commit date in `YYYY-MM-DD` format. */
   date: string;
+  /** File path changed in this changeset. */
   entity: string;
+  /** Always `"-"` — Mercurial log format does not capture commit messages. */
   message: string;
 };
 

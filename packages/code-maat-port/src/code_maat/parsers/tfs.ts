@@ -1,8 +1,14 @@
+/** A VCS entry parsed from a TFS changeset log, one row per (changeset x item) pair. */
 export type TfsEntry = {
+  /** User who checked in the changeset. */
   author: string;
+  /** Changeset number as a string. */
   rev: string;
+  /** Check-in date in `YYYY-MM-DD` format, parsed from EN-US long date format. */
   date: string;
+  /** Source-control path of the changed item (without the `$` prefix). */
   entity: string;
+  /** Changeset comment text, or empty string if no comment was provided. */
   message: string;
 };
 

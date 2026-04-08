@@ -7,6 +7,34 @@ import { ThemeController } from "../controllers/theme.controller";
 import { binValues } from "../mappers/histogram.mapper";
 import type { HistogramItem, ThemePreset } from "../types";
 
+/**
+ * Histogram chart web component backed by Chart.js.
+ *
+ * Accepts raw numeric values and bins them automatically.
+ *
+ * @element pq-histogram
+ * @attr {HistogramItem[]} data - Inline data array of raw values.
+ * @attr {string} src - URL to fetch data from (ignored when `data` is set).
+ * @attr {"dark"|"light"|"pico"} theme - Theme preset name.
+ * @attr {number} bins - Number of equal-width bins (default `10`).
+ * @attr {string} x-label - Label for the X axis.
+ * @attr {string} y-label - Label for the Y axis.
+ * @attr {boolean} animated - Enable chart animations (default `true`).
+ * @slot loading - Content shown while data is loading.
+ * @slot error - Content shown when data fetch fails.
+ * @slot empty - Content shown when data array is empty.
+ * @fires chart-click - When a bar is clicked, with `{ datasetIndex, index, label, value }`.
+ *
+ * @example
+ * ```html
+ * <pq-histogram
+ *   .data=${[{ value: 3 }, { value: 7 }, { value: 12 }]}
+ *   bins="5"
+ *   x-label="Age (months)"
+ *   y-label="Files"
+ * ></pq-histogram>
+ * ```
+ */
 @customElement("pq-histogram")
 export class PqHistogram extends LitElement {
   static override styles = css`

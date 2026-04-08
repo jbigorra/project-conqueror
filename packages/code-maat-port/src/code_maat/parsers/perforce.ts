@@ -1,8 +1,14 @@
+/** A VCS entry parsed from a Perforce changelist log (no churn data — only author, rev, date, entity, and a placeholder message). */
 export type PerforceEntry = {
+  /** Author (user) who submitted the changelist. */
   author: string;
+  /** Changelist number as a string. */
   rev: string;
+  /** Submit date in `YYYY-MM-DD` format. */
   date: string;
+  /** Depot file path relative to the project root. */
   entity: string;
+  /** Always `"-"` — Perforce log format does not capture descriptions per file. */
   message: string;
 };
 

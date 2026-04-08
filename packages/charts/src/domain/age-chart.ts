@@ -9,6 +9,22 @@ import "../generic/ranked-bar";
 
 type AgeVariant = "histogram" | "bar";
 
+/**
+ * Code age chart showing file age distribution as histogram or ranked bar.
+ *
+ * @element pq-age-chart
+ * @attr {CodeAge[]} data - Inline code age records.
+ * @attr {string} src - URL to fetch data from.
+ * @attr {"dark"|"light"|"pico"} theme - Theme preset name.
+ * @attr {"histogram"|"bar"} variant - Chart variant (default `"histogram"`).
+ * @attr {number} limit - Max items for bar variant (default `20`).
+ * @attr {number} bins - Number of histogram bins (default `10`).
+ *
+ * @example
+ * ```html
+ * <pq-age-chart src="/api/analysis/age" variant="histogram" bins="8"></pq-age-chart>
+ * ```
+ */
 @customElement("pq-age-chart")
 export class PqAgeChart extends LitElement {
   private fetcher = new DataFetchController<CodeAge>(this);

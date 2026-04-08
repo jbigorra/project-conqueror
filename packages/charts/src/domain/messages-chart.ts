@@ -6,6 +6,20 @@ import { mapMessagesToBar } from "../mappers/messages.mapper";
 import type { ThemePreset } from "../types";
 import "../generic/ranked-bar";
 
+/**
+ * Commit messages chart showing keyword match count per entity as a ranked bar.
+ *
+ * @element pq-messages-chart
+ * @attr {MessageEntry[]} data - Inline message entry records.
+ * @attr {string} src - URL to fetch data from.
+ * @attr {"dark"|"light"|"pico"} theme - Theme preset name.
+ * @attr {number} limit - Max items to display (default `20`).
+ *
+ * @example
+ * ```html
+ * <pq-messages-chart src="/api/analysis/messages" limit="10"></pq-messages-chart>
+ * ```
+ */
 @customElement("pq-messages-chart")
 export class PqMessagesChart extends LitElement {
   private fetcher = new DataFetchController<MessageEntry>(this);

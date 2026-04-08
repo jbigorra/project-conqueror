@@ -9,6 +9,21 @@ import "../generic/ranked-bar";
 
 type CouplingVariant = "bubble" | "bar";
 
+/**
+ * Coupling chart showing temporal coupling between entities as bubble or bar.
+ *
+ * @element pq-coupling-chart
+ * @attr {Coupling[]} data - Inline coupling records.
+ * @attr {string} src - URL to fetch data from.
+ * @attr {"dark"|"light"|"pico"} theme - Theme preset name.
+ * @attr {"bubble"|"bar"} variant - Chart variant (default `"bubble"`).
+ * @attr {number} limit - Max items for bar variant (default `20`).
+ *
+ * @example
+ * ```html
+ * <pq-coupling-chart src="/api/analysis/coupling" variant="bubble"></pq-coupling-chart>
+ * ```
+ */
 @customElement("pq-coupling-chart")
 export class PqCouplingChart extends LitElement {
   private fetcher = new DataFetchController<Coupling>(this);

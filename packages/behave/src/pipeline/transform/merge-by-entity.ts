@@ -1,10 +1,15 @@
 import type { Revision } from "../../schemas/code-maat";
 import type { LizardFunctionMetric } from "../../schemas/lizard";
 
+/** A file entity combining revision frequency with cyclomatic complexity. */
 export type ComplexityHotspot = {
+  /** Git-root-relative file path. */
   entity: string;
+  /** Total number of revisions. */
   nRevs: number;
+  /** Maximum cyclomatic complexity across all functions in the file. */
   cyclomaticComplexity: number;
+  /** Total lines of code across all functions in the file. */
   linesOfCode: number;
 };
 
@@ -19,6 +24,21 @@ const pathsMatch = (relativePath: string, absolutePath: string): boolean => {
   return absolutePath.endsWith(`/${relativePath}`);
 };
 
+/**
+ * Merges revision data from code-maat with complexity data from lizard by matching entity paths.
+ *
+ * @param churn - Revision records from code-maat (git-root-relative paths).
+ * @param complexity - Function-level metrics from lizard (absolute paths).
+ * @returns Hotspots where both revision and complexity data exist for the same file.
+ *
+ * @example
+ * ```ts
+ * const hotspots = mergeByEntity(
+ *   [{ entity: "src/app.ts", nRevs: 42 }],
+ *   [{ file: "/home/user/project/src/app.ts", cyclomaticComplexity: 12, nloc: 150, ... }],
+ * );
+ * ```
+ */
 export const mergeByEntity = (
   churn: readonly Revision[],
   complexity: readonly LizardFunctionMetric[],

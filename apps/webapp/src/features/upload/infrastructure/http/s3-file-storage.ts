@@ -1,7 +1,7 @@
+import { Result } from "@prj-conq/lib/patterns";
+import type { S3Client } from "bun";
 import { ObjectStorageError } from "#error.ts";
 import type { ICloudFileStorage } from "#shared/dependencies/file-storage.ts";
-import { Result } from "@prj-conq/lib/patterns";
-import { S3Client } from "bun";
 
 export class S3FileStorage implements ICloudFileStorage {
   constructor(private readonly s3Client: S3Client) {}
@@ -12,7 +12,7 @@ export class S3FileStorage implements ICloudFileStorage {
       await this.s3Client.write(filename, fileContent);
 
       return Result.success(undefined);
-    } catch (e: any) {
+    } catch (e: unknown) {
       const error = new ObjectStorageError(`${S3FileStorage.name}: upload failed`, {
         cause: e,
       });

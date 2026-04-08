@@ -1,5 +1,6 @@
 import type { ThemeValues } from "./types";
 
+/** Pico CSS theme preset matching the Pico design system palette. */
 export const pico: ThemeValues = {
   bg: "transparent",
   text: "#c5d0dc",

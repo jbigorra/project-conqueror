@@ -8,6 +8,22 @@ import "../generic/line-area";
 
 type AbsChurnVariant = "area" | "line";
 
+/**
+ * Absolute churn chart showing added/deleted lines over time.
+ *
+ * Delegates to `pq-line-area` after mapping AbsChurn records.
+ *
+ * @element pq-abs-churn-chart
+ * @attr {AbsChurn[]} data - Inline absolute churn records.
+ * @attr {string} src - URL to fetch data from.
+ * @attr {"dark"|"light"|"pico"} theme - Theme preset name.
+ * @attr {"area"|"line"} variant - Render as filled area or plain lines (default `"area"`).
+ *
+ * @example
+ * ```html
+ * <pq-abs-churn-chart src="/api/analysis/abs-churn" theme="dark" variant="area"></pq-abs-churn-chart>
+ * ```
+ */
 @customElement("pq-abs-churn-chart")
 export class PqAbsChurnChart extends LitElement {
   private fetcher = new DataFetchController<AbsChurn>(this);

@@ -8,6 +8,12 @@ import { BehaveLive } from "../../services";
 import { CodeMaatService } from "../../services/code-maat";
 import type { SimpleAnalysisInput } from "../../types";
 
+/**
+ * Effect program that runs the code age analysis and decodes the result.
+ *
+ * @param input - Analysis input; requires `ageTimeNow` in "YYYY-MM-DD" format.
+ * @returns An Effect producing an Analysis of CodeAge records.
+ */
 export const ageEffect = (input: SimpleAnalysisInput) =>
   Effect.gen(function* () {
     if (!input.ageTimeNow) {
@@ -21,5 +27,18 @@ export const ageEffect = (input: SimpleAnalysisInput) =>
     return yield* toAnalysis("age", data, input);
   });
 
+/**
+ * Runs a code age analysis measuring how old each file is relative to a reference date.
+ *
+ * @param input - Analysis input; `ageTimeNow` (format "YYYY-MM-DD") is required.
+ * @returns Resolved analysis with age in months per entity.
+ * @throws {FormatError} If `ageTimeNow` is not provided.
+ * @throws {CodeMaatError} If code-maat analysis fails.
+ *
+ * @example
+ * ```ts
+ * const result = await age({ gitLogPath: "/tmp/project.log", ageTimeNow: "2026-04-01" });
+ * ```
+ */
 export const age = (input: SimpleAnalysisInput): Promise<Analysis<CodeAge>> =>
   Effect.runPromise(ageEffect(input).pipe(Effect.provide(BehaveLive)));

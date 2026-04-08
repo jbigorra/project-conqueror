@@ -1,5 +1,6 @@
 import type { VCSEntry } from "../types";
 
+/** A VCS entry parsed from a git log, with `rev` narrowed to `string` (commit hash). */
 export type ParsedEntry = Omit<VCSEntry, "rev"> & { rev: string };
 
 // [hash] author YYYY-MM-dd message

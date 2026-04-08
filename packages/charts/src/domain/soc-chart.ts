@@ -6,6 +6,20 @@ import { mapSocToBar } from "../mappers/soc.mapper";
 import type { ThemePreset } from "../types";
 import "../generic/ranked-bar";
 
+/**
+ * Sum-of-coupling (SOC) chart showing coupling scores as a ranked bar.
+ *
+ * @element pq-soc-chart
+ * @attr {Soc[]} data - Inline SOC records.
+ * @attr {string} src - URL to fetch data from.
+ * @attr {"dark"|"light"|"pico"} theme - Theme preset name.
+ * @attr {number} limit - Max items to display (default `20`).
+ *
+ * @example
+ * ```html
+ * <pq-soc-chart src="/api/analysis/soc" limit="15"></pq-soc-chart>
+ * ```
+ */
 @customElement("pq-soc-chart")
 export class PqSocChart extends LitElement {
   private fetcher = new DataFetchController<Soc>(this);

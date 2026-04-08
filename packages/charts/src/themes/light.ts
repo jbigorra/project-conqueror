@@ -1,5 +1,6 @@
 import type { ThemeValues } from "./types";
 
+/** Light theme preset with white background and dark text. */
 export const light: ThemeValues = {
   bg: "#ffffff",
   text: "#333333",
