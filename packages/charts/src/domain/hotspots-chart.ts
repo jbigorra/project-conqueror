@@ -3,11 +3,13 @@ import { html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { DataFetchController } from "../controllers/data-fetch.controller";
 import { mapHotspotsToBubble, mapHotspotsToTreemap } from "../mappers/hotspots.mapper";
+import { mapHotspotsToEnclosure } from "../mappers/hotspots-enclosure.mapper";
 import type { ThemePreset } from "../types";
 import "../generic/bubble";
 import "../generic/treemap";
+import "../generic/enclosure";
 
-type HotspotsVariant = "bubble" | "treemap";
+type HotspotsVariant = "bubble" | "treemap" | "enclosure";
 
 @customElement("pq-hotspots-chart")
 export class PqHotspotsChart extends LitElement {
@@ -34,6 +36,9 @@ export class PqHotspotsChart extends LitElement {
         .theme=${this.theme}
         show-labels
       ></pq-treemap>`;
+    }
+    if (this.variant === "enclosure") {
+      return html`<pq-enclosure .data=${mapHotspotsToEnclosure(this.resolvedData)}></pq-enclosure>`;
     }
     return html`<pq-bubble
       .data=${mapHotspotsToBubble(this.resolvedData)}

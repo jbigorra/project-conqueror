@@ -1,12 +1,11 @@
 // New API — analyses
 export { complexityHotspots } from "./analyses/aggregated/complexity-hotspots";
 export * as simple from "./analyses/simple";
-export { CodeMaatError, FormatError, LizardError } from "./errors";
 // New facade
 export { Behave } from "./behave";
+export { CodeMaatError, FormatError, LizardError } from "./errors";
 // Legacy (deprecated)
-export { AnalysisOptions, default } from "./legacy/index";
-export { Behave as LegacyBehave } from "./legacy/index";
+export { AnalysisOptions, Behave as LegacyBehave, default } from "./legacy/index";
 export type { ComplexityHotspot } from "./pipeline/transform/merge-by-entity";
 // New API — types for consumers
 export type { Analysis, AnalysisMetadata } from "./schemas/analysis";

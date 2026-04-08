@@ -14,6 +14,8 @@ export { mapFragmentationToBar, mapFragmentationToDoughnut } from "./fragmentati
 export { buildGroupedDatasets } from "./grouped-bar.mapper";
 export { binValues } from "./histogram.mapper";
 export { mapHotspotsToBubble, mapHotspotsToTreemap } from "./hotspots.mapper";
+export { mapHotspotsToEnclosure } from "./hotspots-enclosure.mapper";
+export { buildHotspotsTree } from "./hotspots-tree.mapper";
 export { buildLineAreaDatasets } from "./line-area.mapper";
 export {
   mapMainDevToBar,

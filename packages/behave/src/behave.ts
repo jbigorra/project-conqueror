@@ -3,10 +3,23 @@ import * as simple from "./analyses/simple";
 import type { ComplexityHotspot } from "./pipeline/transform/merge-by-entity";
 import type { Analysis } from "./schemas/analysis";
 import type {
-  AbsChurn, Author, AuthorChurn, CodeAge, Communication, Coupling,
-  EntityChurn, EntityEffort, EntityOwnership, Fragmentation,
-  MainDev, MainDevByRevs, MessageEntry, RefactoringMainDev,
-  Revision, Soc, SummaryEntry,
+  AbsChurn,
+  Author,
+  AuthorChurn,
+  CodeAge,
+  Communication,
+  Coupling,
+  EntityChurn,
+  EntityEffort,
+  EntityOwnership,
+  Fragmentation,
+  MainDev,
+  MainDevByRevs,
+  MessageEntry,
+  RefactoringMainDev,
+  Revision,
+  Soc,
+  SummaryEntry,
 } from "./schemas/code-maat";
 import type { ComplexityHotspotsInput, SimpleAnalysisInput } from "./types";
 

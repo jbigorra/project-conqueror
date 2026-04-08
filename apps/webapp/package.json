@@ -4,6 +4,9 @@
   "version": "0.1.0",
   "description": "Modulithic web application for Project Conqueror",
   "type": "module",
+  "overrides": {
+    "esbuild": ">=0.25.0"
+  },
   "module": "src/main.ts",
   "exports": {
     ".": "./src/main.ts"

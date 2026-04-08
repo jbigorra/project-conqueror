@@ -1,5 +1,6 @@
 export { PqBubble } from "./bubble";
 export { PqDoughnut } from "./doughnut";
+export { PqEnclosure } from "./enclosure";
 export { PqGroupedBar } from "./grouped-bar";
 export { PqHistogram } from "./histogram";
 export { PqLineArea } from "./line-area";
