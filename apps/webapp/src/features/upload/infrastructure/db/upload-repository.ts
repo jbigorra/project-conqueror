@@ -24,7 +24,7 @@ export class UploadRepository implements IBaseRepository<Upload> {
       const dbRow = result[0]!;
 
       return Result.success(Upload.fromDbRow(dbRow));
-    } catch (e: any) {
+    } catch (e: unknown) {
       return Result.error(new DatabaseError(`${UploadRepository.name}: insertOne failed`, e));
     }
   }

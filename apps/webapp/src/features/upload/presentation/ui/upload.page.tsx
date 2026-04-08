@@ -43,9 +43,13 @@ export type UploadFormSubmitErrors = {
   file?: {
     error: string;
   }
-} | undefined;
+};
 
-export function UploadForm(props: PropsWithChildren<{ values: any, errors: UploadFormSubmitErrors }>) {
+export type UploadFormValues = {
+  file?: string;
+};
+
+export function UploadForm(props: PropsWithChildren<{ values: UploadFormValues, errors: UploadFormSubmitErrors }>) {
   const { values = {}, errors = {}, children } = props;
   return (
     <form id="form"
@@ -70,7 +74,7 @@ export function UploadForm(props: PropsWithChildren<{ values: any, errors: Uploa
   )
 }
 
-export function UploadFormWithErrors(props: Readonly<{ values: any, errors: UploadFormSubmitErrors }>) {
+export function UploadFormWithErrors(props: Readonly<{ values: UploadFormValues, errors: UploadFormSubmitErrors }>) {
   const { values, errors } = props;
   return (<UploadForm values={values} errors={errors} />)
 }

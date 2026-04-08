@@ -13,10 +13,10 @@ export const uploadFilesController = createBaseController("uploadFilesController
   app
     .decorate("uploadFile", UploadFile.create({}))
     .onError(({ error, code, set, logger }) => {
-      if (code) {
+      if (code === "VALIDATION") {
         set.status = 200;
-        // @ts-ignore
-        const errors = error.validator.schema.properties as UploadFormSubmitErrors;
+        const validationError = error as unknown as { validator: { schema: { properties: UploadFormSubmitErrors } } };
+        const errors = validationError.validator.schema.properties;
         logger!.error({ error: errors, msg: `${code}` });
         return <UploadFormWithErrors values={{}} errors={errors} />;
       }
@@ -39,10 +39,10 @@ export const uploadFilesController = createBaseController("uploadFilesController
               <ConfirmationMessage />
             </UploadForm>
           );
-        } catch (e: any) {
-          // TODO: Need to shape errors to be used in the form
+        } catch (e: unknown) {
+          const message = e instanceof Error ? e.message : String(e);
           logger.error({ error: e }, "Error uploading file");
-          return <UploadFormWithErrors errors={e.message} values={{ file }} />;
+          return <UploadFormWithErrors errors={{ file: { error: message } }} values={{}} />;
         }
       },
       {
