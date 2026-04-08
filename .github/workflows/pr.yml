@@ -127,5 +127,58 @@ jobs:
       - name: Lint with Biome
         run: pnpm run lint
 
-      - name: Run tests
-        run: pnpm run test
+      - name: Run tests with coverage
+        run: pnpm run test:coverage
+
+      - name: Upload coverage artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: pr-coverage
+          path: |
+            packages/*/coverage/lcov.info
+            apps/*/coverage/lcov.info
+          retention-days: 1
+
+  sonarqube:
+    name: SonarQube Analysis
+    runs-on: ubuntu-latest
+    needs: quality
+    strategy:
+      matrix:
+        project:
+          - { name: "webapp", path: "apps/webapp" }
+          - { name: "behave", path: "packages/behave" }
+          - { name: "lib", path: "packages/lib" }
+          - { name: "code-maat-port", path: "packages/code-maat-port" }
+          - { name: "charts", path: "packages/charts" }
+          - { name: "lizard-ts", path: "packages/lizard-ts" }
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Restore workspace cache
+        uses: actions/cache@v5
+        with:
+          path: |
+            node_modules
+            packages/*/node_modules
+            apps/*/node_modules
+            packages/*/dist
+            apps/*/build
+          key: workspace-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ github.sha }}
+          restore-keys: |
+            workspace-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}-
+
+      - name: Download coverage artifacts
+        uses: actions/download-artifact@v8
+        with:
+          name: pr-coverage
+
+      - name: SonarQube Scan - ${{ matrix.project.name }}
+        uses: SonarSource/sonarqube-scan-action@v7
+        with:
+          projectBaseDir: ${{ matrix.project.path }}/
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

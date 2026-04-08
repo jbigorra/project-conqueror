@@ -133,4 +133,3 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_SCANNER_OPTS: >
             -Dsonar.log.level=WARN
-            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
