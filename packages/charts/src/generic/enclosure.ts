@@ -1,7 +1,7 @@
 import { type HierarchyCircularNode, hierarchy, pack } from "d3-hierarchy";
 import { interpolateZoom } from "d3-interpolate";
 import { scaleLinear } from "d3-scale";
-import { select } from "d3-selection";
+import { type Selection, select } from "d3-selection";
 import "d3-transition"; // side-effect: patches d3-selection with .transition()
 import { css, html, LitElement } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
@@ -120,7 +120,7 @@ export class PqEnclosure extends LitElement {
   private _createSvg(
     container: Element,
     packedRoot: PackedNode,
-  ): ReturnType<typeof select<SVGSVGElement, unknown>> {
+  ): Selection<SVGCircleElement, PackedNode, SVGSVGElement, unknown> {
     const size = this._size;
     const svg = select(container)
       .append("svg")
