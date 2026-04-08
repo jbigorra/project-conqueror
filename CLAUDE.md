@@ -106,3 +106,37 @@ Repositories implement `IBaseRepository<T extends DomainEntity>` with methods: `
 - **Package documentation**: Every package must have a `CLAUDE.md` (source of truth) and an `AGENTS.md` symlink (`ln -s CLAUDE.md AGENTS.md`) for OpenCode compatibility
 - **Named exports only**: Barrel files use `export { X } from` or `export * from` — never `export * as namespace from` (bun DTS limitation)
 - **Conventional commits**: `feat:`, `fix:`, `refactor:`, `chore:`, `test:`, `docs:` — no Co-Authored-By trailers
+
+## New Package/App Readiness Checklist
+
+Every package or app in the monorepo MUST have all of the following before it is considered ready. Use this checklist when creating a new package or onboarding an existing one.
+
+### Configuration
+- [ ] `package.json` with name `@prj-conq/{name}`, `private: true`, and correct workspace dependencies
+- [ ] `tsconfig.json` extending `@prj-conq/config/tsconfig.base.json`
+- [ ] `biome.json` extending root config: `{ "extends": ["../../biome.json"] }` — add overrides only if needed
+
+### Scripts (in package.json)
+- [ ] `build` — compile/bundle (e.g., `bunup`)
+- [ ] `dev` — watch mode (e.g., `bunup --watch`)
+- [ ] `typecheck` — `tsc --noEmit`
+- [ ] `test` — `bun test`
+- [ ] `check` — `biome check --write .` (auto-fix)
+- [ ] `lint` — `biome check .` (CI mode, no auto-fix)
+- [ ] `validate` — `bun run typecheck && bun test && biome check --write .`
+
+### CI / Quality
+- [ ] `sonar-project.properties` with project key `jbsoft_project-conqueror_{name}`
+- [ ] Added to `.github/workflows/quality.yml` SonarQube matrix
+- [ ] Added to `release-please-config.json` and `.release-please-manifest.json` (skip for config-only packages like `@prj-conq/config`)
+
+### Documentation
+- [ ] `README.md` — purpose, installation, usage, API overview, development
+- [ ] `CLAUDE.md` — AI agent context: what the package does, key files, commands, architecture, testing conventions, export rules, standards
+- [ ] `AGENTS.md` — symlink to CLAUDE.md (`ln -s CLAUDE.md AGENTS.md`)
+- [ ] All public exports have JSDoc with `@param`, `@returns`, `@example`
+
+### Testing
+- [ ] Test files under `tests/` mirroring `src/` structure
+- [ ] Unit tests for all non-trivial logic
+- [ ] Barrel file (`src/index.ts`) using named exports only
