@@ -41,8 +41,10 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "typecheck": "tsc --noEmit",
-    "validate": "bun test && biome check . --write",
-    "check": "biome check --write ."
+    "validate": "bun run typecheck && bun test && biome check --write .",
+    "check": "biome check --write .",
+    "check:changed": "biome check --write --changed",
+    "check:staged": "biome check --write --staged"
   },
   "keywords": [
     "charts",

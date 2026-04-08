@@ -33,8 +33,11 @@ bun run db:migrate      # Run migrations
 ### Monorepo Structure
 
 - `apps/webapp` — Main web application (Elysia.js + Bun runtime)
-- `packages/behave` — Code analysis engine library wrapping Code-Maat
-- `packages/lib` — Shared patterns: EventBus, Result type, `spawnAsync`
+- `packages/behave` — Behavioural code analysis facade over code-maat-port + lizard-ts
+- `packages/code-maat-port` — TypeScript port of Clojure code-maat
+- `packages/charts` — Lit Web Components for visualizing analysis results (Chart.js + D3)
+- `packages/lizard-ts` — TypeScript wrapper around Python lizard (complexity analysis)
+- `packages/lib` — Shared patterns: EventBus, Result type, `spawnAsync`, CLIResult
 - `packages/typescript-config` — Shared `tsconfig.json` base
 
 ### Feature Structure (DDD)
@@ -93,3 +96,13 @@ Repositories implement `IBaseRepository<T extends DomainEntity>` with methods: `
 - **Analysis engine**: Code-Maat (Java JAR spawned as subprocess via `spawnAsync`)
 - **Testing**: Bun test runner + `bun-automock` + `fishery` factories + Playwright (E2E)
 - **Build orchestration**: Turbo + `bunup` for library packages
+
+## Standards
+
+- **Biome strict mode**: `noExplicitAny`, `noUnusedVariables`, `noNonNullAssertion` enforced as errors in all packages
+- **VCS-aware formatting**: Biome uses `--changed` flag; only changed files are linted/formatted, preserving git blame
+- **JSDoc required**: All public API exports MUST have JSDoc with `@param`, `@returns`, `@example`
+- **Tests mirror src/**: Test files live under `tests/` mirroring the `src/` directory structure
+- **Package documentation**: Every package must have a `CLAUDE.md` (source of truth) and an `AGENTS.md` symlink (`ln -s CLAUDE.md AGENTS.md`) for OpenCode compatibility
+- **Named exports only**: Barrel files use `export { X } from` or `export * from` — never `export * as namespace from` (bun DTS limitation)
+- **Conventional commits**: `feat:`, `fix:`, `refactor:`, `chore:`, `test:`, `docs:` — no Co-Authored-By trailers

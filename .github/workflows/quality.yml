@@ -86,6 +86,9 @@ jobs:
           - { name: "webapp", path: "apps/webapp" }
           - { name: "behave", path: "packages/behave" }
           - { name: "lib", path: "packages/lib" }
+          - { name: "code-maat-port", path: "packages/code-maat-port" }
+          - { name: "charts", path: "packages/charts" }
+          - { name: "lizard-ts", path: "packages/lizard-ts" }
     steps:
       - name: Checkout
         uses: actions/checkout@v6

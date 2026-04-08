@@ -35,7 +35,7 @@ export class EventBus {
       this.handlers.set(eventType, []);
     }
 
-    const existingHandlers = this.handlers.get(eventType)!;
+    const existingHandlers = this.handlers.get(eventType) ?? [];
 
     // Prevent duplicate handler registration
     const isDuplicate = existingHandlers.some((h) => h.handlerName === handler.handlerName);

@@ -4,7 +4,7 @@ export interface DomainEvent {
   readonly createdAt: Date;
   readonly aggregateId: string;
   readonly version: number;
-  readonly payload: Record<string, any>;
+  readonly payload: Record<string, unknown>;
 }
 
 export abstract class BaseDomainEvent implements DomainEvent {
@@ -15,7 +15,7 @@ export abstract class BaseDomainEvent implements DomainEvent {
   constructor(
     public readonly eventType: string,
     public readonly aggregateId: string,
-    public readonly payload: Record<string, any> = {},
+    public readonly payload: Record<string, unknown> = {},
   ) {
     this.eventId = this.generateEventId();
     this.createdAt = new Date();

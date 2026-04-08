@@ -30,8 +30,11 @@
     "test": "bun test",
     "test:coverage": "bun test --coverage",
     "tdd": "bun test --watch",
-    "check": "biome check . --write",
-    "validate": "bun test && biome check . --write"
+    "typecheck": "tsc --noEmit",
+    "check": "biome check --write .",
+    "check:changed": "biome check --write --changed",
+    "check:staged": "biome check --write --staged",
+    "validate": "bun run typecheck && bun test && biome check --write ."
   },
   "dependencies": {
     "@prj-conq/lib": "workspace:^"

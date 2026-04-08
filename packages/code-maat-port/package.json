@@ -25,8 +25,10 @@
     "test:coverage": "bun test tests/code_maat/* --coverage",
     "test:parity": "bun test",
     "typecheck": "tsc --noEmit",
-    "validate": "bun run typecheck && bun test && biome check . --write",
-    "check": "biome check --write ."
+    "validate": "bun run typecheck && bun test && biome check --write .",
+    "check": "biome check --write .",
+    "check:changed": "biome check --write --changed",
+    "check:staged": "biome check --write --staged"
   },
   "keywords": [],
   "author": "",
