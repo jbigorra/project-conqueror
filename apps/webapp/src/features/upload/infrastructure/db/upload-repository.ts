@@ -1,9 +1,13 @@
-import { DatabaseError } from "#error.ts";
-import { getDevelopmentDatabase } from "#shared/database/db.ts";
-import type { IBaseRepository, InsertEntity, RepoReturns } from "#shared/generics-types/repository.ts";
-import { Upload } from "#upload/core/entities/upload.ts";
 import { Result } from "@prj-conq/lib/patterns";
 import type { BunSQLiteDatabase } from "drizzle-orm/bun-sqlite";
+import { DatabaseError } from "#error.ts";
+import { getDevelopmentDatabase } from "#shared/database/db.ts";
+import type {
+  IBaseRepository,
+  InsertEntity,
+  RepoReturns,
+} from "#shared/generics-types/repository.ts";
+import { Upload } from "#upload/core/entities/upload.ts";
 import { uploadsTable } from "./schemas/uploads.sql";
 
 type Deps = {

@@ -1,7 +1,7 @@
+import { Result } from "@prj-conq/lib/patterns";
+import type { S3Client } from "bun";
 import { ObjectStorageError } from "#error.ts";
 import type { ICloudFileStorage } from "#shared/dependencies/file-storage.ts";
-import { Result } from "@prj-conq/lib/patterns";
-import { S3Client } from "bun";
 
 export class S3FileStorage implements ICloudFileStorage {
   constructor(private readonly s3Client: S3Client) {}

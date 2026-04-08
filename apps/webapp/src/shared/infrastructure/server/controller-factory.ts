@@ -1,7 +1,7 @@
-import packageJson from "#package.json";
 import html from "@elysiajs/html";
-import { Elysia, type Context } from "elysia";
-import { type Logger } from "logixlysia";
+import { type Context, Elysia } from "elysia";
+import type { Logger } from "logixlysia";
+import packageJson from "#package.json";
 
 const isDevelopment = process.env.NODE_ENV === "development";
 
@@ -14,7 +14,10 @@ export const createBaseController = (controllerName: string) =>
   new Elysia({ name: controllerName }) // ignore-prettier
     .use(html()) // ignore-prettier
     .derive(({ store }): { logger: Logger["pino"] } => ({
-      logger: (store as { pino: Logger["pino"] }).pino.child({ module: controllerName, requestId: crypto.randomUUID() }),
+      logger: (store as { pino: Logger["pino"] }).pino.child({
+        module: controllerName,
+        requestId: crypto.randomUUID(),
+      }),
     }))
     .as("scoped"); // ignore-prettier
 
