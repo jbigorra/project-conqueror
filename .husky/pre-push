@@ -1,0 +1,6 @@
+branch=$(git symbolic-ref HEAD 2>/dev/null | sed 's|refs/heads/||')
+
+if [ "$branch" = "master" ]; then
+  pnpm run test
+  pnpm run check
+fi
