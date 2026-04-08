@@ -66,6 +66,7 @@ Built with `bunup` + `tsc -p tsconfig.build.json` for declaration files.
 ## Standards
 
 - All public API exports MUST have JSDoc with @param, @returns, @example
+- **Web Component JSDoc**: Lit elements use `@element`, `@attr`, `@fires` tags in addition to the root convention
 - Biome strict mode: noExplicitAny, noUnusedVariables, noNonNullAssertion
 - Tests mirror src/ structure under tests/
 - VCS-aware formatting: only changed files are linted (--changed flag)
