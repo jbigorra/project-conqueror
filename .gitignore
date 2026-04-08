@@ -40,3 +40,6 @@ packages/code-maat-port/tmp/
 .claude/settings.local.json
 
 .atl/
+
+# Worktrees
+.worktrees/
