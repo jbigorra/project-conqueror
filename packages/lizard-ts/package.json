@@ -31,6 +31,7 @@
     "test:coverage": "bun test --coverage",
     "tdd": "bun test --watch",
     "typecheck": "tsc --noEmit",
+    "lint": "biome check .",
     "check": "biome check --write .",
     "check:changed": "biome check --write --changed",
     "check:staged": "biome check --write --staged",
@@ -41,7 +42,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.6",
-    "@prj-conq/typescript-config": "workspace:*",
+    "@prj-conq/config": "workspace:*",
     "@types/bun": "^1.3.11",
     "bun-automock": "0.2.5",
     "bunup": "^0.16.31",

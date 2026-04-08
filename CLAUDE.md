@@ -38,7 +38,7 @@ bun run db:migrate      # Run migrations
 - `packages/charts` — Lit Web Components for visualizing analysis results (Chart.js + D3)
 - `packages/lizard-ts` — TypeScript wrapper around Python lizard (complexity analysis)
 - `packages/lib` — Shared patterns: EventBus, Result type, `spawnAsync`, CLIResult
-- `packages/typescript-config` — Shared `tsconfig.json` base
+- `packages/config` — Shared `tsconfig.json` base
 
 ### Feature Structure (DDD)
 
@@ -112,6 +112,40 @@ Repositories implement `IBaseRepository<T extends DomainEntity>` with methods: `
   - `refactor:`, `chore:`, `test:`, `docs:`, `style:`, `ci:` — no version bump, no release
   - Choose the prefix that matches the **impact on consumers**, not the type of work. A refactor that changes a public API is a `feat!:`, not a `refactor:`.
 - **Conventional commits**: `feat:`, `fix:`, `refactor:`, `chore:`, `test:`, `docs:` — no Co-Authored-By trailers
+
+## New Package/App Readiness Checklist
+
+Every package or app in the monorepo MUST have all of the following before it is considered ready. Use this checklist when creating a new package or onboarding an existing one.
+
+### Configuration
+- [ ] `package.json` with name `@prj-conq/{name}`, `private: true`, and correct workspace dependencies
+- [ ] `tsconfig.json` extending `@prj-conq/config/tsconfig.base.json`
+- [ ] `biome.json` extending root config: `{ "extends": ["../../biome.json"] }` — add overrides only if needed
+
+### Scripts (in package.json)
+- [ ] `build` — compile/bundle (e.g., `bunup`)
+- [ ] `dev` — watch mode (e.g., `bunup --watch`)
+- [ ] `typecheck` — `tsc --noEmit`
+- [ ] `test` — `bun test`
+- [ ] `check` — `biome check --write .` (auto-fix)
+- [ ] `lint` — `biome check .` (CI mode, no auto-fix)
+- [ ] `validate` — `bun run typecheck && bun test && biome check --write .`
+
+### CI / Quality
+- [ ] `sonar-project.properties` with project key `jbsoft_project-conqueror_{name}`
+- [ ] Added to `.github/workflows/quality.yml` SonarQube matrix
+- [ ] Added to `release-please-config.json` and `.release-please-manifest.json` (skip for config-only packages like `@prj-conq/config`)
+
+### Documentation
+- [ ] `README.md` — purpose, installation, usage, API overview, development
+- [ ] `CLAUDE.md` — AI agent context: what the package does, key files, commands, architecture, testing conventions, export rules, standards
+- [ ] `AGENTS.md` — symlink to CLAUDE.md (`ln -s CLAUDE.md AGENTS.md`)
+- [ ] All public exports have JSDoc with `@param`, `@returns`, `@example`
+
+### Testing
+- [ ] Test files under `tests/` mirroring `src/` structure
+- [ ] Unit tests for all non-trivial logic
+- [ ] Barrel file (`src/index.ts`) using named exports only
 
 ## JSDoc Enforcement (Automatic)
 

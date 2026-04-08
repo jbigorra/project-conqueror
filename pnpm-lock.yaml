@@ -87,9 +87,9 @@ importers:
       '@biomejs/biome':
         specifier: ^2.4.6
         version: 2.4.6
-      '@prj-conq/typescript-config':
+      '@prj-conq/config':
         specifier: workspace:*
-        version: link:../../packages/typescript-config
+        version: link:../../packages/config
       '@types/bun':
         specifier: ^1.3.11
         version: 1.3.11
@@ -136,9 +136,9 @@ importers:
       '@biomejs/biome':
         specifier: ^2.4.6
         version: 2.4.6
-      '@prj-conq/typescript-config':
+      '@prj-conq/config':
         specifier: workspace:*
-        version: link:../typescript-config
+        version: link:../config
       '@types/bun':
         specifier: ^1.3.11
         version: 1.3.11
@@ -188,9 +188,9 @@ importers:
       '@prj-conq/behave':
         specifier: workspace:*
         version: link:../behave
-      '@prj-conq/typescript-config':
+      '@prj-conq/config':
         specifier: workspace:*
-        version: link:../typescript-config
+        version: link:../config
       '@storybook/addon-docs':
         specifier: ^10.3.5
         version: 10.3.5(@types/react@19.2.14)(esbuild@0.27.7)(rollup@4.60.1)(storybook@10.3.5(@testing-library/dom@10.4.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vite@6.4.2(@types/node@25.5.0)(lightningcss@1.31.1)(sass@1.97.3)(tsx@4.21.0))
@@ -243,9 +243,9 @@ importers:
       '@biomejs/biome':
         specifier: ^2.4.6
         version: 2.4.6
-      '@prj-conq/typescript-config':
+      '@prj-conq/config':
         specifier: workspace:*
-        version: link:../typescript-config
+        version: link:../config
       '@types/bun':
         specifier: ^1.3.11
         version: 1.3.11
@@ -262,14 +262,20 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
+  packages/config:
+    devDependencies:
+      '@tsconfig/bun':
+        specifier: ^1.0.10
+        version: 1.0.10
+
   packages/lib:
     devDependencies:
       '@biomejs/biome':
         specifier: ^2.4.6
         version: 2.4.6
-      '@prj-conq/typescript-config':
+      '@prj-conq/config':
         specifier: workspace:*
-        version: link:../typescript-config
+        version: link:../config
       '@types/bun':
         specifier: ^1.3.11
         version: 1.3.11
@@ -295,9 +301,9 @@ importers:
       '@biomejs/biome':
         specifier: ^2.4.6
         version: 2.4.6
-      '@prj-conq/typescript-config':
+      '@prj-conq/config':
         specifier: workspace:*
-        version: link:../typescript-config
+        version: link:../config
       '@types/bun':
         specifier: ^1.3.11
         version: 1.3.11
@@ -310,12 +316,6 @@ importers:
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
-
-  packages/typescript-config:
-    devDependencies:
-      '@tsconfig/bun':
-        specifier: ^1.0.10
-        version: 1.0.10
 
 packages:
 

@@ -1,8 +1,8 @@
 {
-  "name": "@prj-conq/typescript-config",
+  "name": "@prj-conq/config",
   "private": true,
   "version": "0.1.0",
-  "description": "Typescript configuration for Project Conqueror",
+  "description": "Shared TypeScript configuration for Project Conqueror",
   "packageManager": "pnpm@10.32.1",
   "devDependencies": {
     "@tsconfig/bun": "^1.0.10"

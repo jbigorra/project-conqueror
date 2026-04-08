@@ -1,5 +1,5 @@
 {
-  "extends": "@prj-conq/typescript-config/tsconfig.base.json",
+  "extends": "@prj-conq/config/tsconfig.base.json",
   "compilerOptions": {
     "composite": true,
     "experimentalDecorators": true,
