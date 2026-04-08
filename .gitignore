@@ -38,3 +38,5 @@ packages/code-maat-port/tmp/
 .superpowers/
 
 .claude/settings.local.json
+
+.atl/
