@@ -9,6 +9,21 @@ import "../generic/treemap";
 
 type MainDevVariant = "bar" | "treemap";
 
+/**
+ * Main developer chart showing code ownership percentage as bar or treemap.
+ *
+ * @element pq-main-dev-chart
+ * @attr {MainDev[]} data - Inline main developer records.
+ * @attr {string} src - URL to fetch data from.
+ * @attr {"dark"|"light"|"pico"} theme - Theme preset name.
+ * @attr {"bar"|"treemap"} variant - Chart variant (default `"bar"`).
+ * @attr {number} limit - Max items for bar variant (default `20`).
+ *
+ * @example
+ * ```html
+ * <pq-main-dev-chart src="/api/analysis/main-dev" variant="bar" limit="15"></pq-main-dev-chart>
+ * ```
+ */
 @customElement("pq-main-dev-chart")
 export class PqMainDevChart extends LitElement {
   private fetcher = new DataFetchController<MainDev>(this);

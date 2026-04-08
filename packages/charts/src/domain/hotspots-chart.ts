@@ -11,6 +11,20 @@ import "../generic/enclosure";
 
 type HotspotsVariant = "bubble" | "treemap" | "enclosure";
 
+/**
+ * Complexity hotspots chart as bubble, treemap, or zoomable enclosure diagram.
+ *
+ * @element pq-hotspots-chart
+ * @attr {ComplexityHotspot[]} data - Inline complexity hotspot records.
+ * @attr {string} src - URL to fetch data from.
+ * @attr {"dark"|"light"|"pico"} theme - Theme preset name.
+ * @attr {"bubble"|"treemap"|"enclosure"} variant - Chart variant (default `"bubble"`).
+ *
+ * @example
+ * ```html
+ * <pq-hotspots-chart src="/api/analysis/hotspots" variant="enclosure"></pq-hotspots-chart>
+ * ```
+ */
 @customElement("pq-hotspots-chart")
 export class PqHotspotsChart extends LitElement {
   private fetcher = new DataFetchController<ComplexityHotspot>(this);

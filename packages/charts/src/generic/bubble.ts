@@ -7,6 +7,31 @@ import { DataFetchController } from "../controllers/data-fetch.controller";
 import { ThemeController } from "../controllers/theme.controller";
 import type { BubbleItem, ThemePreset } from "../types";
 
+/**
+ * Bubble chart web component backed by Chart.js.
+ *
+ * @element pq-bubble
+ * @attr {BubbleItem[]} data - Inline data array.
+ * @attr {string} src - URL to fetch data from (ignored when `data` is set).
+ * @attr {"dark"|"light"|"pico"} theme - Theme preset name.
+ * @attr {string} x-label - Label for the X axis.
+ * @attr {string} y-label - Label for the Y axis.
+ * @attr {boolean} animated - Enable chart animations (default `true`).
+ * @slot loading - Content shown while data is loading.
+ * @slot error - Content shown when data fetch fails.
+ * @slot empty - Content shown when data array is empty.
+ * @fires chart-click - When a bubble is clicked, with `{ datasetIndex, index, label, value }`.
+ *
+ * @example
+ * ```html
+ * <pq-bubble
+ *   .data=${[{ label: "file.ts", x: 10, y: 5, r: 8 }]}
+ *   theme="dark"
+ *   x-label="Revisions"
+ *   y-label="Complexity"
+ * ></pq-bubble>
+ * ```
+ */
 @customElement("pq-bubble")
 export class PqBubble extends LitElement {
   static override styles = css`

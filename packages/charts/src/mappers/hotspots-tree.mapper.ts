@@ -1,5 +1,21 @@
 import type { EnclosureHotspot, HotspotsTreeNode } from "../types/hotspots-tree.types";
 
+/**
+ * Build a recursive HotspotsTreeNode from flat hotspot records.
+ *
+ * Splits entity paths into folder/file segments, inserts them into a tree,
+ * and computes aggregate metrics (totalFiles, totalLinesOfCode, averageComplexity).
+ *
+ * @param data - Flat array of enclosure hotspot records.
+ * @returns Root tree node with computed aggregates on each folder node.
+ *
+ * @example
+ * ```ts
+ * const tree = buildHotspotsTree([
+ *   { entity: "src/app.ts", nRevs: 10, cyclomaticComplexity: 5, linesOfCode: 200 },
+ * ]);
+ * ```
+ */
 export function buildHotspotsTree(data: EnclosureHotspot[]): HotspotsTreeNode {
   const root: HotspotsTreeNode = { name: "root" };
 

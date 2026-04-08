@@ -9,6 +9,21 @@ import "../generic/doughnut";
 
 type OwnershipVariant = "stacked" | "doughnut";
 
+/**
+ * Entity ownership chart showing author contributions as stacked bar or doughnut.
+ *
+ * @element pq-ownership-chart
+ * @attr {EntityOwnership[]} data - Inline entity ownership records.
+ * @attr {string} src - URL to fetch data from.
+ * @attr {"dark"|"light"|"pico"} theme - Theme preset name.
+ * @attr {"stacked"|"doughnut"} variant - Chart variant (default `"stacked"`).
+ * @attr {string} entity - Entity path to filter for the doughnut variant.
+ *
+ * @example
+ * ```html
+ * <pq-ownership-chart src="/api/analysis/ownership" variant="stacked"></pq-ownership-chart>
+ * ```
+ */
 @customElement("pq-ownership-chart")
 export class PqOwnershipChart extends LitElement {
   private fetcher = new DataFetchController<EntityOwnership>(this);

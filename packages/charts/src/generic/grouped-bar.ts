@@ -7,6 +7,31 @@ import { ThemeController } from "../controllers/theme.controller";
 import { buildGroupedDatasets } from "../mappers/grouped-bar.mapper";
 import type { GroupedBarItem, ThemePreset } from "../types";
 
+/**
+ * Grouped bar chart web component backed by Chart.js.
+ *
+ * @element pq-grouped-bar
+ * @attr {GroupedBarItem[]} data - Inline data array.
+ * @attr {string} src - URL to fetch data from (ignored when `data` is set).
+ * @attr {"dark"|"light"|"pico"} theme - Theme preset name.
+ * @attr {number} limit - Max items to display (0 = unlimited).
+ * @attr {boolean} horizontal - Render bars horizontally (default `false`).
+ * @attr {boolean} show-legend - Show the Chart.js legend (default `true`).
+ * @attr {boolean} animated - Enable chart animations (default `true`).
+ * @slot loading - Content shown while data is loading.
+ * @slot error - Content shown when data fetch fails.
+ * @slot empty - Content shown when data array is empty.
+ * @fires chart-click - When a bar is clicked, with `{ datasetIndex, index, label, value }`.
+ *
+ * @example
+ * ```html
+ * <pq-grouped-bar
+ *   .data=${[{ label: "Alice", groups: [{ key: "added", value: 50 }, { key: "deleted", value: 10 }] }]}
+ *   theme="dark"
+ *   show-legend
+ * ></pq-grouped-bar>
+ * ```
+ */
 @customElement("pq-grouped-bar")
 export class PqGroupedBar extends LitElement {
   static override styles = css`

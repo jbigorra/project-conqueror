@@ -1,11 +1,28 @@
 import type { StackedBarItem } from "../types";
 
+/** Output shape produced by {@link buildStackedDatasets}. */
 export type StackedDatasets = {
+  /** Category labels (one per StackedBarItem). */
   labels: string[];
+  /** Unique segment keys across all items. */
   keys: string[];
+  /** One dataset per segment key, values aligned to labels. */
   datasets: Array<{ label: string; data: number[] }>;
 };
 
+/**
+ * Transform stacked bar items into Chart.js-ready datasets.
+ *
+ * @param items - Stacked bar items to transform.
+ * @returns Labels and datasets ready for a Chart.js stacked bar config.
+ *
+ * @example
+ * ```ts
+ * const { labels, datasets } = buildStackedDatasets([
+ *   { label: "file.ts", segments: [{ key: "added", value: 50 }, { key: "deleted", value: 10 }] },
+ * ]);
+ * ```
+ */
 export function buildStackedDatasets(items: StackedBarItem[]): StackedDatasets {
   if (items.length === 0) return { labels: [], keys: [], datasets: [] };
 

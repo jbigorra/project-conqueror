@@ -3,6 +3,27 @@ import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { DataFetchController } from "../controllers/data-fetch.controller";
 
+/**
+ * Summary cards component showing key analysis statistics as a responsive grid.
+ *
+ * Each SummaryEntry is rendered as a card with a large numeric value and label.
+ *
+ * @element pq-summary-cards
+ * @attr {SummaryEntry[]} data - Inline summary entry records.
+ * @attr {string} src - URL to fetch data from.
+ * @slot loading - Content shown while data is loading.
+ * @slot error - Content shown when data fetch fails.
+ * @slot empty - Content shown when data array is empty.
+ * @fires chart-data-loaded - When data is successfully fetched (from DataFetchController).
+ * @fires chart-error - When data fetch fails (from DataFetchController).
+ *
+ * @example
+ * ```html
+ * <pq-summary-cards
+ *   .data=${[{ statistic: "total-files", value: 142 }, { statistic: "avg-revisions", value: 8.3 }]}
+ * ></pq-summary-cards>
+ * ```
+ */
 @customElement("pq-summary-cards")
 export class PqSummaryCards extends LitElement {
   static override styles = css`

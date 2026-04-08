@@ -9,6 +9,21 @@ import "../generic/treemap";
 
 type RevisionsVariant = "bar" | "treemap";
 
+/**
+ * Revisions chart showing file revision count as ranked bar or treemap.
+ *
+ * @element pq-revisions-chart
+ * @attr {Revision[]} data - Inline revision records.
+ * @attr {string} src - URL to fetch data from.
+ * @attr {"dark"|"light"|"pico"} theme - Theme preset name.
+ * @attr {"bar"|"treemap"} variant - Chart variant (default `"bar"`).
+ * @attr {number} limit - Max items for bar variant (default `20`).
+ *
+ * @example
+ * ```html
+ * <pq-revisions-chart src="/api/analysis/revisions" variant="treemap"></pq-revisions-chart>
+ * ```
+ */
 @customElement("pq-revisions-chart")
 export class PqRevisionsChart extends LitElement {
   private fetcher = new DataFetchController<Revision>(this);

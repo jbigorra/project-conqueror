@@ -3,6 +3,22 @@ import { Chart, type ChartConfiguration, type ChartType } from "chart.js";
 import type { ReactiveController, ReactiveControllerHost } from "lit";
 import { createRef, type Ref } from "lit/directives/ref.js";
 
+/**
+ * Lit reactive controller that manages a Chart.js instance lifecycle.
+ *
+ * Handles chart creation, updates, resize observation, and click events.
+ * Attach to a Lit host element and call {@link update} from `updated()`.
+ *
+ * @example
+ * ```ts
+ * class MyChart extends LitElement {
+ *   private chartCtrl = new ChartController(this);
+ *   protected override render() {
+ *     return html`<canvas ${ref(this.chartCtrl.canvasRef)}></canvas>`;
+ *   }
+ * }
+ * ```
+ */
 export class ChartController implements ReactiveController {
   private host: ReactiveControllerHost & HTMLElement;
   private chart?: Chart;
@@ -10,13 +26,18 @@ export class ChartController implements ReactiveController {
   private resizeObserver?: ResizeObserver;
   private _animate = true;
 
+  /** Lit ref to bind to the `<canvas>` element in the host's template. */
   canvasRef: Ref<HTMLCanvasElement> = createRef();
 
+  /**
+   * @param host - Lit element that owns this controller.
+   */
   constructor(host: ReactiveControllerHost & HTMLElement) {
     this.host = host;
     host.addController(this);
   }
 
+  /** Toggle chart animations on or off. */
   set animate(value: boolean) {
     this._animate = value;
   }
@@ -34,6 +55,14 @@ export class ChartController implements ReactiveController {
     this.chart = undefined;
   }
 
+  /**
+   * Create or update the Chart.js instance with the given configuration.
+   *
+   * If the canvas ref changed (Lit re-rendered), the old chart is destroyed
+   * and a new one is created. Dispatches `chart-click` custom events on click.
+   *
+   * @param config - Full Chart.js configuration (type, data, options).
+   */
   update<T extends ChartType>(config: ChartConfiguration<T>): void {
     const canvas = this.canvasRef.value;
     if (!canvas) return;

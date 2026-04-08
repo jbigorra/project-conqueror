@@ -9,6 +9,21 @@ import "../generic/doughnut";
 
 type FragmentationVariant = "bar" | "doughnut";
 
+/**
+ * Fragmentation chart showing knowledge fragmentation (fractal value) as bar or doughnut.
+ *
+ * @element pq-fragmentation-chart
+ * @attr {Fragmentation[]} data - Inline fragmentation records.
+ * @attr {string} src - URL to fetch data from.
+ * @attr {"dark"|"light"|"pico"} theme - Theme preset name.
+ * @attr {"bar"|"doughnut"} variant - Chart variant (default `"bar"`).
+ * @attr {number} limit - Max items for bar variant (default `20`).
+ *
+ * @example
+ * ```html
+ * <pq-fragmentation-chart src="/api/analysis/fragmentation" variant="bar" limit="15"></pq-fragmentation-chart>
+ * ```
+ */
 @customElement("pq-fragmentation-chart")
 export class PqFragmentationChart extends LitElement {
   private fetcher = new DataFetchController<Fragmentation>(this);

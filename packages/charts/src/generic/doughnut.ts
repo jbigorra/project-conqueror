@@ -7,6 +7,30 @@ import { DataFetchController } from "../controllers/data-fetch.controller";
 import { ThemeController } from "../controllers/theme.controller";
 import type { DoughnutItem, ThemePreset } from "../types";
 
+/**
+ * Doughnut chart web component backed by Chart.js.
+ *
+ * @element pq-doughnut
+ * @attr {DoughnutItem[]} data - Inline data array.
+ * @attr {string} src - URL to fetch data from (ignored when `data` is set).
+ * @attr {"dark"|"light"|"pico"} theme - Theme preset name.
+ * @attr {boolean} show-legend - Show the Chart.js legend (default `true`).
+ * @attr {string} center-label - Text rendered in the centre of the doughnut.
+ * @attr {boolean} animated - Enable chart animations (default `true`).
+ * @slot loading - Content shown while data is loading.
+ * @slot error - Content shown when data fetch fails.
+ * @slot empty - Content shown when data array is empty.
+ * @fires chart-click - When a slice is clicked, with `{ datasetIndex, index, label, value }`.
+ *
+ * @example
+ * ```html
+ * <pq-doughnut
+ *   .data=${[{ label: "Alice", value: 40 }, { label: "Bob", value: 60 }]}
+ *   theme="dark"
+ *   center-label="Ownership"
+ * ></pq-doughnut>
+ * ```
+ */
 @customElement("pq-doughnut")
 export class PqDoughnut extends LitElement {
   static override styles = css`

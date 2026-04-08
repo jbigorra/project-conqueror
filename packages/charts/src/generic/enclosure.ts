@@ -9,6 +9,21 @@ import type { HotspotsTreeNode } from "../types/hotspots-tree.types";
 
 type PackedNode = HierarchyCircularNode<HotspotsTreeNode>;
 
+/**
+ * Zoomable circle-packing (enclosure) diagram built with D3.
+ *
+ * Renders a hierarchical `HotspotsTreeNode` as nested circles where area
+ * maps to lines of code and colour maps to complexity.
+ *
+ * @element pq-enclosure
+ * @attr {HotspotsTreeNode} data - Root tree node (set as a property).
+ * @slot empty - Content shown when no data is provided.
+ *
+ * @example
+ * ```html
+ * <pq-enclosure .data=${hotspotsTree}></pq-enclosure>
+ * ```
+ */
 @customElement("pq-enclosure")
 export class PqEnclosure extends LitElement {
   static override styles = css`

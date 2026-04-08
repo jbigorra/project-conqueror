@@ -9,6 +9,20 @@ import "../generic/stacked-bar";
 
 type AuthorChurnVariant = "grouped" | "stacked";
 
+/**
+ * Author churn chart showing added/deleted/commits per author.
+ *
+ * @element pq-author-churn-chart
+ * @attr {AuthorChurn[]} data - Inline author churn records.
+ * @attr {string} src - URL to fetch data from.
+ * @attr {"dark"|"light"|"pico"} theme - Theme preset name.
+ * @attr {"grouped"|"stacked"} variant - Chart variant (default `"grouped"`).
+ *
+ * @example
+ * ```html
+ * <pq-author-churn-chart src="/api/analysis/author-churn" variant="grouped"></pq-author-churn-chart>
+ * ```
+ */
 @customElement("pq-author-churn-chart")
 export class PqAuthorChurnChart extends LitElement {
   private fetcher = new DataFetchController<AuthorChurn>(this);

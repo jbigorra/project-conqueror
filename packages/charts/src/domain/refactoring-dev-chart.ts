@@ -9,6 +9,21 @@ import "../generic/treemap";
 
 type RefactoringDevVariant = "bar" | "treemap";
 
+/**
+ * Refactoring developer chart showing refactoring ownership as bar or treemap.
+ *
+ * @element pq-refactoring-dev-chart
+ * @attr {RefactoringMainDev[]} data - Inline refactoring main developer records.
+ * @attr {string} src - URL to fetch data from.
+ * @attr {"dark"|"light"|"pico"} theme - Theme preset name.
+ * @attr {"bar"|"treemap"} variant - Chart variant (default `"bar"`).
+ * @attr {number} limit - Max items for bar variant (default `20`).
+ *
+ * @example
+ * ```html
+ * <pq-refactoring-dev-chart src="/api/analysis/refactoring-dev" variant="bar"></pq-refactoring-dev-chart>
+ * ```
+ */
 @customElement("pq-refactoring-dev-chart")
 export class PqRefactoringDevChart extends LitElement {
   private fetcher = new DataFetchController<RefactoringMainDev>(this);

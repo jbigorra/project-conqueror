@@ -9,6 +9,20 @@ import "../generic/stacked-bar";
 
 type EntityChurnVariant = "grouped" | "stacked";
 
+/**
+ * Entity churn chart showing added/deleted/commits per entity.
+ *
+ * @element pq-entity-churn-chart
+ * @attr {EntityChurn[]} data - Inline entity churn records.
+ * @attr {string} src - URL to fetch data from.
+ * @attr {"dark"|"light"|"pico"} theme - Theme preset name.
+ * @attr {"grouped"|"stacked"} variant - Chart variant (default `"grouped"`).
+ *
+ * @example
+ * ```html
+ * <pq-entity-churn-chart src="/api/analysis/entity-churn" variant="stacked"></pq-entity-churn-chart>
+ * ```
+ */
 @customElement("pq-entity-churn-chart")
 export class PqEntityChurnChart extends LitElement {
   private fetcher = new DataFetchController<EntityChurn>(this);

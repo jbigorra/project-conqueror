@@ -7,6 +7,34 @@ import { ThemeController } from "../controllers/theme.controller";
 import { buildLineAreaDatasets } from "../mappers/line-area.mapper";
 import type { LineAreaPoint, ThemePreset } from "../types";
 
+/**
+ * Line/area chart web component backed by Chart.js.
+ *
+ * @element pq-line-area
+ * @attr {LineAreaPoint[]} data - Inline data array.
+ * @attr {string} src - URL to fetch data from (ignored when `data` is set).
+ * @attr {"dark"|"light"|"pico"} theme - Theme preset name.
+ * @attr {boolean} fill - Fill area under lines (default `false`).
+ * @attr {boolean} stacked - Stack series on top of each other (default `false`).
+ * @attr {string} x-label - Label for the X axis.
+ * @attr {string} y-label - Label for the Y axis.
+ * @attr {boolean} show-legend - Show the Chart.js legend (default `true`).
+ * @attr {boolean} animated - Enable chart animations (default `true`).
+ * @slot loading - Content shown while data is loading.
+ * @slot error - Content shown when data fetch fails.
+ * @slot empty - Content shown when data array is empty.
+ * @fires chart-click - When a point is clicked, with `{ datasetIndex, index, label, value }`.
+ *
+ * @example
+ * ```html
+ * <pq-line-area
+ *   .data=${[{ x: "2024-01", series: [{ key: "added", value: 100 }] }]}
+ *   theme="dark"
+ *   fill
+ *   show-legend
+ * ></pq-line-area>
+ * ```
+ */
 @customElement("pq-line-area")
 export class PqLineArea extends LitElement {
   static override styles = css`

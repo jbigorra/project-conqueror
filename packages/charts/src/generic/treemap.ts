@@ -8,6 +8,30 @@ import { DataFetchController } from "../controllers/data-fetch.controller";
 import { ThemeController } from "../controllers/theme.controller";
 import type { ThemePreset, TreemapItem } from "../types";
 
+/**
+ * Treemap chart web component backed by Chart.js + chartjs-chart-treemap.
+ *
+ * @element pq-treemap
+ * @attr {TreemapItem[]} data - Inline data array with hierarchical paths.
+ * @attr {string} src - URL to fetch data from (ignored when `data` is set).
+ * @attr {"dark"|"light"|"pico"} theme - Theme preset name.
+ * @attr {boolean} show-labels - Display labels on treemap tiles (default `false`).
+ * @attr {string} color-field - Field name used for tile colouring.
+ * @attr {boolean} animated - Enable chart animations (default `true`).
+ * @slot loading - Content shown while data is loading.
+ * @slot error - Content shown when data fetch fails.
+ * @slot empty - Content shown when data array is empty.
+ * @fires chart-click - When a tile is clicked, with `{ datasetIndex, index, label, value }`.
+ *
+ * @example
+ * ```html
+ * <pq-treemap
+ *   .data=${[{ path: ["src", "index.ts"], value: 42, color: 3 }]}
+ *   theme="dark"
+ *   show-labels
+ * ></pq-treemap>
+ * ```
+ */
 @customElement("pq-treemap")
 export class PqTreemap extends LitElement {
   static override styles = css`

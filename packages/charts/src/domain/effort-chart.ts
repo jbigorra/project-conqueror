@@ -9,6 +9,21 @@ import "../generic/doughnut";
 
 type EffortVariant = "stacked" | "doughnut";
 
+/**
+ * Effort chart showing author contributions per entity as stacked bar or doughnut.
+ *
+ * @element pq-effort-chart
+ * @attr {EntityEffort[]} data - Inline entity effort records.
+ * @attr {string} src - URL to fetch data from.
+ * @attr {"dark"|"light"|"pico"} theme - Theme preset name.
+ * @attr {"stacked"|"doughnut"} variant - Chart variant (default `"stacked"`).
+ * @attr {string} entity - Entity path to filter for the doughnut variant.
+ *
+ * @example
+ * ```html
+ * <pq-effort-chart src="/api/analysis/effort" variant="stacked"></pq-effort-chart>
+ * ```
+ */
 @customElement("pq-effort-chart")
 export class PqEffortChart extends LitElement {
   private fetcher = new DataFetchController<EntityEffort>(this);

@@ -7,6 +7,31 @@ import { ThemeController } from "../controllers/theme.controller";
 import { buildStackedDatasets } from "../mappers/stacked-bar.mapper";
 import type { StackedBarItem, ThemePreset } from "../types";
 
+/**
+ * Stacked bar chart web component backed by Chart.js.
+ *
+ * @element pq-stacked-bar
+ * @attr {StackedBarItem[]} data - Inline data array.
+ * @attr {string} src - URL to fetch data from (ignored when `data` is set).
+ * @attr {"dark"|"light"|"pico"} theme - Theme preset name.
+ * @attr {number} limit - Max items to display (0 = unlimited).
+ * @attr {boolean} horizontal - Render bars horizontally (default `false`).
+ * @attr {boolean} show-legend - Show the Chart.js legend (default `true`).
+ * @attr {boolean} animated - Enable chart animations (default `true`).
+ * @slot loading - Content shown while data is loading.
+ * @slot error - Content shown when data fetch fails.
+ * @slot empty - Content shown when data array is empty.
+ * @fires chart-click - When a bar segment is clicked, with `{ datasetIndex, index, label, value }`.
+ *
+ * @example
+ * ```html
+ * <pq-stacked-bar
+ *   .data=${[{ label: "file.ts", segments: [{ key: "added", value: 50 }, { key: "deleted", value: 10 }] }]}
+ *   theme="pico"
+ *   show-legend
+ * ></pq-stacked-bar>
+ * ```
+ */
 @customElement("pq-stacked-bar")
 export class PqStackedBar extends LitElement {
   static override styles = css`

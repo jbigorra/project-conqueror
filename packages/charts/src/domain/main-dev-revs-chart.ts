@@ -9,6 +9,21 @@ import "../generic/treemap";
 
 type MainDevRevsVariant = "bar" | "treemap";
 
+/**
+ * Main developer by revisions chart showing ownership by revision count as bar or treemap.
+ *
+ * @element pq-main-dev-revs-chart
+ * @attr {MainDevByRevs[]} data - Inline main-dev-by-revisions records.
+ * @attr {string} src - URL to fetch data from.
+ * @attr {"dark"|"light"|"pico"} theme - Theme preset name.
+ * @attr {"bar"|"treemap"} variant - Chart variant (default `"bar"`).
+ * @attr {number} limit - Max items for bar variant (default `20`).
+ *
+ * @example
+ * ```html
+ * <pq-main-dev-revs-chart src="/api/analysis/main-dev-revs" variant="treemap"></pq-main-dev-revs-chart>
+ * ```
+ */
 @customElement("pq-main-dev-revs-chart")
 export class PqMainDevRevsChart extends LitElement {
   private fetcher = new DataFetchController<MainDevByRevs>(this);

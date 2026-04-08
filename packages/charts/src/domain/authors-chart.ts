@@ -9,6 +9,21 @@ import "../generic/treemap";
 
 type AuthorsVariant = "bar" | "treemap";
 
+/**
+ * Authors chart showing author count per entity as bar or treemap.
+ *
+ * @element pq-authors-chart
+ * @attr {Author[]} data - Inline author records.
+ * @attr {string} src - URL to fetch data from.
+ * @attr {"dark"|"light"|"pico"} theme - Theme preset name.
+ * @attr {"bar"|"treemap"} variant - Chart variant (default `"bar"`).
+ * @attr {number} limit - Max items for bar variant (default `20`).
+ *
+ * @example
+ * ```html
+ * <pq-authors-chart src="/api/analysis/authors" variant="bar" limit="15"></pq-authors-chart>
+ * ```
+ */
 @customElement("pq-authors-chart")
 export class PqAuthorsChart extends LitElement {
   private fetcher = new DataFetchController<Author>(this);
