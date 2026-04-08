@@ -1,7 +1,7 @@
 {
   "name": "@prj-conq/lib",
   "description": "Library containting different utility classes and patterns.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "private": true,
   "files": [
