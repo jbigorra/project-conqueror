@@ -8,13 +8,13 @@ import {
 
 // Test event classes
 class TestEvent extends BaseDomainEvent {
-  constructor(aggregateId: string, payload: Record<string, any> = {}) {
+  constructor(aggregateId: string, payload: Record<string, unknown> = {}) {
     super("test.event", aggregateId, payload);
   }
 }
 
 class AnotherTestEvent extends BaseDomainEvent {
-  constructor(aggregateId: string, payload: Record<string, any> = {}) {
+  constructor(aggregateId: string, payload: Record<string, unknown> = {}) {
     super("another.test.event", aggregateId, payload);
   }
 }

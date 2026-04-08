@@ -10,6 +10,7 @@ class CustomChildProcessFake extends EventEmitter {
 
 describe("spawAsync", () => {
   let mockChildProcess: CustomChildProcessFake;
+  // biome-ignore lint/suspicious/noExplicitAny: mock type not expressible with bun:test mock API
   let spawnMock: any;
   let SUT: ReturnType<typeof spawnAsync>;
 
@@ -17,6 +18,7 @@ describe("spawAsync", () => {
     mock.clearAllMocks();
     mockChildProcess = new CustomChildProcessFake();
     spawnMock = mock<typeof spawn>();
+    // biome-ignore lint/suspicious/noExplicitAny: mock return type mismatch — ChildProcess vs fake
     spawnMock.mockReturnValue(mockChildProcess as any);
     SUT = spawnAsync({ spawn: spawnMock });
   });

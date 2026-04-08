@@ -14,6 +14,7 @@ describe("CLIResult", () => {
     });
 
     it("should throw error when errorCode is null", () => {
+      // biome-ignore lint/suspicious/noExplicitAny: intentional — testing error path with wrong type
       expect(() => new CLIResult(null as any, "stdout", "stderr")).toThrow(
         "errorCode is can't be null",
       );

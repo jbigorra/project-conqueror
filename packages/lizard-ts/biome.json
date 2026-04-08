@@ -1,9 +1,10 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.4.6/schema.json",
   "vcs": {
-    "enabled": false,
+    "enabled": true,
     "clientKind": "git",
-    "useIgnoreFile": false
+    "useIgnoreFile": false,
+    "defaultBranch": "master"
   },
   "assist": {
     "enabled": true,
@@ -15,8 +16,8 @@
   },
   "files": {
     "includes": [
-      "**",
-      "!dist",
+      "src/**",
+      "tests/**",
       "!src/python-lizard",
       "!tests/ts-lizard/sample-folder-for-integration-test/sample-file-for-integration-test.ts"
     ]
@@ -30,7 +31,16 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "correctness": {
+        "noUnusedVariables": "error"
+      },
+      "suspicious": {
+        "noExplicitAny": "error"
+      },
+      "style": {
+        "noNonNullAssertion": "error"
+      }
     }
   },
   "javascript": {
