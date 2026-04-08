@@ -106,3 +106,21 @@ Repositories implement `IBaseRepository<T extends DomainEntity>` with methods: `
 - **Package documentation**: Every package must have a `CLAUDE.md` (source of truth) and an `AGENTS.md` symlink (`ln -s CLAUDE.md AGENTS.md`) for OpenCode compatibility
 - **Named exports only**: Barrel files use `export { X } from` or `export * from` — never `export * as namespace from` (bun DTS limitation)
 - **Conventional commits**: `feat:`, `fix:`, `refactor:`, `chore:`, `test:`, `docs:` — no Co-Authored-By trailers
+
+## JSDoc Enforcement (Automatic)
+
+When you modify or create a file under `src/` in any package:
+
+1. **Check**: Does the file contain `export` statements?
+2. **For each exported symbol** (function, class, type, interface, const):
+   - If JSDoc is missing → add it
+   - If JSDoc exists but is incomplete (missing @param, @returns, @example) → complete it
+3. **JSDoc standard**:
+   - Functions: `@param`, `@returns`, `@throws` (if applicable), `@example`
+   - Classes: class description, constructor `@param`, all public methods documented
+   - Types/interfaces: description, field-level comments for non-obvious fields
+   - Lit Web Components: `@element`, `@attr`, `@fires`, `@example`
+4. **Do NOT** add JSDoc to:
+   - Non-exported (internal) symbols
+   - Test files
+   - Re-export barrels (the source file has the docs)
