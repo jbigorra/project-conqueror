@@ -1,5 +1,5 @@
 import { html } from "lit";
-import type { Meta, StoryObj } from "@storybook/web-components";
+import type { Meta, StoryObj } from "@storybook/web-components-vite";
 import "../../src/domain/author-churn-chart";
 import { authorChurnFixture } from "../../tests/fixtures/author-churn.fixture";
 

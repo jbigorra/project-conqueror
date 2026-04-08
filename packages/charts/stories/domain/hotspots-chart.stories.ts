@@ -1,5 +1,5 @@
 import { html } from "lit";
-import type { Meta, StoryObj } from "@storybook/web-components";
+import type { Meta, StoryObj } from "@storybook/web-components-vite";
 import "../../src/domain/hotspots-chart";
 import { hotspotsFixture } from "../../tests/fixtures/hotspots.fixture";
 import { hotspotsEnclosureFixture } from "../../tests/fixtures/hotspots-enclosure.fixture";

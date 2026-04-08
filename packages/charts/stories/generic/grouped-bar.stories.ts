@@ -1,5 +1,5 @@
 import { html } from "lit";
-import type { Meta, StoryObj } from "@storybook/web-components";
+import type { Meta, StoryObj } from "@storybook/web-components-vite";
 import "../../src/generic/grouped-bar";
 import type { GroupedBarItem } from "../../src/types";
 

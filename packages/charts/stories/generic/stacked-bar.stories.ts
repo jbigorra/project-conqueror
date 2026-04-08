@@ -1,5 +1,5 @@
 import { html } from "lit";
-import type { Meta, StoryObj } from "@storybook/web-components";
+import type { Meta, StoryObj } from "@storybook/web-components-vite";
 import "../../src/generic/stacked-bar";
 import type { StackedBarItem } from "../../src/types";
 
