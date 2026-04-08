@@ -1,0 +1,8 @@
+{
+  "apps/webapp": "0.1.0",
+  "packages/behave": "0.1.0",
+  "packages/charts": "0.1.0",
+  "packages/code-maat-port": "0.1.0",
+  "packages/lib": "0.1.0",
+  "packages/lizard-ts": "0.1.0"
+}
