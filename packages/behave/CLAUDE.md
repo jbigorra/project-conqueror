@@ -65,6 +65,7 @@ Built with `bunup` + `tsc -p tsconfig.build.json`.
 ## Standards
 
 - All public API exports MUST have JSDoc with @param, @returns, @example
+- **Effect schemas**: Use type-level descriptions with `@example` showing decoded output shapes
 - Biome strict mode: noExplicitAny, noUnusedVariables, noNonNullAssertion
 - Tests mirror src/ structure under tests/
 - VCS-aware formatting: only changed files are linted (--changed flag)
