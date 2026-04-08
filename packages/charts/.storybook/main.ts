@@ -7,6 +7,24 @@ const config: StorybookConfig = {
     options: {},
   },
   addons: ["@storybook/addon-essentials"],
+  viteFinal: async (config) => ({
+    ...config,
+    build: {
+      ...config.build,
+      target: "esnext",
+    },
+    esbuild: {
+      ...config.esbuild,
+      target: "esnext",
+    },
+    optimizeDeps: {
+      ...config.optimizeDeps,
+      esbuildOptions: {
+        ...config.optimizeDeps?.esbuildOptions,
+        target: "esnext",
+      },
+    },
+  }),
 };
 
 export default config;
