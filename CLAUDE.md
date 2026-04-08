@@ -105,6 +105,12 @@ Repositories implement `IBaseRepository<T extends DomainEntity>` with methods: `
 - **Tests mirror src/**: Test files live under `tests/` mirroring the `src/` directory structure
 - **Package documentation**: Every package must have a `CLAUDE.md` (source of truth) and an `AGENTS.md` symlink (`ln -s CLAUDE.md AGENTS.md`) for OpenCode compatibility
 - **Named exports only**: Barrel files use `export { X } from` or `export * from` — never `export * as namespace from` (bun DTS limitation)
+- **Conventional commits**: No Co-Authored-By trailers. Prefix choice determines automated version bumps via release-please:
+  - `feat:` — new feature → **patch** bump (minor once past 1.0)
+  - `fix:` — bug fix → **patch** bump
+  - `feat!:` / `fix!:` / `BREAKING CHANGE` in body — breaking change → **minor** bump (major once past 1.0)
+  - `refactor:`, `chore:`, `test:`, `docs:`, `style:`, `ci:` — no version bump, no release
+  - Choose the prefix that matches the **impact on consumers**, not the type of work. A refactor that changes a public API is a `feat!:`, not a `refactor:`.
 - **Conventional commits**: `feat:`, `fix:`, `refactor:`, `chore:`, `test:`, `docs:` — no Co-Authored-By trailers
 
 ## JSDoc Enforcement (Automatic)
