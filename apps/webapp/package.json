@@ -39,6 +39,7 @@
     "test:coverage": "bun test --coverage",
     "tdd": "bun test --watch",
     "typecheck": "tsc --noEmit",
+    "lint": "biome check --changed || true",
     "check": "biome check --write --changed || true",
     "check:all": "biome check --write .",
     "check:staged": "biome check --write --staged",
