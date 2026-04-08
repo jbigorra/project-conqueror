@@ -38,7 +38,7 @@ bun run db:migrate      # Run migrations
 - `packages/charts` — Lit Web Components for visualizing analysis results (Chart.js + D3)
 - `packages/lizard-ts` — TypeScript wrapper around Python lizard (complexity analysis)
 - `packages/lib` — Shared patterns: EventBus, Result type, `spawnAsync`, CLIResult
-- `packages/typescript-config` — Shared `tsconfig.json` base
+- `packages/config` — Shared `tsconfig.json` base
 
 ### Feature Structure (DDD)
 

@@ -1,22 +1,24 @@
-# @prj-conq/typescript-config
+# @prj-conq/config
 
-Shared TypeScript configuration for all packages in the Project Conqueror monorepo.
+Shared configuration for all packages in the Project Conqueror monorepo.
 
 ## Installation
 
 Monorepo-internal package:
 
 ```bash
-pnpm add -D @prj-conq/typescript-config@workspace:*
+pnpm add -D @prj-conq/config@workspace:*
 ```
 
 ## Usage
+
+### TypeScript
 
 Extend in your package's `tsconfig.json`:
 
 ```json
 {
-  "extends": "@prj-conq/typescript-config/tsconfig.base.json",
+  "extends": "@prj-conq/config/tsconfig.base.json",
   "compilerOptions": {
     "outDir": "./dist"
   },
@@ -25,6 +27,8 @@ Extend in your package's `tsconfig.json`:
 ```
 
 ## What It Provides
+
+### TypeScript Base Config
 
 Extends [`@tsconfig/bun`](https://github.com/nicknisi/tsconfig/tree/main/packages/bun) with additional strictness:
 

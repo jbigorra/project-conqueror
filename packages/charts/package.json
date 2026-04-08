@@ -70,7 +70,7 @@
   "devDependencies": {
     "@biomejs/biome": "^2.4.6",
     "@prj-conq/behave": "workspace:*",
-    "@prj-conq/typescript-config": "workspace:*",
+    "@prj-conq/config": "workspace:*",
     "@storybook/web-components": "^10.3.5",
     "@storybook/web-components-vite": "^10.3.5",
     "@types/bun": "^1.3.11",

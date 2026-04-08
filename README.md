@@ -36,7 +36,7 @@ This project is a monorepo that uses pnpm as the package manager and uses the `t
 
 - [`behave`](packages/behave/README.md): Contains library that can analyse repositories to generate different kind of analyses.
 - [`lib`](packages/lib/README.md): Contains very generic pieces of code that are used across the project.
-- [`typescript-config`](packages/typescript-config/README.md): Contains the base TypeScript configuration for all the packages/apps.
+- [`config`](packages/config/README.md): Contains the shared configuration (TypeScript, Biome) for all the packages/apps.
 
 # Package/App Configuration (`package.json`)
 
@@ -71,11 +71,11 @@ Example `package.json`:
 }
 ```
 
-When scaffolding a new package, use the `example.package.json` file as a template, modify the new package.json file according to the needs. For example: as you can see in the [`@prj-conq/typescript-config`](packages/typescript-config/README.md) package, a thinned down version of the `package.json` file is used.
+When scaffolding a new package, use the `example.package.json` file as a template, modify the new package.json file according to the needs. For example: as you can see in the [`@prj-conq/config`](packages/config/README.md) package, a thinned down version of the `package.json` file is used.
 
 ### TypeScript Configuration
 
-Every package has a `tsconfig.json` file that is used to configure the TypeScript compiler, it inherits from a base `tsconfig.json` file from the `@prj-conq/typescript-config` package.
+Every package has a `tsconfig.json` file that is used to configure the TypeScript compiler, it inherits from a base `tsconfig.json` file from the `@prj-conq/config` package.
 
 The config file should bekept to a minimum for simplicity and compatibility between the packages/apps.
 

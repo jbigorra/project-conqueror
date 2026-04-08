@@ -1,8 +1,8 @@
-# CLAUDE.md — @prj-conq/typescript-config
+# CLAUDE.md — @prj-conq/config
 
 ## What This Package Does
 
-Shared TypeScript configuration base for all packages in the monorepo. Extends `@tsconfig/bun` with stricter compiler options. Consumed by every package via `"extends": "@prj-conq/typescript-config/tsconfig.base.json"` in their `tsconfig.json`.
+Shared configuration base for all packages in the monorepo. Currently provides TypeScript configuration extending `@tsconfig/bun` with stricter compiler options. Consumed by every package via `"extends": "@prj-conq/config/tsconfig.base.json"` in their `tsconfig.json`.
 
 ## Key Files
 
