@@ -70,17 +70,17 @@ async function parseCommits(logFilePath: string, options: AppOptions): Promise<V
   const { versionControl } = options;
   switch (versionControl) {
     case "git":
-      return (await parseGitLog(logFilePath, {})) as VCSEntry[];
+      return await parseGitLog(logFilePath, {});
     case "git2":
-      return (await parseGit2Log(logFilePath, {})) as VCSEntry[];
+      return await parseGit2Log(logFilePath, {});
     case "hg":
-      return (await parseHgLog(logFilePath, {})) as VCSEntry[];
+      return await parseHgLog(logFilePath, {});
     case "p4":
-      return (await parseP4Log(logFilePath, {})) as VCSEntry[];
+      return await parseP4Log(logFilePath, {});
     case "tfs":
-      return (await parseTfsLog(logFilePath, {})) as VCSEntry[];
+      return await parseTfsLog(logFilePath, {});
     case "svn":
-      return parseSvnLog(await Bun.file(logFilePath).text()) as VCSEntry[];
+      return parseSvnLog(await Bun.file(logFilePath).text());
     default:
       throw new Error(
         `Invalid --version-control specified: ${versionControl}. Supported options are: git, git2, hg, p4, tfs, svn.`,

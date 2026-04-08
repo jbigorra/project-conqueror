@@ -33,14 +33,14 @@ export function groupBy<T extends Record<string, unknown>>(
   ds: T[],
   key: keyof T,
 ): Record<string, T[]> {
-  return ds.reduce(
+  return ds.reduce<Record<string, T[]>>(
     (acc, row) => {
       const k = String(row[key]);
       acc[k] = acc[k] ?? [];
       acc[k].push(row);
       return acc;
     },
-    {} as Record<string, T[]>,
+    {},
   );
 }
 
@@ -55,7 +55,7 @@ export function groupBy<T extends Record<string, unknown>>(
  * selectColumn([{ entity: "src/a.ts", revs: 5 }, { entity: "src/b.ts", revs: 3 }], "entity");
  * // ["src/a.ts", "src/b.ts"]
  */
-export function selectColumn<T extends Record<string, unknown>>(ds: T[], key: keyof T): unknown[] {
+export function selectColumn<T extends Record<string, unknown>, K extends keyof T>(ds: T[], key: K): T[K][] {
   return ds.map((row) => row[key]);
 }
 
