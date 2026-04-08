@@ -8,6 +8,12 @@ import { BehaveLive } from "../../services";
 import { CodeMaatService } from "../../services/code-maat";
 import type { SimpleAnalysisInput } from "../../types";
 
+/**
+ * Effect program that runs the messages analysis and decodes the result.
+ *
+ * @param input - Analysis input; requires `expressionToMatch` regex.
+ * @returns An Effect producing an Analysis of MessageEntry records.
+ */
 export const messagesEffect = (input: SimpleAnalysisInput) =>
   Effect.gen(function* () {
     if (!input.expressionToMatch) {
@@ -23,5 +29,21 @@ export const messagesEffect = (input: SimpleAnalysisInput) =>
     return yield* toAnalysis("messages", data, input);
   });
 
+/**
+ * Runs a messages analysis counting commit message matches per entity against a regex.
+ *
+ * @param input - Analysis input; `expressionToMatch` is required.
+ * @returns Resolved analysis with match counts per entity.
+ * @throws {FormatError} If `expressionToMatch` is not provided.
+ * @throws {CodeMaatError} If code-maat analysis fails.
+ *
+ * @example
+ * ```ts
+ * const result = await messages({
+ *   gitLogPath: "/tmp/project.log",
+ *   expressionToMatch: "fix|bug",
+ * });
+ * ```
+ */
 export const messages = (input: SimpleAnalysisInput): Promise<Analysis<MessageEntry>> =>
   Effect.runPromise(messagesEffect(input).pipe(Effect.provide(BehaveLive)));

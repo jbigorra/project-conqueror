@@ -7,6 +7,12 @@ import { BehaveLive } from "../../services";
 import { CodeMaatService } from "../../services/code-maat";
 import type { SimpleAnalysisInput } from "../../types";
 
+/**
+ * Effect program that runs the authors analysis and decodes the result.
+ *
+ * @param input - Analysis input with git log path and optional thresholds.
+ * @returns An Effect producing an Analysis of Author records.
+ */
 export const authorsEffect = (input: SimpleAnalysisInput) =>
   Effect.gen(function* () {
     const codeMaat = yield* CodeMaatService;
@@ -15,5 +21,17 @@ export const authorsEffect = (input: SimpleAnalysisInput) =>
     return yield* toAnalysis("authors", data, input);
   });
 
+/**
+ * Runs an authors analysis counting distinct authors and revisions per file.
+ *
+ * @param input - Analysis input with git log path and optional thresholds.
+ * @returns Resolved analysis with author counts per entity.
+ * @throws {CodeMaatError} If code-maat analysis fails.
+ *
+ * @example
+ * ```ts
+ * const result = await authors({ gitLogPath: "/tmp/project.log" });
+ * ```
+ */
 export const authors = (input: SimpleAnalysisInput): Promise<Analysis<Author>> =>
   Effect.runPromise(authorsEffect(input).pipe(Effect.provide(BehaveLive)));

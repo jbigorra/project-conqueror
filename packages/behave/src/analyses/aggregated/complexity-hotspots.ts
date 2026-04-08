@@ -10,6 +10,12 @@ import { CodeMaatService } from "../../services/code-maat";
 import { LizardService } from "../../services/lizard";
 import type { ComplexityHotspotsInput } from "../../types";
 
+/**
+ * Effect program that runs revisions + lizard in parallel, decodes results, and merges by entity.
+ *
+ * @param input - Configuration including git log path, source directory, and optional thresholds.
+ * @returns An Effect producing an Analysis of ComplexityHotspot records.
+ */
 export const complexityHotspotsEffect = (input: ComplexityHotspotsInput) =>
   Effect.gen(function* () {
     const codeMaat = yield* CodeMaatService;
@@ -39,6 +45,22 @@ export const complexityHotspotsEffect = (input: ComplexityHotspotsInput) =>
     return yield* toAnalysis("complexity-hotspots", hotspots, input);
   });
 
+/**
+ * Runs a complexity-hotspots analysis combining code-maat revision data with lizard complexity.
+ *
+ * @param input - Git log path, source directory, and optional thresholds.
+ * @returns Resolved analysis containing hotspots sorted by revision frequency.
+ * @throws {CodeMaatError} If code-maat analysis fails.
+ * @throws {LizardError} If lizard complexity analysis fails.
+ *
+ * @example
+ * ```ts
+ * const result = await complexityHotspots({
+ *   gitLogPath: "/tmp/project.log",
+ *   sourceDir: "/home/user/project/src",
+ * });
+ * ```
+ */
 export const complexityHotspots = (
   input: ComplexityHotspotsInput,
 ): Promise<Analysis<ComplexityHotspot>> =>
