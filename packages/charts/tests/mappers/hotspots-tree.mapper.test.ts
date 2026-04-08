@@ -12,11 +12,11 @@ describe("buildHotspotsTree", () => {
 
     expect(tree.name).toBe("root");
     expect(tree.children).toHaveLength(1);
-    expect(tree.children![0]!.name).toBe("index.ts");
-    expect(tree.children![0]!.complexityScore).toBe(3);
-    expect(tree.children![0]!.linesOfCode).toBe(50);
-    expect(tree.children![0]!.nRevs).toBe(5);
-    expect(tree.children![0]!.children).toBeUndefined();
+    expect(tree.children?.[0]?.name).toBe("index.ts");
+    expect(tree.children?.[0]?.complexityScore).toBe(3);
+    expect(tree.children?.[0]?.linesOfCode).toBe(50);
+    expect(tree.children?.[0]?.nRevs).toBe(5);
+    expect(tree.children?.[0]?.children).toBeUndefined();
   });
 
   test("nested path creates folder hierarchy", () => {
@@ -29,15 +29,15 @@ describe("buildHotspotsTree", () => {
     expect(tree.name).toBe("root");
     expect(tree.children).toHaveLength(1);
 
-    const src = tree.children![0]!;
+    const src = tree.children?.[0] ?? { name: "", children: [] };
     expect(src.name).toBe("src");
     expect(src.children).toHaveLength(1);
 
-    const core = src.children![0]!;
+    const core = src.children?.[0] ?? { name: "", children: [] };
     expect(core.name).toBe("core");
     expect(core.children).toHaveLength(1);
 
-    const file = core.children![0]!;
+    const file = core.children?.[0] ?? { name: "" };
     expect(file.name).toBe("engine.ts");
     expect(file.complexityScore).toBe(15);
     expect(file.linesOfCode).toBe(200);
@@ -51,10 +51,10 @@ describe("buildHotspotsTree", () => {
 
     const tree = buildHotspotsTree(data);
 
-    const src = tree.children![0]!;
+    const src = tree.children?.[0] ?? { name: "", children: [] };
     expect(src.name).toBe("src");
     expect(src.children).toHaveLength(2);
-    expect(src.children!.map((c) => c.name).sort()).toEqual(["a.ts", "b.ts"]);
+    expect(src.children?.map((c) => c.name).sort()).toEqual(["a.ts", "b.ts"]);
   });
 
   test("empty input returns root with no children", () => {
@@ -74,34 +74,34 @@ describe("folder aggregates", () => {
 
   test("leaf folder has correct immediate counts", () => {
     const tree = buildHotspotsTree(fixture);
-    const core = tree.children![0]!.children![0]!; // src > core
+    const core = tree.children?.[0]?.children?.[0] ?? { immediateFiles: 0, immediateFolders: 0 };
     expect(core.immediateFiles).toBe(2);
     expect(core.immediateFolders).toBe(0);
   });
 
   test("parent folder counts immediate subfolders", () => {
     const tree = buildHotspotsTree(fixture);
-    const src = tree.children![0]!; // src
+    const src = tree.children?.[0] ?? { immediateFiles: 0, immediateFolders: 0 };
     expect(src.immediateFiles).toBe(0);
     expect(src.immediateFolders).toBe(2);
   });
 
   test("folder has correct totalFiles and totalFolders", () => {
     const tree = buildHotspotsTree(fixture);
-    const src = tree.children![0]!;
+    const src = tree.children?.[0] ?? { totalFiles: 0, totalFolders: 0 };
     expect(src.totalFiles).toBe(3);
     expect(src.totalFolders).toBe(2);
   });
 
   test("folder totalLinesOfCode is recursive sum", () => {
     const tree = buildHotspotsTree(fixture);
-    const core = tree.children![0]!.children![0]!;
+    const core = tree.children?.[0]?.children?.[0] ?? { totalLinesOfCode: 0 };
     expect(core.totalLinesOfCode).toBe(300);
   });
 
   test("folder averageComplexity is mean of descendant file complexities", () => {
     const tree = buildHotspotsTree(fixture);
-    const src = tree.children![0]!;
+    const src = tree.children?.[0] ?? { averageComplexity: 0 };
     // (15 + 8 + 2) / 3 ≈ 8.33
     expect(src.averageComplexity).toBeCloseTo(8.33, 1);
   });

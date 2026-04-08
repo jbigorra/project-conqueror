@@ -4,31 +4,7 @@ export function buildHotspotsTree(data: EnclosureHotspot[]): HotspotsTreeNode {
   const root: HotspotsTreeNode = { name: "root" };
 
   for (const item of data) {
-    const segments = item.entity.split("/");
-    let current = root;
-
-    for (let i = 0; i < segments.length; i++) {
-      const segment = segments[i]!;
-      const isFile = i === segments.length - 1;
-
-      if (isFile) {
-        current.children ??= [];
-        current.children.push({
-          name: segment,
-          complexityScore: item.cyclomaticComplexity,
-          linesOfCode: item.linesOfCode,
-          nRevs: item.nRevs,
-        });
-      } else {
-        current.children ??= [];
-        let folder = current.children.find((c) => c.name === segment && c.children !== undefined);
-        if (!folder) {
-          folder = { name: segment, children: [] };
-          current.children.push(folder);
-        }
-        current = folder;
-      }
-    }
+    addEntityToTree(root, item);
   }
 
   if (root.children?.length === 0) {
@@ -40,6 +16,31 @@ export function buildHotspotsTree(data: EnclosureHotspot[]): HotspotsTreeNode {
   return root;
 }
 
+function addEntityToTree(root: HotspotsTreeNode, item: EnclosureHotspot): void {
+  const segments = item.entity.split("/");
+  const fileSegment = segments.pop();
+  if (!fileSegment) return;
+  let current = root;
+
+  for (const segment of segments) {
+    current.children ??= [];
+    let folder = current.children.find((c) => c.name === segment && c.children !== undefined);
+    if (!folder) {
+      folder = { name: segment, children: [] };
+      current.children.push(folder);
+    }
+    current = folder;
+  }
+
+  current.children ??= [];
+  current.children.push({
+    name: fileSegment,
+    complexityScore: item.cyclomaticComplexity,
+    linesOfCode: item.linesOfCode,
+    nRevs: item.nRevs,
+  });
+}
+
 type Aggregates = {
   totalFiles: number;
   totalFolders: number;
@@ -48,9 +49,7 @@ type Aggregates = {
 };
 
 function computeAggregates(node: HotspotsTreeNode): Aggregates {
-  const isFolder = node.children !== undefined;
-
-  if (!isFolder) {
+  if (node.children === undefined) {
     return {
       totalFiles: 1,
       totalFolders: 0,
@@ -66,7 +65,7 @@ function computeAggregates(node: HotspotsTreeNode): Aggregates {
   let immediateFiles = 0;
   let immediateFolders = 0;
 
-  for (const child of node.children!) {
+  for (const child of node.children) {
     const childIsFolder = child.children !== undefined;
     if (childIsFolder) {
       immediateFolders++;

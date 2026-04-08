@@ -1,4 +1,4 @@
-import { hierarchy, pack, type HierarchyCircularNode } from "d3-hierarchy";
+import { type HierarchyCircularNode, hierarchy, pack } from "d3-hierarchy";
 import { interpolateZoom } from "d3-interpolate";
 import { scaleLinear } from "d3-scale";
 import { select } from "d3-selection";
@@ -79,48 +79,56 @@ export class PqEnclosure extends LitElement {
     const container = this.shadowRoot?.querySelector(".container");
     if (!container) return;
 
-    // Clear previous SVG
     const existing = container.querySelector("svg");
     if (existing) existing.remove();
 
-    const size = this._size;
-
-    // Build hierarchy
-    const root = hierarchy(this.data)
-      .sum((d) => (d.children ? 0 : d.linesOfCode ?? d.nRevs ?? 1))
-      .sort((a, b) => (b.value ?? 0) - (a.value ?? 0));
-
-    const packLayout = pack<HotspotsTreeNode>().size([size, size]).padding(3);
-    const packedRoot = packLayout(root);
-
+    const packedRoot = this._buildHierarchy();
     this._focus = packedRoot;
     this._view = [packedRoot.x, packedRoot.y, packedRoot.r * 2];
 
-    // Compute complexity domain for color scale
-    const complexities: number[] = [];
-    for (const node of packedRoot.descendants()) {
-      const d = node.data;
-      const c = d.children ? d.averageComplexity : d.complexityScore;
-      if (c !== undefined && c > 0) complexities.push(c);
-    }
+    this._updateColorScale(packedRoot);
+    const node = this._createSvg(container, packedRoot);
+    this._nodeSelection = node;
+    this._zoomTo(this._view);
+  }
+
+  private _buildHierarchy(): PackedNode {
+    const size = this._size;
+    const data = this.data;
+    if (!data) throw new Error("data is required");
+    const root = hierarchy(data)
+      .sum((d) => (d.children ? 0 : (d.linesOfCode ?? d.nRevs ?? 1)))
+      .sort((a, b) => (b.value ?? 0) - (a.value ?? 0));
+
+    return pack<HotspotsTreeNode>().size([size, size]).padding(3)(root);
+  }
+
+  private _updateColorScale(packedRoot: PackedNode): void {
+    const complexities = packedRoot
+      .descendants()
+      .map((node) => (node.data.children ? node.data.averageComplexity : node.data.complexityScore))
+      .filter((c): c is number => c !== undefined && c > 0);
+
     if (complexities.length > 0) {
-      const minC = Math.min(...complexities);
-      const maxC = Math.max(...complexities);
       this._colorScale = scaleLinear<string>()
-        .domain([minC, maxC])
+        .domain([Math.min(...complexities), Math.max(...complexities)])
         .range(["#c8e6c9", "#ffcdd2"])
         .clamp(true);
     }
+  }
 
-    // Create SVG
+  private _createSvg(
+    container: Element,
+    packedRoot: PackedNode,
+  ): ReturnType<typeof select<SVGSVGElement, unknown>> {
+    const size = this._size;
     const svg = select(container)
       .append("svg")
       .attr("viewBox", `0 0 ${size} ${size}`)
       .attr("preserveAspectRatio", "xMidYMid meet")
       .on("click", () => this._zoom(packedRoot));
 
-    // Circles
-    const node = svg
+    return svg
       .selectAll<SVGCircleElement, PackedNode>("circle")
       .data(packedRoot.descendants())
       .join("circle")
@@ -138,26 +146,16 @@ export class PqEnclosure extends LitElement {
       .on("mouseenter", (event: MouseEvent, d) => this._showTooltip(event, d))
       .on("mousemove", (event: MouseEvent, d) => this._showTooltip(event, d))
       .on("mouseleave", () => this._hideTooltip());
-
-    // Store node selection for zoom
-    this._nodeSelection = node;
-
-    // Initial positioning
-    this._zoomTo(this._view);
   }
 
-  private _nodeSelection: ReturnType<
-    typeof select<SVGSVGElement, unknown>
-  > extends never
+  private _nodeSelection: ReturnType<typeof select<SVGSVGElement, unknown>> extends never
     ? never
     : // biome-ignore lint/suspicious/noExplicitAny: D3 selection typing is complex
       any = null;
 
   private _nodeColor(d: PackedNode): string {
     const data = d.data;
-    const complexity = data.children
-      ? data.averageComplexity
-      : data.complexityScore;
+    const complexity = data.children ? data.averageComplexity : data.complexityScore;
     if (complexity !== undefined && complexity > 0) {
       return this._colorScale(complexity);
     }
@@ -179,11 +177,7 @@ export class PqEnclosure extends LitElement {
 
   private _zoom(target: PackedNode): void {
     this._focus = target;
-    const targetView: [number, number, number] = [
-      target.x,
-      target.y,
-      target.r * 2,
-    ];
+    const targetView: [number, number, number] = [target.x, target.y, target.r * 2];
 
     const container = this.shadowRoot?.querySelector(".container");
     if (!container) return;
@@ -204,9 +198,7 @@ export class PqEnclosure extends LitElement {
     const tooltip = this.shadowRoot?.querySelector(".tooltip") as HTMLElement;
     if (!tooltip) return;
 
-    const container = this.shadowRoot?.querySelector(
-      ".container",
-    ) as HTMLElement;
+    const container = this.shadowRoot?.querySelector(".container") as HTMLElement;
     if (!container) return;
 
     const rect = container.getBoundingClientRect();
