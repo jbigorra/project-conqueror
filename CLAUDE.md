@@ -116,6 +116,7 @@ Repositories implement `IBaseRepository<T extends DomainEntity>` with methods: `
 - **JSDoc required**: All public API exports MUST have JSDoc with `@param`, `@returns`, `@example`
 - **Tests mirror src/**: Test files live under `tests/` mirroring the `src/` directory structure
 - **Package documentation**: Every package must have a `CLAUDE.md` (source of truth) and an `AGENTS.md` symlink (`ln -s CLAUDE.md AGENTS.md`) for OpenCode compatibility
+- **Dual-tool parity**: When adding MCP servers, hooks, or configuration, ALWAYS apply to both Claude Code (`.claude.json`) and OpenCode (`opencode.json`). The user uses both tools — they must have identical capabilities.
 - **Named exports only**: Barrel files use `export { X } from` or `export * from` — never `export * as namespace from` (bun DTS limitation)
 - **Conventional commits**: No Co-Authored-By trailers. Prefix choice determines automated version bumps via release-please:
   - `feat:` — new feature → **patch** bump (minor once past 1.0)
