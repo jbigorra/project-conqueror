@@ -52,7 +52,7 @@ export class PqHotspotsChart extends LitElement {
       ></pq-treemap>`;
     }
     if (this.variant === "enclosure") {
-      return html`<pq-enclosure .data=${mapHotspotsToEnclosure(this.resolvedData)}></pq-enclosure>`;
+      return html`<pq-enclosure .data=${mapHotspotsToEnclosure(this.resolvedData)} .theme=${this.theme}></pq-enclosure>`;
     }
     return html`<pq-bubble
       .data=${mapHotspotsToBubble(this.resolvedData)}
