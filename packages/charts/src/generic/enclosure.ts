@@ -5,6 +5,8 @@ import { type Selection, select } from "d3-selection";
 import "d3-transition"; // side-effect: patches d3-selection with .transition()
 import { css, html, LitElement } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { ThemeController } from "../controllers/theme.controller";
+import type { ThemePreset } from "../types";
 import type { HotspotsTreeNode } from "../types/hotspots-tree.types";
 
 type PackedNode = HierarchyCircularNode<HotspotsTreeNode>;
@@ -17,11 +19,12 @@ type PackedNode = HierarchyCircularNode<HotspotsTreeNode>;
  *
  * @element pq-enclosure
  * @attr {HotspotsTreeNode} data - Root tree node (set as a property).
+ * @attr {"dark"|"light"|"pico"} theme - Theme preset name.
  * @slot empty - Content shown when no data is provided.
  *
  * @example
  * ```html
- * <pq-enclosure .data=${hotspotsTree}></pq-enclosure>
+ * <pq-enclosure .data=${hotspotsTree} theme="dark"></pq-enclosure>
  * ```
  */
 @customElement("pq-enclosure")
@@ -46,12 +49,9 @@ export class PqEnclosure extends LitElement {
     .tooltip {
       position: absolute;
       pointer-events: none;
-      background: rgba(30, 30, 30, 0.92);
-      color: #fff;
       padding: 8px 12px;
       border-radius: 6px;
       font-size: 12px;
-      font-family: system-ui, sans-serif;
       line-height: 1.5;
       white-space: nowrap;
       display: none;
@@ -60,6 +60,10 @@ export class PqEnclosure extends LitElement {
     }
     .tooltip.visible {
       display: block;
+    }
+    .circle-label {
+      pointer-events: none;
+      transition: opacity 150ms ease;
     }
     .state-message {
       display: flex;
@@ -71,7 +75,10 @@ export class PqEnclosure extends LitElement {
     }
   `;
 
+  private _themeCtrl = new ThemeController(this);
+
   @property({ type: Object }) data?: HotspotsTreeNode;
+  @property() theme?: ThemePreset;
 
   @state() private _focus: PackedNode | null = null;
   @state() private _view: [number, number, number] = [0, 0, 0];
@@ -83,6 +90,7 @@ export class PqEnclosure extends LitElement {
     .clamp(true);
 
   protected override updated(changed: Map<string, unknown>): void {
+    if (changed.has("theme")) this._themeCtrl.update(this.theme);
     if (changed.has("data") && this.data) {
       this._buildAndRender();
     }
@@ -119,15 +127,26 @@ export class PqEnclosure extends LitElement {
   }
 
   private _updateColorScale(packedRoot: PackedNode): void {
+    const theme = this._themeCtrl.theme;
+    const green = theme.accents[5] ?? theme.accents[0] ?? "#98c379";
+    const orange = theme.accents[1] ?? theme.accents[0] ?? "#f5a623";
     const complexities = packedRoot
       .descendants()
       .map((node) => (node.data.children ? node.data.averageComplexity : node.data.complexityScore))
       .filter((c): c is number => c !== undefined && c > 0);
 
     if (complexities.length > 0) {
+      const min = Math.min(...complexities);
+      const max = Math.max(...complexities);
+      const mid = (min + max) / 2;
       this._colorScale = scaleLinear<string>()
-        .domain([Math.min(...complexities), Math.max(...complexities)])
-        .range(["#c8e6c9", "#ffcdd2"])
+        .domain([min, mid, max])
+        .range([green, orange, theme.danger])
+        .clamp(true);
+    } else {
+      this._colorScale = scaleLinear<string>()
+        .domain([0, 0.5, 1])
+        .range([green, orange, theme.danger])
         .clamp(true);
     }
   }
@@ -137,20 +156,22 @@ export class PqEnclosure extends LitElement {
     packedRoot: PackedNode,
   ): Selection<SVGCircleElement, PackedNode, SVGSVGElement, unknown> {
     const size = this._size;
+    const theme = this._themeCtrl.theme;
     const svg = select(container)
       .append("svg")
       .attr("viewBox", `0 0 ${size} ${size}`)
       .attr("preserveAspectRatio", "xMidYMid meet")
       .on("click", () => this._zoom(packedRoot));
 
-    return svg
+    const nodes = svg
       .selectAll<SVGCircleElement, PackedNode>("circle")
       .data(packedRoot.descendants())
       .join("circle")
       .attr("fill", (d) => this._nodeColor(d))
-      .attr("fill-opacity", (d) => (d.children ? 0.3 : 0.7))
-      .attr("stroke", (d) => (d.children ? this._nodeColor(d) : "none"))
+      .attr("fill-opacity", (d) => (d.children ? 0.15 : 0.7))
+      .attr("stroke", (d) => (d.children ? theme.border : "none"))
       .attr("stroke-width", (d) => (d.children ? 1.5 : 0))
+      .attr("stroke-opacity", (d) => (d.children ? 0.6 : 1))
       .attr("cursor", (d) => (d.children ? "pointer" : "default"))
       .on("click", (event: MouseEvent, d) => {
         if (d.children) {
@@ -161,32 +182,101 @@ export class PqEnclosure extends LitElement {
       .on("mouseenter", (event: MouseEvent, d) => this._showTooltip(event, d))
       .on("mousemove", (event: MouseEvent, d) => this._showTooltip(event, d))
       .on("mouseleave", () => this._hideTooltip());
+
+    this._labelSelection = svg
+      .selectAll<SVGTextElement, PackedNode>("text")
+      .data(packedRoot.descendants().filter((d) => d !== packedRoot))
+      .join("text")
+      .attr("class", "circle-label")
+      .attr("text-anchor", "middle")
+      .attr("dominant-baseline", "central")
+      .attr("fill", theme.text)
+      .attr("opacity", 0)
+      .attr("pointer-events", "none")
+      .style("font-family", theme.fontFamily)
+;
+
+    return nodes;
   }
 
   private _nodeSelection: ReturnType<typeof select<SVGSVGElement, unknown>> extends never
     ? never
     : // biome-ignore lint/suspicious/noExplicitAny: D3 selection typing is complex
       any = null;
+  private _labelSelection: ReturnType<typeof select<SVGSVGElement, unknown>> extends never
+    ? never
+    : // biome-ignore lint/suspicious/noExplicitAny: D3 selection typing is complex
+      any = null;
 
   private _nodeColor(d: PackedNode): string {
+    const theme = this._themeCtrl.theme;
     const data = d.data;
     const complexity = data.children ? data.averageComplexity : data.complexityScore;
     if (complexity !== undefined && complexity > 0) {
       return this._colorScale(complexity);
     }
-    return data.children ? "#c8e6c9" : "#e0e0e0";
+    return data.children ? theme.bg : theme.grid;
   }
 
   private _zoomTo(v: [number, number, number]): void {
     const size = this._size;
     const k = size / v[2];
     this._view = v;
+    const minLabelRadius = 20;
 
     if (this._nodeSelection) {
       this._nodeSelection
         .attr("cx", (d: PackedNode) => (d.x - v[0]) * k + size / 2)
         .attr("cy", (d: PackedNode) => (d.y - v[1]) * k + size / 2)
         .attr("r", (d: PackedNode) => Math.max(0, d.r * k));
+    }
+
+    if (this._labelSelection) {
+      this._labelSelection.each(
+        function (this: SVGTextElement, d: PackedNode) {
+          const renderedR = d.r * k;
+          const cx = (d.x - v[0]) * k + size / 2;
+          const isParent = !!d.children;
+          const cy = isParent
+            ? (d.y - v[1]) * k + size / 2 - renderedR * 0.33
+            : (d.y - v[1]) * k + size / 2;
+
+          const el = select(this);
+          el.attr("x", cx).attr("y", cy);
+
+          const fontSize = Math.min(14, Math.max(9, renderedR * 0.35));
+          el.style("font-size", `${fontSize}px`);
+
+          const visible = renderedR >= minLabelRadius;
+
+          // Parent fades when any child has a visible label
+          let parentFaded = false;
+          if (isParent && d.children) {
+            parentFaded = d.children.some((child) => child.r * k >= minLabelRadius);
+          }
+
+          const opacity = visible && !parentFaded ? 0.9 : 0;
+          el.attr("opacity", opacity);
+
+          // Truncate text to fit within the circle
+          const name = d.data.name;
+          const maxWidth = renderedR * 2 - 8;
+          el.text(name);
+
+          const textWidth = this.getComputedTextLength?.() ?? 0;
+          if (textWidth > maxWidth && maxWidth > 0) {
+            let truncated = name;
+            while (truncated.length > 1) {
+              truncated = truncated.slice(0, -1);
+              el.text(`${truncated}...`);
+              if ((this.getComputedTextLength?.() ?? 0) <= maxWidth) break;
+            }
+            if (truncated.length <= 1) {
+              el.text("");
+            }
+          }
+        },
+      );
     }
   }
 
@@ -216,12 +306,17 @@ export class PqEnclosure extends LitElement {
     const container = this.shadowRoot?.querySelector(".container") as HTMLElement;
     if (!container) return;
 
+    const theme = this._themeCtrl.theme;
     const rect = container.getBoundingClientRect();
     const x = event.clientX - rect.left + 12;
     const y = event.clientY - rect.top - 10;
 
     tooltip.style.left = `${x}px`;
     tooltip.style.top = `${y}px`;
+    tooltip.style.background = theme.tooltipBg;
+    tooltip.style.color = theme.text;
+    tooltip.style.border = `1px solid ${theme.border}`;
+    tooltip.style.fontFamily = theme.fontFamily;
     tooltip.classList.add("visible");
 
     const data = d.data;
