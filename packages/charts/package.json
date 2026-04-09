@@ -41,7 +41,7 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "typecheck": "tsc --noEmit",
-    "validate": "bun run typecheck && bun test && biome check --write . && bun run build-storybook",
+    "validate": "bun run build && bun test && biome check --write . && bun run build-storybook",
     "lint": "biome check .",
     "check": "biome check --write .",
     "check:changed": "biome check --write --changed",
