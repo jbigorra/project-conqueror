@@ -130,6 +130,9 @@ jobs:
       - name: Run tests with coverage
         run: pnpm run test:coverage
 
+      - name: Build Storybook (charts import validation)
+        run: cd packages/charts && bun run build-storybook
+
       - name: Upload coverage artifacts
         uses: actions/upload-artifact@v7
         with:

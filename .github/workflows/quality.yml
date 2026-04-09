@@ -64,6 +64,10 @@ jobs:
       - name: Run ${{ matrix.task }}
         run: pnpm ${{ matrix.task }}
 
+      - name: Build Storybook (charts import validation)
+        if: matrix.task == 'lint'
+        run: cd packages/charts && bun run build-storybook
+
       # Upload coverage only for test job
       - name: Upload coverage artifacts
         if: matrix.task == 'test:coverage'
