@@ -28,6 +28,18 @@ bun run db:generate     # Generate Drizzle migrations
 bun run db:migrate      # Run migrations
 ```
 
+## Worktree Setup
+
+After creating a worktree with `git worktree add` or `wt add`, run the setup script:
+
+```bash
+scripts/setup-worktree.sh /path/to/worktree
+```
+
+This initializes submodules, creates the Python venv for lizard-ts, installs dependencies, and builds all packages. Without this, tests will fail due to missing submodule content and unbuilt cross-package dependencies.
+
+If using Worktrunk (`wt add`), the setup runs automatically via `.config/wt.toml` post-add hook.
+
 ## Architecture
 
 ### Monorepo Structure

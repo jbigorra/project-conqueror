@@ -43,20 +43,6 @@ Requires: Docker running, `SONAR_TOKEN` env var set.
 
 **Why deferred**: Needs Docker + token setup. Low urgency — SonarCloud dashboard is available in the meantime.
 
----
-
-## Worktree initialization automation
-
-**Origin**: Session 2026-04-09
-
-Git worktrees created with `git worktree add` don't initialize submodules or Python venvs automatically. This causes tests to fail in every new worktree (lizard-ts needs `python-lizard/.venv` and `pnpm run build`). Agents resort to `--no-verify` to bypass the pre-commit hook.
-
-**Fix options**:
-- Script at repo root (`scripts/setup-worktree.sh`) that runs: `git submodule update --init`, venv setup, `pnpm install --frozen-lockfile`, `pnpm run build`
-- Or a `.config/wt.toml` post-create hook if using Worktrunk
-- Document the manual steps in CLAUDE.md under a "Worktree Setup" section
-
-**Why deferred**: Workaround is known (manual setup steps). Automate when worktree usage becomes frequent enough to justify the script.
 
 ---
 

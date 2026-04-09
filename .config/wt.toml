@@ -1,0 +1,5 @@
+# Worktrunk project hooks for project-conqueror
+# Runs after `wt add` creates a new worktree
+
+[hooks.post_add]
+run = "scripts/setup-worktree.sh"
