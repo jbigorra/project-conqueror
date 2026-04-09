@@ -10,6 +10,7 @@ import type { ThemePreset } from "../types";
 import type { HotspotsTreeNode } from "../types/hotspots-tree.types";
 
 type PackedNode = HierarchyCircularNode<HotspotsTreeNode>;
+type ZoomState = { v: [number, number, number]; k: number; size: number };
 
 /**
  * Zoomable circle-packing (enclosure) diagram built with D3.
@@ -218,84 +219,93 @@ export class PqEnclosure extends LitElement {
     return data.children ? theme.bg : theme.grid;
   }
 
+  private static _MIN_LABEL_RADIUS = 20;
+
   private _zoomTo(v: [number, number, number]): void {
     const size = this._size;
     const k = size / v[2];
     this._view = v;
-    const minLabelRadius = 20;
 
-    if (this._nodeSelection) {
-      this._nodeSelection
-        .attr("cx", (d: PackedNode) => (d.x - v[0]) * k + size / 2)
-        .attr("cy", (d: PackedNode) => (d.y - v[1]) * k + size / 2)
-        .attr("r", (d: PackedNode) => Math.max(0, d.r * k));
+    const zoom: ZoomState = { v, k, size };
+    this._updateCirclePositions(zoom);
+    this._updateLabels(zoom);
+  }
+
+  private _updateCirclePositions({ v, k, size }: ZoomState): void {
+    if (!this._nodeSelection) return;
+    this._nodeSelection
+      .attr("cx", (d: PackedNode) => (d.x - v[0]) * k + size / 2)
+      .attr("cy", (d: PackedNode) => (d.y - v[1]) * k + size / 2)
+      .attr("r", (d: PackedNode) => Math.max(0, d.r * k));
+  }
+
+  private _updateLabels(zoom: ZoomState): void {
+    if (!this._labelSelection) return;
+    const self = this;
+    const { v, k, size } = zoom;
+    this._labelSelection.each(function (this: SVGTextElement, d: PackedNode) {
+      const renderedR = d.r * k;
+      const isParent = !!d.children;
+      const fontSize = isParent
+        ? Math.min(13, Math.max(8, renderedR * 0.18))
+        : Math.min(14, Math.max(9, renderedR * 0.35));
+
+      const cx = (d.x - v[0]) * k + size / 2;
+      const cy = isParent
+        ? (d.y - v[1]) * k + size / 2 - renderedR + fontSize + 2
+        : (d.y - v[1]) * k + size / 2;
+
+      const el = select(this);
+      el.attr("x", cx).attr("y", cy);
+      el.style("font-size", `${fontSize}px`);
+      el.style("font-weight", isParent ? "bold" : "normal");
+
+      const opacity = self._computeLabelOpacity(d, renderedR, fontSize, zoom);
+      el.attr("opacity", opacity);
+
+      PqEnclosure._truncateLabel(this, el, d.data.name, renderedR);
+    });
+  }
+
+  private _computeLabelOpacity(
+    d: PackedNode,
+    renderedR: number,
+    fontSize: number,
+    { v, k, size }: ZoomState,
+  ): number {
+    if (renderedR < PqEnclosure._MIN_LABEL_RADIUS) return 0;
+    if (!d.children) return 0.9;
+
+    // Parent: hide if a child folder's arc label would overlap ours
+    for (const child of d.children) {
+      if (!child.children) continue;
+      const childR = child.r * k;
+      if (childR < PqEnclosure._MIN_LABEL_RADIUS) continue;
+      const myTop = (d.y - v[1]) * k + size / 2 - renderedR;
+      const childTop = (child.y - v[1]) * k + size / 2 - childR;
+      if (childTop - myTop < fontSize * 2.5) return 0;
     }
+    return 0.9;
+  }
 
-    if (this._labelSelection) {
-      this._labelSelection.each(
-        function (this: SVGTextElement, d: PackedNode) {
-          const renderedR = d.r * k;
-          const cx = (d.x - v[0]) * k + size / 2;
-          const isParent = !!d.children;
+  private static _truncateLabel(
+    textEl: SVGTextElement,
+    sel: Selection<SVGTextElement, PackedNode, null, undefined>,
+    name: string,
+    renderedR: number,
+  ): void {
+    const maxWidth = renderedR * 2 - 8;
+    sel.text(name);
+    const textWidth = textEl.getComputedTextLength?.() ?? 0;
+    if (textWidth <= maxWidth || maxWidth <= 0) return;
 
-          const fontSize = isParent
-            ? Math.min(13, Math.max(8, renderedR * 0.18))
-            : Math.min(14, Math.max(9, renderedR * 0.35));
-
-          // Parents: arc label at the top edge. Leaves: centered.
-          const cy = isParent
-            ? (d.y - v[1]) * k + size / 2 - renderedR + fontSize + 2
-            : (d.y - v[1]) * k + size / 2;
-
-          const el = select(this);
-          el.attr("x", cx).attr("y", cy);
-          el.style("font-size", `${fontSize}px`);
-          el.style("font-weight", isParent ? "bold" : "normal");
-
-          const visible = renderedR >= minLabelRadius;
-
-          // For parent nodes, check if any child's arc label would overlap with ours.
-          // If the gap between our top edge and any child's top edge is too small,
-          // hide OUR label (child wins). The child provides more specific context.
-          let childTooClose = false;
-          if (isParent && d.children) {
-            for (const child of d.children) {
-              if (!child.children) continue; // only check parent children (folders)
-              const childRenderedR = child.r * k;
-              if (childRenderedR < minLabelRadius) continue; // child label not visible anyway
-              const myTop = (d.y - v[1]) * k + size / 2 - renderedR;
-              const childTop = (child.y - v[1]) * k + size / 2 - childRenderedR;
-              const gap = childTop - myTop;
-              if (gap < fontSize * 2.5) {
-                childTooClose = true;
-                break;
-              }
-            }
-          }
-
-          const opacity = visible && !childTooClose ? 0.9 : 0;
-          el.attr("opacity", opacity);
-
-          // Truncate text to fit within the circle
-          const name = d.data.name;
-          const maxWidth = renderedR * 2 - 8;
-          el.text(name);
-
-          const textWidth = this.getComputedTextLength?.() ?? 0;
-          if (textWidth > maxWidth && maxWidth > 0) {
-            let truncated = name;
-            while (truncated.length > 1) {
-              truncated = truncated.slice(0, -1);
-              el.text(`${truncated}...`);
-              if ((this.getComputedTextLength?.() ?? 0) <= maxWidth) break;
-            }
-            if (truncated.length <= 1) {
-              el.text("");
-            }
-          }
-        },
-      );
+    let truncated = name;
+    while (truncated.length > 1) {
+      truncated = truncated.slice(0, -1);
+      sel.text(`${truncated}...`);
+      if ((textEl.getComputedTextLength?.() ?? 0) <= maxWidth) return;
     }
+    sel.text("");
   }
 
   private _zoom(target: PackedNode): void {
