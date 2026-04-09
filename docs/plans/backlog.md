@@ -42,3 +42,32 @@ claude mcp add sonarqube \
 Requires: Docker running, `SONAR_TOKEN` env var set.
 
 **Why deferred**: Needs Docker + token setup. Low urgency — SonarCloud dashboard is available in the meantime.
+
+---
+
+## Worktree initialization automation
+
+**Origin**: Session 2026-04-09
+
+Git worktrees created with `git worktree add` don't initialize submodules or Python venvs automatically. This causes tests to fail in every new worktree (lizard-ts needs `python-lizard/.venv` and `pnpm run build`). Agents resort to `--no-verify` to bypass the pre-commit hook.
+
+**Fix options**:
+- Script at repo root (`scripts/setup-worktree.sh`) that runs: `git submodule update --init`, venv setup, `pnpm install --frozen-lockfile`, `pnpm run build`
+- Or a `.config/wt.toml` post-create hook if using Worktrunk
+- Document the manual steps in CLAUDE.md under a "Worktree Setup" section
+
+**Why deferred**: Workaround is known (manual setup steps). Automate when worktree usage becomes frequent enough to justify the script.
+
+---
+
+## Domain chart components — eliminate duplication via Strategy pattern
+
+**Origin**: Session 2026-04-09, PR #27 (SonarCloud flagged 9.8% duplication)
+
+The 18 domain chart components in `packages/charts/src/domain/` are structurally identical — same DataFetchController, same properties (data, src, theme, variant, limit), same `updated()` and `resolvedData` getter. Only the data type, mapper functions, and available variants differ. SonarCloud detects this as code duplication.
+
+**Approach**: Strategy pattern via a `defineDomainChart<T>()` factory that accepts a config object with variant renderers. Each domain chart becomes pure configuration (~15 lines) instead of a full class (~60 lines). Zero inheritance.
+
+**Spec**: `docs/superpowers/specs/2026-04-09-domain-chart-strategy-design.md`
+
+**Why deferred**: Significant refactor (18 files + exports + tests). Separated from the enclosure labels PR to keep scope contained.
