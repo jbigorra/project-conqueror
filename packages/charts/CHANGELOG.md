@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.4](https://github.com/jbigorra/project-conqueror/compare/charts-v0.1.3...charts-v0.1.4) (2026-04-09)
+
+
+### Bug Fixes
+
+* relax D3 Selection type in _truncateLabel to fix build ([2205688](https://github.com/jbigorra/project-conqueror/commit/2205688929ab73e3ce67fccbcd843bd4cf27a70b))
+
 ## [0.1.3](https://github.com/jbigorra/project-conqueror/compare/charts-v0.1.2...charts-v0.1.3) (2026-04-09)
 
 
