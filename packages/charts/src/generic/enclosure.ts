@@ -194,8 +194,7 @@ export class PqEnclosure extends LitElement {
       .attr("fill", theme.text)
       .attr("opacity", 0)
       .attr("pointer-events", "none")
-      .style("font-family", theme.fontFamily)
-;
+      .style("font-family", theme.fontFamily);
 
     return nodes;
   }
