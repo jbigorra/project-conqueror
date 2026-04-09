@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.2](https://github.com/jbigorra/project-conqueror/compare/charts-v0.1.1...charts-v0.1.2) (2026-04-09)
+
+
+### Features
+
+* add adaptive labels and theme support to enclosure diagram ([ba431df](https://github.com/jbigorra/project-conqueror/commit/ba431dfa1ad3897d8461f453cd5735d547cba638))
+
+
+### Bug Fixes
+
+* arc labels with overlap avoidance for enclosure diagram ([4ec9553](https://github.com/jbigorra/project-conqueror/commit/4ec95536c272408107e82fe81b8ef0f21c2689ef))
+
 ## [0.1.1](https://github.com/jbigorra/project-conqueror/compare/charts-v0.1.0...charts-v0.1.1) (2026-04-08)
 
 
