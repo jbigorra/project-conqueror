@@ -14,7 +14,7 @@
     "tdd": "turbo tdd",
     "check": "turbo check",
     "lint": "turbo lint",
-    "validate": "turbo validate",
+    "validate": "scripts/validate.sh",
     "prepare": "husky"
   },
   "keywords": [],

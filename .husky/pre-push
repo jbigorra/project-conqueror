@@ -1,7 +1,5 @@
 branch=$(git symbolic-ref HEAD 2>/dev/null | sed 's|refs/heads/||')
 
 if [ "$branch" = "master" ]; then
-  pnpm run test
-  pnpm run check
-  cd packages/charts && bun run build-storybook && cd ../..
+  scripts/validate.sh
 fi
