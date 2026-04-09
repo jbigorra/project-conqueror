@@ -1,7 +1,7 @@
 {
   "apps/webapp": "0.1.1",
-  "packages/behave": "0.1.1",
-  "packages/charts": "0.1.4",
+  "packages/behave": "0.1.2",
+  "packages/charts": "0.1.5",
   "packages/code-maat-port": "0.1.1",
   "packages/lib": "0.1.1",
   "packages/lizard-ts": "0.1.1"
