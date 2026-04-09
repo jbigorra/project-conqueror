@@ -4,8 +4,8 @@ import { customElement, property } from "lit/decorators.js";
 import { DataFetchController } from "../controllers/data-fetch.controller";
 import { mapAgeToBar, mapAgeToHistogram } from "../mappers/age.mapper";
 import type { ThemePreset } from "../types";
-import "../generic/histogram";
-import "../generic/ranked-bar";
+import "../generic/histogram.visual";
+import "../generic/ranked-bar.visual";
 
 type AgeVariant = "histogram" | "bar";
 

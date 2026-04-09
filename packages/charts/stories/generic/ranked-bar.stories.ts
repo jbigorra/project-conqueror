@@ -1,6 +1,6 @@
 import { html } from "lit";
 import type { Meta, StoryObj } from "@storybook/web-components-vite";
-import "../../src/generic/ranked-bar";
+import "../../src/generic/ranked-bar.visual";
 import type { RankedBarItem } from "../../src/types";
 
 const sampleData: RankedBarItem[] = [

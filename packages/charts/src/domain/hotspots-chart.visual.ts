@@ -5,9 +5,9 @@ import { DataFetchController } from "../controllers/data-fetch.controller";
 import { mapHotspotsToBubble, mapHotspotsToTreemap } from "../mappers/hotspots.mapper";
 import { mapHotspotsToEnclosure } from "../mappers/hotspots-enclosure.mapper";
 import type { ThemePreset } from "../types";
-import "../generic/bubble";
-import "../generic/treemap";
-import "../generic/enclosure";
+import "../generic/bubble.visual";
+import "../generic/treemap.visual";
+import "../generic/enclosure.visual";
 
 type HotspotsVariant = "bubble" | "treemap" | "enclosure";
 

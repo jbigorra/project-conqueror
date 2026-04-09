@@ -1,6 +1,6 @@
 import { html } from "lit";
 import type { Meta, StoryObj } from "@storybook/web-components-vite";
-import "../../src/domain/ownership-chart";
+import "../../src/domain/ownership-chart.visual";
 import { entityOwnershipFixture } from "../../tests/fixtures/entity-ownership.fixture";
 
 const meta: Meta = {

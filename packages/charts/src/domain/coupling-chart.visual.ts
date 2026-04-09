@@ -4,8 +4,8 @@ import { customElement, property } from "lit/decorators.js";
 import { DataFetchController } from "../controllers/data-fetch.controller";
 import { mapCouplingToBar, mapCouplingToBubble } from "../mappers/coupling.mapper";
 import type { ThemePreset } from "../types";
-import "../generic/bubble";
-import "../generic/ranked-bar";
+import "../generic/bubble.visual";
+import "../generic/ranked-bar.visual";
 
 type CouplingVariant = "bubble" | "bar";
 

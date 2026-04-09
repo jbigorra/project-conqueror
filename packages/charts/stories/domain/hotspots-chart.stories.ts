@@ -1,6 +1,6 @@
 import { html } from "lit";
 import type { Meta, StoryObj } from "@storybook/web-components-vite";
-import "../../src/domain/hotspots-chart";
+import "../../src/domain/hotspots-chart.visual";
 import { hotspotsFixture } from "../../tests/fixtures/hotspots.fixture";
 import { hotspotsEnclosureFixture } from "../../tests/fixtures/hotspots-enclosure.fixture";
 

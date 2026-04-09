@@ -1,6 +1,6 @@
 import { html } from "lit";
 import type { Meta, StoryObj } from "@storybook/web-components-vite";
-import "../../src/domain/age-chart";
+import "../../src/domain/age-chart.visual";
 import { ageFixture } from "../../tests/fixtures/age.fixture";
 
 const meta: Meta = {

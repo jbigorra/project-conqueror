@@ -1,6 +1,6 @@
 import { html } from "lit";
 import type { Meta, StoryObj } from "@storybook/web-components-vite";
-import "../../src/domain/coupling-chart";
+import "../../src/domain/coupling-chart.visual";
 import { couplingFixture } from "../../tests/fixtures/coupling.fixture";
 
 const meta: Meta = {

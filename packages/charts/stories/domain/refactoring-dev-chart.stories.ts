@@ -1,6 +1,6 @@
 import { html } from "lit";
 import type { Meta, StoryObj } from "@storybook/web-components-vite";
-import "../../src/domain/refactoring-dev-chart";
+import "../../src/domain/refactoring-dev-chart.visual";
 import { refactoringMainDevFixture } from "../../tests/fixtures/refactoring-main-dev.fixture";
 
 const meta: Meta = {

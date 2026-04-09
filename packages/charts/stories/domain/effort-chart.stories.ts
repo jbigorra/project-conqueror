@@ -1,6 +1,6 @@
 import { html } from "lit";
 import type { Meta, StoryObj } from "@storybook/web-components-vite";
-import "../../src/domain/effort-chart";
+import "../../src/domain/effort-chart.visual";
 import { entityEffortFixture } from "../../tests/fixtures/entity-effort.fixture";
 
 const meta: Meta = {

@@ -4,8 +4,8 @@ import { customElement, property } from "lit/decorators.js";
 import { DataFetchController } from "../controllers/data-fetch.controller";
 import { mapRevisionsToBar, mapRevisionsToTreemap } from "../mappers/revisions.mapper";
 import type { ThemePreset } from "../types";
-import "../generic/ranked-bar";
-import "../generic/treemap";
+import "../generic/ranked-bar.visual";
+import "../generic/treemap.visual";
 
 type RevisionsVariant = "bar" | "treemap";
 

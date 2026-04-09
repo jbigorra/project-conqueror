@@ -1,6 +1,6 @@
 import { html } from "lit";
 import type { Meta, StoryObj } from "@storybook/web-components-vite";
-import "../../src/generic/stacked-bar";
+import "../../src/generic/stacked-bar.visual";
 import type { StackedBarItem } from "../../src/types";
 
 const sampleData: StackedBarItem[] = [

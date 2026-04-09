@@ -1,6 +1,6 @@
 import { html } from "lit";
 import type { Meta, StoryObj } from "@storybook/web-components-vite";
-import "../../src/generic/line-area";
+import "../../src/generic/line-area.visual";
 import type { LineAreaPoint } from "../../src/types";
 
 const sampleData: LineAreaPoint[] = [

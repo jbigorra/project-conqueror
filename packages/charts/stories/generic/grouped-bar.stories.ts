@@ -1,6 +1,6 @@
 import { html } from "lit";
 import type { Meta, StoryObj } from "@storybook/web-components-vite";
-import "../../src/generic/grouped-bar";
+import "../../src/generic/grouped-bar.visual";
 import type { GroupedBarItem } from "../../src/types";
 
 const sampleData: GroupedBarItem[] = [

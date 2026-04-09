@@ -4,7 +4,7 @@ import { customElement, property } from "lit/decorators.js";
 import { DataFetchController } from "../controllers/data-fetch.controller";
 import { mapSocToBar } from "../mappers/soc.mapper";
 import type { ThemePreset } from "../types";
-import "../generic/ranked-bar";
+import "../generic/ranked-bar.visual";
 
 /**
  * Sum-of-coupling (SOC) chart showing coupling scores as a ranked bar.

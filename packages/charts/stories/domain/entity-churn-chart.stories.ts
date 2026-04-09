@@ -1,6 +1,6 @@
 import { html } from "lit";
 import type { Meta, StoryObj } from "@storybook/web-components-vite";
-import "../../src/domain/entity-churn-chart";
+import "../../src/domain/entity-churn-chart.visual";
 import { entityChurnFixture } from "../../tests/fixtures/entity-churn.fixture";
 
 const meta: Meta = {

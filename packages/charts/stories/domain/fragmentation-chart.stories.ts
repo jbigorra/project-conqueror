@@ -1,6 +1,6 @@
 import { html } from "lit";
 import type { Meta, StoryObj } from "@storybook/web-components-vite";
-import "../../src/domain/fragmentation-chart";
+import "../../src/domain/fragmentation-chart.visual";
 import { fragmentationFixture } from "../../tests/fixtures/fragmentation.fixture";
 
 const meta: Meta = {

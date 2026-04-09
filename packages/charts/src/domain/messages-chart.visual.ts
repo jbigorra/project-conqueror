@@ -4,7 +4,7 @@ import { customElement, property } from "lit/decorators.js";
 import { DataFetchController } from "../controllers/data-fetch.controller";
 import { mapMessagesToBar } from "../mappers/messages.mapper";
 import type { ThemePreset } from "../types";
-import "../generic/ranked-bar";
+import "../generic/ranked-bar.visual";
 
 /**
  * Commit messages chart showing keyword match count per entity as a ranked bar.

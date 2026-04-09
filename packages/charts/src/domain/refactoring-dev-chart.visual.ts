@@ -4,8 +4,8 @@ import { customElement, property } from "lit/decorators.js";
 import { DataFetchController } from "../controllers/data-fetch.controller";
 import { mapRefactoringDevToBar, mapRefactoringDevToTreemap } from "../mappers/main-dev.mapper";
 import type { ThemePreset } from "../types";
-import "../generic/ranked-bar";
-import "../generic/treemap";
+import "../generic/ranked-bar.visual";
+import "../generic/treemap.visual";
 
 type RefactoringDevVariant = "bar" | "treemap";
 

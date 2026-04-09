@@ -1,6 +1,6 @@
 import { html } from "lit";
 import type { Meta, StoryObj } from "@storybook/web-components-vite";
-import "../../src/generic/doughnut";
+import "../../src/generic/doughnut.visual";
 import type { DoughnutItem } from "../../src/types";
 
 const sampleData: DoughnutItem[] = [

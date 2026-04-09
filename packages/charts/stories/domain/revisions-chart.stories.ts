@@ -1,6 +1,6 @@
 import { html } from "lit";
 import type { Meta, StoryObj } from "@storybook/web-components-vite";
-import "../../src/domain/revisions-chart";
+import "../../src/domain/revisions-chart.visual";
 import { revisionsFixture } from "../../tests/fixtures/revisions.fixture";
 
 const meta: Meta = {

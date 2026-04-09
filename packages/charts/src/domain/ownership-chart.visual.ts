@@ -4,8 +4,8 @@ import { customElement, property } from "lit/decorators.js";
 import { DataFetchController } from "../controllers/data-fetch.controller";
 import { mapOwnershipToDoughnut, mapOwnershipToStacked } from "../mappers/ownership.mapper";
 import type { ThemePreset } from "../types";
-import "../generic/stacked-bar";
-import "../generic/doughnut";
+import "../generic/stacked-bar.visual";
+import "../generic/doughnut.visual";
 
 type OwnershipVariant = "stacked" | "doughnut";
 

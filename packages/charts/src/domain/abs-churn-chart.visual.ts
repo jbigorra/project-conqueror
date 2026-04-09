@@ -4,7 +4,7 @@ import { customElement, property } from "lit/decorators.js";
 import { DataFetchController } from "../controllers/data-fetch.controller";
 import { mapAbsChurnToLineArea } from "../mappers/churn.mapper";
 import type { ThemePreset } from "../types";
-import "../generic/line-area";
+import "../generic/line-area.visual";
 
 type AbsChurnVariant = "area" | "line";
 

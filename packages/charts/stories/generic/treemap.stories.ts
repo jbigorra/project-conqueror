@@ -1,6 +1,6 @@
 import { html } from "lit";
 import type { Meta, StoryObj } from "@storybook/web-components-vite";
-import "../../src/generic/treemap";
+import "../../src/generic/treemap.visual";
 import type { TreemapItem } from "../../src/types";
 
 const sampleData: TreemapItem[] = [
