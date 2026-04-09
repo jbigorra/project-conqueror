@@ -237,25 +237,43 @@ export class PqEnclosure extends LitElement {
           const renderedR = d.r * k;
           const cx = (d.x - v[0]) * k + size / 2;
           const isParent = !!d.children;
+
+          const fontSize = isParent
+            ? Math.min(13, Math.max(8, renderedR * 0.18))
+            : Math.min(14, Math.max(9, renderedR * 0.35));
+
+          // Parents: arc label at the top edge. Leaves: centered.
           const cy = isParent
-            ? (d.y - v[1]) * k + size / 2 - renderedR * 0.33
+            ? (d.y - v[1]) * k + size / 2 - renderedR + fontSize + 2
             : (d.y - v[1]) * k + size / 2;
 
           const el = select(this);
           el.attr("x", cx).attr("y", cy);
-
-          const fontSize = Math.min(14, Math.max(9, renderedR * 0.35));
           el.style("font-size", `${fontSize}px`);
+          el.style("font-weight", isParent ? "bold" : "normal");
 
           const visible = renderedR >= minLabelRadius;
 
-          // Parent fades when any child has a visible label
-          let parentFaded = false;
+          // For parent nodes, check if any child's arc label would overlap with ours.
+          // If the gap between our top edge and any child's top edge is too small,
+          // hide OUR label (child wins). The child provides more specific context.
+          let childTooClose = false;
           if (isParent && d.children) {
-            parentFaded = d.children.some((child) => child.r * k >= minLabelRadius);
+            for (const child of d.children) {
+              if (!child.children) continue; // only check parent children (folders)
+              const childRenderedR = child.r * k;
+              if (childRenderedR < minLabelRadius) continue; // child label not visible anyway
+              const myTop = (d.y - v[1]) * k + size / 2 - renderedR;
+              const childTop = (child.y - v[1]) * k + size / 2 - childRenderedR;
+              const gap = childTop - myTop;
+              if (gap < fontSize * 2.5) {
+                childTooClose = true;
+                break;
+              }
+            }
           }
 
-          const opacity = visible && !parentFaded ? 0.9 : 0;
+          const opacity = visible && !childTooClose ? 0.9 : 0;
           el.attr("opacity", opacity);
 
           // Truncate text to fit within the circle
