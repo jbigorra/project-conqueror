@@ -100,7 +100,17 @@ jobs:
           ref: ${{ github.event.workflow_run.head_sha }}
           fetch-depth: 0
 
+      - name: Check if project has changes
+        id: changes
+        run: |
+          if git diff --name-only HEAD~1...HEAD | grep -q "^${{ matrix.project.path }}/"; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Restore Turbo cache
+        if: steps.changes.outputs.changed == 'true'
         uses: actions/cache@v5
         with:
           path: .turbo
@@ -109,6 +119,7 @@ jobs:
             ${{ runner.os }}-turbo-
 
       - name: Restore workspace cache
+        if: steps.changes.outputs.changed == 'true'
         uses: actions/cache@v5
         with:
           path: |
@@ -122,14 +133,13 @@ jobs:
             workspace-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}-
 
       - name: Download coverage artifacts
+        if: steps.changes.outputs.changed == 'true'
         uses: actions/download-artifact@v8
         with:
           name: coverage
-      - name: Find coverage report file
-        run: |
-          ls -la ${{ matrix.project.path }}
-          find ${{ matrix.project.path }} -name "lcov.info"
+
       - name: SonarQube Scan - ${{ matrix.project.name }}
+        if: steps.changes.outputs.changed == 'true'
         uses: SonarSource/sonarqube-scan-action@v7
         with:
           projectBaseDir: ${{ matrix.project.path }}/
