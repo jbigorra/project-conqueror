@@ -1,7 +1,7 @@
 {
   "name": "@prj-conq/behave",
   "description": "A library that executes behavioural code analysis by using code-maat together with other tools for more complex analysis.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "type": "module",
   "private": true,
   "files": [

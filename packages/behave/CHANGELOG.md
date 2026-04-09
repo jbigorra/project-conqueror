@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2](https://github.com/jbigorra/project-conqueror/compare/behave-v0.1.1...behave-v0.1.2) (2026-04-09)
+
+
+### Bug Fixes
+
+* use build instead of typecheck in validate for stricter checks ([47ea83f](https://github.com/jbigorra/project-conqueror/commit/47ea83f36f11a909886981da357a92473a435a2c))
+
 ## [0.1.1](https://github.com/jbigorra/project-conqueror/compare/behave-v0.1.0...behave-v0.1.1) (2026-04-08)
 
 
