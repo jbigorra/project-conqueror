@@ -70,3 +70,4 @@ Built with `bunup` + `tsc -p tsconfig.build.json` for declaration files.
 - Biome strict mode: noExplicitAny, noUnusedVariables, noNonNullAssertion
 - Tests mirror src/ structure under tests/
 - VCS-aware formatting: only changed files are linted (--changed flag)
+- **Visual components**: Files rendering charts via Chart.js/D3/SVG use `.visual.ts` suffix and are excluded from test coverage (verified in Storybook instead). Reusable non-chart UI components use plain `.ts` and must be unit tested.

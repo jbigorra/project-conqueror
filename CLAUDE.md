@@ -146,6 +146,7 @@ Every package or app in the monorepo MUST have all of the following before it is
 - [ ] Test files under `tests/` mirroring `src/` structure
 - [ ] Unit tests for all non-trivial logic
 - [ ] Barrel file (`src/index.ts`) using named exports only
+- [ ] Chart/graph rendering components use `.visual.ts` suffix (excluded from coverage, verified in Storybook)
 
 ## JSDoc Enforcement (Automatic)
 
