@@ -289,7 +289,7 @@ export class PqEnclosure extends LitElement {
 
   private static _truncateLabel(
     textEl: SVGTextElement,
-    sel: Selection<SVGTextElement, PackedNode, null, undefined>,
+    sel: Selection<SVGTextElement, unknown, null, undefined>,
     name: string,
     renderedR: number,
   ): void {
