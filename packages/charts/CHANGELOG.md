@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.3](https://github.com/jbigorra/project-conqueror/compare/charts-v0.1.2...charts-v0.1.3) (2026-04-09)
+
+
+### Bug Fixes
+
+* update story and domain imports for .visual.ts rename ([4ac9c49](https://github.com/jbigorra/project-conqueror/commit/4ac9c4942e661b6a9762e61acd00f7c04227040a))
+
 ## [0.1.2](https://github.com/jbigorra/project-conqueror/compare/charts-v0.1.1...charts-v0.1.2) (2026-04-09)
 
 
