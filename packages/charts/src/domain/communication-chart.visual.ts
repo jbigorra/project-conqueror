@@ -1,13 +1,9 @@
 import type { Communication } from "@prj-conq/behave";
-import { html, LitElement } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { DataFetchController } from "../controllers/data-fetch.controller";
+import { html } from "lit";
 import { mapCommunicationToBar, mapCommunicationToBubble } from "../mappers/communication.mapper";
-import type { ThemePreset } from "../types";
+import { defineDomainChart } from "./define-domain-chart";
 import "../generic/bubble.visual";
 import "../generic/ranked-bar.visual";
-
-type CommunicationVariant = "bubble" | "bar";
 
 /**
  * Communication chart showing author-peer collaboration as bubble or bar.
@@ -24,44 +20,25 @@ type CommunicationVariant = "bubble" | "bar";
  * <pq-communication-chart src="/api/analysis/communication" variant="bubble"></pq-communication-chart>
  * ```
  */
-@customElement("pq-communication-chart")
-export class PqCommunicationChart extends LitElement {
-  private fetcher = new DataFetchController<Communication>(this);
-
-  @property({ type: Array }) data?: Communication[];
-  @property() src?: string;
-  @property() theme?: ThemePreset;
-  @property() variant: CommunicationVariant = "bubble";
-  @property({ type: Number }) limit = 20;
-
-  protected override async updated(changed: Map<string, unknown>): Promise<void> {
-    if (changed.has("src") || changed.has("data"))
-      await this.fetcher.fetch(this.src ?? "", !!this.data);
-  }
-
-  private get resolvedData(): Communication[] {
-    return this.data ?? this.fetcher.data ?? [];
-  }
-
-  protected override render() {
-    if (this.variant === "bar") {
-      return html`<pq-ranked-bar
-        .data=${mapCommunicationToBar(this.resolvedData)}
-        .limit=${this.limit}
-        .theme=${this.theme}
+export const PqCommunicationChart = defineDomainChart<Communication>({
+  tag: "pq-communication-chart",
+  defaultVariant: "bubble",
+  variants: {
+    bar: (data, theme, limit) =>
+      html`<pq-ranked-bar
+        .data=${mapCommunicationToBar(data)}
+        .limit=${limit}
+        .theme=${theme}
         sort="desc"
         horizontal
-      ></pq-ranked-bar>`;
-    }
-    return html`<pq-bubble
-      .data=${mapCommunicationToBubble(this.resolvedData)}
-      .theme=${this.theme}
-    ></pq-bubble>`;
-  }
-}
+      ></pq-ranked-bar>`,
+    bubble: (data, theme) =>
+      html`<pq-bubble .data=${mapCommunicationToBubble(data)} .theme=${theme}></pq-bubble>`,
+  },
+});
 
 declare global {
   interface HTMLElementTagNameMap {
-    "pq-communication-chart": PqCommunicationChart;
+    "pq-communication-chart": InstanceType<typeof PqCommunicationChart>;
   }
 }
