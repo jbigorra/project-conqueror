@@ -1,13 +1,9 @@
 import type { RefactoringMainDev } from "@prj-conq/behave";
-import { html, LitElement } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { DataFetchController } from "../controllers/data-fetch.controller";
+import { html } from "lit";
 import { mapRefactoringDevToBar, mapRefactoringDevToTreemap } from "../mappers/main-dev.mapper";
-import type { ThemePreset } from "../types";
+import { defineDomainChart } from "./define-domain-chart";
 import "../generic/ranked-bar.visual";
 import "../generic/treemap.visual";
-
-type RefactoringDevVariant = "bar" | "treemap";
 
 /**
  * Refactoring developer chart showing refactoring ownership as bar or treemap.
@@ -24,45 +20,29 @@ type RefactoringDevVariant = "bar" | "treemap";
  * <pq-refactoring-dev-chart src="/api/analysis/refactoring-dev" variant="bar"></pq-refactoring-dev-chart>
  * ```
  */
-@customElement("pq-refactoring-dev-chart")
-export class PqRefactoringDevChart extends LitElement {
-  private fetcher = new DataFetchController<RefactoringMainDev>(this);
-
-  @property({ type: Array }) data?: RefactoringMainDev[];
-  @property() src?: string;
-  @property() theme?: ThemePreset;
-  @property() variant: RefactoringDevVariant = "bar";
-  @property({ type: Number }) limit = 20;
-
-  protected override async updated(changed: Map<string, unknown>): Promise<void> {
-    if (changed.has("src") || changed.has("data"))
-      await this.fetcher.fetch(this.src ?? "", !!this.data);
-  }
-
-  private get resolvedData(): RefactoringMainDev[] {
-    return this.data ?? this.fetcher.data ?? [];
-  }
-
-  protected override render() {
-    if (this.variant === "treemap") {
-      return html`<pq-treemap
-        .data=${mapRefactoringDevToTreemap(this.resolvedData)}
-        .theme=${this.theme}
+export const PqRefactoringDevChart = defineDomainChart<RefactoringMainDev>({
+  tag: "pq-refactoring-dev-chart",
+  defaultVariant: "bar",
+  variants: {
+    bar: (data, theme, limit) =>
+      html`<pq-ranked-bar
+        .data=${mapRefactoringDevToBar(data)}
+        .limit=${limit}
+        .theme=${theme}
+        sort="desc"
+        horizontal
+      ></pq-ranked-bar>`,
+    treemap: (data, theme) =>
+      html`<pq-treemap
+        .data=${mapRefactoringDevToTreemap(data)}
+        .theme=${theme}
         show-labels
-      ></pq-treemap>`;
-    }
-    return html`<pq-ranked-bar
-      .data=${mapRefactoringDevToBar(this.resolvedData)}
-      .limit=${this.limit}
-      .theme=${this.theme}
-      sort="desc"
-      horizontal
-    ></pq-ranked-bar>`;
-  }
-}
+      ></pq-treemap>`,
+  },
+});
 
 declare global {
   interface HTMLElementTagNameMap {
-    "pq-refactoring-dev-chart": PqRefactoringDevChart;
+    "pq-refactoring-dev-chart": InstanceType<typeof PqRefactoringDevChart>;
   }
 }
