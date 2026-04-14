@@ -1,11 +1,7 @@
-import { css, html, LitElement } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ref } from "lit/directives/ref.js";
-import { ChartController } from "../controllers/chart.controller";
-import { DataFetchController } from "../controllers/data-fetch.controller";
-import { ThemeController } from "../controllers/theme.controller";
+import type { ChartConfiguration } from "chart.js";
 import { binValues } from "../mappers/histogram.mapper";
-import type { HistogramItem, ThemePreset } from "../types";
+import type { HistogramItem } from "../types";
+import { defineGenericChart } from "./define-generic-chart";
 
 /**
  * Histogram chart web component backed by Chart.js.
@@ -35,58 +31,32 @@ import type { HistogramItem, ThemePreset } from "../types";
  * ></pq-histogram>
  * ```
  */
-@customElement("pq-histogram")
-export class PqHistogram extends LitElement {
-  static override styles = css`
-    :host { display: block; position: relative; width: 100%; height: 100%; }
-    canvas { width: 100% !important; height: 100% !important; }
-    .state-message {
-      display: flex; align-items: center; justify-content: center;
-      min-height: 200px;
-      color: var(--pq-chart-text, #e0e0e0);
-      font-family: var(--pq-chart-font-family, system-ui, sans-serif);
-    }
-  `;
-
-  private fetcher = new DataFetchController<HistogramItem>(this);
-  private chartCtrl = new ChartController(this);
-  private themeCtrl = new ThemeController(this);
-
-  @property({ type: Array }) data?: HistogramItem[];
-  @property() src?: string;
-  @property() theme?: ThemePreset;
-  @property({ type: Number }) bins = 10;
-  @property({ attribute: "x-label" }) xLabel = "";
-  @property({ attribute: "y-label" }) yLabel = "";
-  @property({ type: Boolean, attribute: "animated" }) animated = true;
-
-  protected override async updated(changed: Map<string, unknown>): Promise<void> {
-    if (changed.has("theme")) this.themeCtrl.update(this.theme);
-    if (changed.has("animated")) this.chartCtrl.animate = this.animated;
-    if (changed.has("src") || changed.has("data"))
-      await this.fetcher.fetch(this.src ?? "", !!this.data);
-    this.renderChart();
-  }
-
-  private renderChart(): void {
-    const resolved = this.data ?? this.fetcher.data;
-    if (!resolved?.length) return;
-
+export const PqHistogram = defineGenericChart<
+  HistogramItem,
+  { bins: number; xLabel: string; yLabel: string }
+>({
+  tag: "pq-histogram",
+  properties: {
+    bins: { type: Number },
+    xLabel: { attribute: "x-label" },
+    yLabel: { attribute: "y-label" },
+  },
+  defaults: { bins: 10, xLabel: "", yLabel: "" },
+  buildConfig: ({ resolved, themeCtrl, props }): ChartConfiguration => {
     const values = resolved.map((item) => item.value);
-    const binned = binValues(values, this.bins);
+    const binned = binValues(values, props.bins);
+    const themePlugins = themeCtrl.options.plugins;
+    const themeScales = themeCtrl.options.scales;
 
-    const themePlugins = this.themeCtrl.options.plugins;
-    const themeScales = this.themeCtrl.options.scales;
-
-    this.chartCtrl.update({
+    return {
       type: "bar",
       data: {
         labels: binned.map((b) => b.label),
         datasets: [
           {
             data: binned.map((b) => b.value),
-            backgroundColor: this.themeCtrl.colors[0],
-            borderColor: this.themeCtrl.colors[0],
+            backgroundColor: themeCtrl.colors[0],
+            borderColor: themeCtrl.colors[0],
             borderWidth: 1,
             categoryPercentage: 1.0,
             barPercentage: 1.0,
@@ -104,31 +74,20 @@ export class PqHistogram extends LitElement {
           ...themeScales,
           x: {
             ...themeScales.x,
-            title: { display: !!this.xLabel, text: this.xLabel },
+            title: { display: !!props.xLabel, text: props.xLabel },
           },
           y: {
             ...themeScales.y,
-            title: { display: !!this.yLabel, text: this.yLabel },
+            title: { display: !!props.yLabel, text: props.yLabel },
           },
         },
       },
-    });
-  }
-
-  protected override render() {
-    if (this.fetcher.state === "loading")
-      return html`<div class="state-message"><slot name="loading">Loading…</slot></div>`;
-    if (this.fetcher.state === "error")
-      return html`<div class="state-message"><slot name="error">Failed to load data.</slot></div>`;
-    const resolved = this.data ?? this.fetcher.data;
-    if (resolved && resolved.length === 0)
-      return html`<div class="state-message"><slot name="empty">No data.</slot></div>`;
-    return html`<canvas ${ref(this.chartCtrl.canvasRef)}></canvas>`;
-  }
-}
+    };
+  },
+});
 
 declare global {
   interface HTMLElementTagNameMap {
-    "pq-histogram": PqHistogram;
+    "pq-histogram": InstanceType<typeof PqHistogram>;
   }
 }
