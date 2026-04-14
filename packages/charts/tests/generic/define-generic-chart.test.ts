@@ -9,6 +9,17 @@ type GenericEl = {
   updated(changed: Map<PropertyKey, unknown>): Promise<void>;
 };
 
+type RenderEl = {
+  render(): unknown;
+};
+
+/** Extract HTML string content from a Lit TemplateResult */
+function templateHtml(result: unknown): string {
+  const r = result as { strings?: string[] };
+  if (!r?.strings) return "";
+  return r.strings.join("");
+}
+
 // Register shared test charts at module level to avoid double-registration
 const RegistrationChart = defineGenericChart({
   tag: "pq-test-factory-registration",
@@ -41,6 +52,22 @@ const DefaultsChart = defineGenericChart<{ value: number }, { label: string }>({
   properties: { label: {} },
   defaults: { label: "hello" },
   buildConfig: () => ({ type: "bar", data: { datasets: [] }, options: {} }),
+});
+
+// Chart for renderChart + render state tests
+let capturedProps: { label: string } | undefined;
+const RenderTestChart = defineGenericChart<{ value: number }, { label: string }>({
+  tag: "pq-test-render-chart",
+  properties: { label: {} },
+  defaults: { label: "" },
+  buildConfig: ({ resolved, props }) => {
+    capturedProps = props;
+    return {
+      type: "bar",
+      data: { datasets: [{ data: resolved.map((d) => d.value) }] },
+      options: {},
+    };
+  },
 });
 
 describe("defineGenericChart", () => {
@@ -121,6 +148,88 @@ describe("defineGenericChart", () => {
       await el.updated(changed);
       expect(fetchSpy).toHaveBeenCalled();
       fetchSpy.mockRestore();
+    });
+  });
+
+  describe("1-C: renderChart + render states", () => {
+    it("1.18 renderChart() is a no-op when resolved data is empty", async () => {
+      const chartUpdateSpy = spyOn(ChartController.prototype, "update");
+      const el = new RenderTestChart() as unknown as GenericEl;
+      // data is undefined, fetcher.data is undefined → resolved is undefined → no-op
+      const changed = new Map<PropertyKey, unknown>([["theme", undefined]]);
+      await el.updated(changed);
+      expect(chartUpdateSpy).not.toHaveBeenCalled();
+      chartUpdateSpy.mockRestore();
+    });
+
+    it("1.19 renderChart() calls chartCtrl.update() with buildConfig result when data is non-empty", async () => {
+      const chartUpdateSpy = spyOn(ChartController.prototype, "update");
+      const fetchSpy = spyOn(DataFetchController.prototype, "fetch").mockResolvedValue(undefined);
+      const el = new RenderTestChart() as unknown as GenericEl & {
+        data?: Array<{ value: number }>;
+      };
+      el.data = [{ value: 42 }];
+      const changed = new Map<PropertyKey, unknown>([["data", undefined]]);
+      await el.updated(changed);
+      expect(chartUpdateSpy).toHaveBeenCalled();
+      chartUpdateSpy.mockRestore();
+      fetchSpy.mockRestore();
+    });
+
+    it("1.20 buildConfig receives correct props snapshot", async () => {
+      const chartUpdateSpy = spyOn(ChartController.prototype, "update");
+      const fetchSpy = spyOn(DataFetchController.prototype, "fetch").mockResolvedValue(undefined);
+      capturedProps = undefined;
+      const el = new RenderTestChart() as unknown as GenericEl & {
+        data?: Array<{ value: number }>;
+        label: string;
+      };
+      el.label = "test-label";
+      el.data = [{ value: 1 }];
+      const changed = new Map<PropertyKey, unknown>([["data", undefined]]);
+      await el.updated(changed);
+      expect(capturedProps?.label).toBe("test-label");
+      chartUpdateSpy.mockRestore();
+      fetchSpy.mockRestore();
+    });
+
+    it("1.22 render() returns loading slot when fetcher.state is loading", () => {
+      const el = new RenderTestChart() as unknown as RenderEl & {
+        fetcher: { state: string };
+      };
+      // Access private fetcher via cast
+      const fetcher = (el as unknown as { fetcher: { state: string } }).fetcher;
+      fetcher.state = "loading";
+      const result = el.render();
+      expect(templateHtml(result)).toContain('name="loading"');
+    });
+
+    it("1.23 render() returns error slot when fetcher.state is error", () => {
+      const el = new RenderTestChart() as unknown as RenderEl & {
+        fetcher: { state: string };
+      };
+      const fetcher = (el as unknown as { fetcher: { state: string } }).fetcher;
+      fetcher.state = "error";
+      const result = el.render();
+      expect(templateHtml(result)).toContain('name="error"');
+    });
+
+    it("1.24 render() returns empty slot when data is empty array", () => {
+      const el = new RenderTestChart() as unknown as RenderEl & {
+        data?: Array<{ value: number }>;
+      };
+      el.data = [];
+      const result = el.render();
+      expect(templateHtml(result)).toContain('name="empty"');
+    });
+
+    it("1.25 render() returns canvas element when data is non-empty", () => {
+      const el = new RenderTestChart() as unknown as RenderEl & {
+        data?: Array<{ value: number }>;
+      };
+      el.data = [{ value: 1 }];
+      const result = el.render();
+      expect(templateHtml(result)).toContain("canvas");
     });
   });
 });
