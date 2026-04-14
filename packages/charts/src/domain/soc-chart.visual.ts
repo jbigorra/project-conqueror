@@ -1,9 +1,7 @@
 import type { Soc } from "@prj-conq/behave";
-import { html, LitElement } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { DataFetchController } from "../controllers/data-fetch.controller";
+import { html } from "lit";
 import { mapSocToBar } from "../mappers/soc.mapper";
-import type { ThemePreset } from "../types";
+import { defineDomainChart } from "./define-domain-chart";
 import "../generic/ranked-bar.visual";
 
 /**
@@ -20,37 +18,23 @@ import "../generic/ranked-bar.visual";
  * <pq-soc-chart src="/api/analysis/soc" limit="15"></pq-soc-chart>
  * ```
  */
-@customElement("pq-soc-chart")
-export class PqSocChart extends LitElement {
-  private fetcher = new DataFetchController<Soc>(this);
-
-  @property({ type: Array }) data?: Soc[];
-  @property() src?: string;
-  @property() theme?: ThemePreset;
-  @property({ type: Number }) limit = 20;
-
-  protected override async updated(changed: Map<string, unknown>): Promise<void> {
-    if (changed.has("src") || changed.has("data"))
-      await this.fetcher.fetch(this.src ?? "", !!this.data);
-  }
-
-  private get resolvedData(): Soc[] {
-    return this.data ?? this.fetcher.data ?? [];
-  }
-
-  protected override render() {
-    return html`<pq-ranked-bar
-      .data=${mapSocToBar(this.resolvedData)}
-      .limit=${this.limit}
-      .theme=${this.theme}
-      sort="desc"
-      horizontal
-    ></pq-ranked-bar>`;
-  }
-}
+export const PqSocChart = defineDomainChart<Soc>({
+  tag: "pq-soc-chart",
+  defaultVariant: "bar",
+  variants: {
+    bar: (data, theme, limit) =>
+      html`<pq-ranked-bar
+        .data=${mapSocToBar(data)}
+        .limit=${limit}
+        .theme=${theme}
+        sort="desc"
+        horizontal
+      ></pq-ranked-bar>`,
+  },
+});
 
 declare global {
   interface HTMLElementTagNameMap {
-    "pq-soc-chart": PqSocChart;
+    "pq-soc-chart": InstanceType<typeof PqSocChart>;
   }
 }
