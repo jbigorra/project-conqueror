@@ -4,6 +4,8 @@ export { PqAuthorChurnChart } from "./author-churn-chart.visual";
 export { PqAuthorsChart } from "./authors-chart.visual";
 export { PqCommunicationChart } from "./communication-chart.visual";
 export { PqCouplingChart } from "./coupling-chart.visual";
+export type { DomainChartConfig, VariantRenderer } from "./define-domain-chart";
+export { defineDomainChart } from "./define-domain-chart";
 export { PqEffortChart } from "./effort-chart.visual";
 export { PqEntityChurnChart } from "./entity-churn-chart.visual";
 export { PqFragmentationChart } from "./fragmentation-chart.visual";
