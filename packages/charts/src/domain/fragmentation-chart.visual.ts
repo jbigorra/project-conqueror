@@ -1,13 +1,9 @@
 import type { Fragmentation } from "@prj-conq/behave";
-import { html, LitElement } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { DataFetchController } from "../controllers/data-fetch.controller";
+import { html } from "lit";
 import { mapFragmentationToBar, mapFragmentationToDoughnut } from "../mappers/fragmentation.mapper";
-import type { ThemePreset } from "../types";
-import "../generic/ranked-bar.visual";
+import { defineDomainChart } from "./define-domain-chart";
 import "../generic/doughnut.visual";
-
-type FragmentationVariant = "bar" | "doughnut";
+import "../generic/ranked-bar.visual";
 
 /**
  * Fragmentation chart showing knowledge fragmentation (fractal value) as bar or doughnut.
@@ -24,44 +20,25 @@ type FragmentationVariant = "bar" | "doughnut";
  * <pq-fragmentation-chart src="/api/analysis/fragmentation" variant="bar" limit="15"></pq-fragmentation-chart>
  * ```
  */
-@customElement("pq-fragmentation-chart")
-export class PqFragmentationChart extends LitElement {
-  private fetcher = new DataFetchController<Fragmentation>(this);
-
-  @property({ type: Array }) data?: Fragmentation[];
-  @property() src?: string;
-  @property() theme?: ThemePreset;
-  @property() variant: FragmentationVariant = "bar";
-  @property({ type: Number }) limit = 20;
-
-  protected override async updated(changed: Map<string, unknown>): Promise<void> {
-    if (changed.has("src") || changed.has("data"))
-      await this.fetcher.fetch(this.src ?? "", !!this.data);
-  }
-
-  private get resolvedData(): Fragmentation[] {
-    return this.data ?? this.fetcher.data ?? [];
-  }
-
-  protected override render() {
-    if (this.variant === "doughnut") {
-      return html`<pq-doughnut
-        .data=${mapFragmentationToDoughnut(this.resolvedData)}
-        .theme=${this.theme}
-      ></pq-doughnut>`;
-    }
-    return html`<pq-ranked-bar
-      .data=${mapFragmentationToBar(this.resolvedData)}
-      .limit=${this.limit}
-      .theme=${this.theme}
-      sort="desc"
-      horizontal
-    ></pq-ranked-bar>`;
-  }
-}
+export const PqFragmentationChart = defineDomainChart<Fragmentation>({
+  tag: "pq-fragmentation-chart",
+  defaultVariant: "bar",
+  variants: {
+    bar: (data, theme, limit) =>
+      html`<pq-ranked-bar
+        .data=${mapFragmentationToBar(data)}
+        .limit=${limit}
+        .theme=${theme}
+        sort="desc"
+        horizontal
+      ></pq-ranked-bar>`,
+    doughnut: (data, theme) =>
+      html`<pq-doughnut .data=${mapFragmentationToDoughnut(data)} .theme=${theme}></pq-doughnut>`,
+  },
+});
 
 declare global {
   interface HTMLElementTagNameMap {
-    "pq-fragmentation-chart": PqFragmentationChart;
+    "pq-fragmentation-chart": InstanceType<typeof PqFragmentationChart>;
   }
 }
