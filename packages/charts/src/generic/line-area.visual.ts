@@ -1,11 +1,7 @@
-import { css, html, LitElement } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ref } from "lit/directives/ref.js";
-import { ChartController } from "../controllers/chart.controller";
-import { DataFetchController } from "../controllers/data-fetch.controller";
-import { ThemeController } from "../controllers/theme.controller";
+import type { ChartConfiguration } from "chart.js";
 import { buildLineAreaDatasets } from "../mappers/line-area.mapper";
-import type { LineAreaPoint, ThemePreset } from "../types";
+import type { LineAreaPoint } from "../types";
+import { defineGenericChart } from "./define-generic-chart";
 
 /**
  * Line/area chart web component backed by Chart.js.
@@ -35,60 +31,34 @@ import type { LineAreaPoint, ThemePreset } from "../types";
  * ></pq-line-area>
  * ```
  */
-@customElement("pq-line-area")
-export class PqLineArea extends LitElement {
-  static override styles = css`
-    :host { display: block; position: relative; width: 100%; height: 100%; }
-    canvas { width: 100% !important; height: 100% !important; }
-    .state-message {
-      display: flex; align-items: center; justify-content: center;
-      min-height: 200px;
-      color: var(--pq-chart-text, #e0e0e0);
-      font-family: var(--pq-chart-font-family, system-ui, sans-serif);
-    }
-  `;
-
-  private fetcher = new DataFetchController<LineAreaPoint>(this);
-  private chartCtrl = new ChartController(this);
-  private themeCtrl = new ThemeController(this);
-
-  @property({ type: Array }) data?: LineAreaPoint[];
-  @property() src?: string;
-  @property() theme?: ThemePreset;
-  @property({ type: Boolean }) fill = false;
-  @property({ type: Boolean }) stacked = false;
-  @property({ attribute: "x-label" }) xLabel = "";
-  @property({ attribute: "y-label" }) yLabel = "";
-  @property({ type: Boolean, attribute: "show-legend" }) showLegend = true;
-  @property({ type: Boolean, attribute: "animated" }) animated = true;
-
-  protected override async updated(changed: Map<string, unknown>): Promise<void> {
-    if (changed.has("theme")) this.themeCtrl.update(this.theme);
-    if (changed.has("animated")) this.chartCtrl.animate = this.animated;
-    if (changed.has("src") || changed.has("data"))
-      await this.fetcher.fetch(this.src ?? "", !!this.data);
-    this.renderChart();
-  }
-
-  private renderChart(): void {
-    const resolved = this.data ?? this.fetcher.data;
-    if (!resolved?.length) return;
-
+export const PqLineArea = defineGenericChart<
+  LineAreaPoint,
+  { fill: boolean; stacked: boolean; xLabel: string; yLabel: string; showLegend: boolean }
+>({
+  tag: "pq-line-area",
+  properties: {
+    fill: { type: Boolean },
+    stacked: { type: Boolean },
+    xLabel: { attribute: "x-label" },
+    yLabel: { attribute: "y-label" },
+    showLegend: { type: Boolean, attribute: "show-legend" },
+  },
+  defaults: { fill: false, stacked: false, xLabel: "", yLabel: "", showLegend: true },
+  buildConfig: ({ resolved, themeCtrl, props }): ChartConfiguration => {
     const { labels, datasets } = buildLineAreaDatasets(resolved);
+    const themePlugins = themeCtrl.options.plugins;
+    const themeScales = themeCtrl.options.scales;
 
-    const themePlugins = this.themeCtrl.options.plugins;
-    const themeScales = this.themeCtrl.options.scales;
-
-    this.chartCtrl.update({
+    return {
       type: "line",
       data: {
         labels,
         datasets: datasets.map((ds, i) => ({
           label: ds.label,
           data: ds.data,
-          backgroundColor: this.themeCtrl.colors[i % this.themeCtrl.colors.length],
-          borderColor: this.themeCtrl.colors[i % this.themeCtrl.colors.length],
-          fill: this.fill ? "origin" : false,
+          backgroundColor: themeCtrl.colors[i % themeCtrl.colors.length],
+          borderColor: themeCtrl.colors[i % themeCtrl.colors.length],
+          fill: props.fill ? "origin" : false,
           tension: 0.3,
         })),
       },
@@ -97,39 +67,28 @@ export class PqLineArea extends LitElement {
         maintainAspectRatio: false,
         plugins: {
           ...themePlugins,
-          legend: { ...themePlugins.legend, display: this.showLegend },
+          legend: { ...themePlugins.legend, display: props.showLegend },
         },
         scales: {
           ...themeScales,
           x: {
             ...themeScales.x,
-            stacked: this.stacked,
-            title: { display: !!this.xLabel, text: this.xLabel },
+            stacked: props.stacked,
+            title: { display: !!props.xLabel, text: props.xLabel },
           },
           y: {
             ...themeScales.y,
-            stacked: this.stacked,
-            title: { display: !!this.yLabel, text: this.yLabel },
+            stacked: props.stacked,
+            title: { display: !!props.yLabel, text: props.yLabel },
           },
         },
       },
-    });
-  }
-
-  protected override render() {
-    if (this.fetcher.state === "loading")
-      return html`<div class="state-message"><slot name="loading">Loading…</slot></div>`;
-    if (this.fetcher.state === "error")
-      return html`<div class="state-message"><slot name="error">Failed to load data.</slot></div>`;
-    const resolved = this.data ?? this.fetcher.data;
-    if (resolved && resolved.length === 0)
-      return html`<div class="state-message"><slot name="empty">No data.</slot></div>`;
-    return html`<canvas ${ref(this.chartCtrl.canvasRef)}></canvas>`;
-  }
-}
+    };
+  },
+});
 
 declare global {
   interface HTMLElementTagNameMap {
-    "pq-line-area": PqLineArea;
+    "pq-line-area": InstanceType<typeof PqLineArea>;
   }
 }
