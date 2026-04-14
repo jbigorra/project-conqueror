@@ -1,13 +1,9 @@
 import type { MainDevByRevs } from "@prj-conq/behave";
-import { html, LitElement } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { DataFetchController } from "../controllers/data-fetch.controller";
+import { html } from "lit";
 import { mapMainDevToBar, mapMainDevToTreemap } from "../mappers/main-dev.mapper";
-import type { ThemePreset } from "../types";
+import { defineDomainChart } from "./define-domain-chart";
 import "../generic/ranked-bar.visual";
 import "../generic/treemap.visual";
-
-type MainDevRevsVariant = "bar" | "treemap";
 
 /**
  * Main developer by revisions chart showing ownership by revision count as bar or treemap.
@@ -24,45 +20,25 @@ type MainDevRevsVariant = "bar" | "treemap";
  * <pq-main-dev-revs-chart src="/api/analysis/main-dev-revs" variant="treemap"></pq-main-dev-revs-chart>
  * ```
  */
-@customElement("pq-main-dev-revs-chart")
-export class PqMainDevRevsChart extends LitElement {
-  private fetcher = new DataFetchController<MainDevByRevs>(this);
-
-  @property({ type: Array }) data?: MainDevByRevs[];
-  @property() src?: string;
-  @property() theme?: ThemePreset;
-  @property() variant: MainDevRevsVariant = "bar";
-  @property({ type: Number }) limit = 20;
-
-  protected override async updated(changed: Map<string, unknown>): Promise<void> {
-    if (changed.has("src") || changed.has("data"))
-      await this.fetcher.fetch(this.src ?? "", !!this.data);
-  }
-
-  private get resolvedData(): MainDevByRevs[] {
-    return this.data ?? this.fetcher.data ?? [];
-  }
-
-  protected override render() {
-    if (this.variant === "treemap") {
-      return html`<pq-treemap
-        .data=${mapMainDevToTreemap(this.resolvedData)}
-        .theme=${this.theme}
-        show-labels
-      ></pq-treemap>`;
-    }
-    return html`<pq-ranked-bar
-      .data=${mapMainDevToBar(this.resolvedData)}
-      .limit=${this.limit}
-      .theme=${this.theme}
-      sort="desc"
-      horizontal
-    ></pq-ranked-bar>`;
-  }
-}
+export const PqMainDevRevsChart = defineDomainChart<MainDevByRevs>({
+  tag: "pq-main-dev-revs-chart",
+  defaultVariant: "bar",
+  variants: {
+    bar: (data, theme, limit) =>
+      html`<pq-ranked-bar
+        .data=${mapMainDevToBar(data)}
+        .limit=${limit}
+        .theme=${theme}
+        sort="desc"
+        horizontal
+      ></pq-ranked-bar>`,
+    treemap: (data, theme) =>
+      html`<pq-treemap .data=${mapMainDevToTreemap(data)} .theme=${theme} show-labels></pq-treemap>`,
+  },
+});
 
 declare global {
   interface HTMLElementTagNameMap {
-    "pq-main-dev-revs-chart": PqMainDevRevsChart;
+    "pq-main-dev-revs-chart": InstanceType<typeof PqMainDevRevsChart>;
   }
 }
