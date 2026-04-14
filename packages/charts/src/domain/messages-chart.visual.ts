@@ -1,9 +1,7 @@
 import type { MessageEntry } from "@prj-conq/behave";
-import { html, LitElement } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { DataFetchController } from "../controllers/data-fetch.controller";
+import { html } from "lit";
 import { mapMessagesToBar } from "../mappers/messages.mapper";
-import type { ThemePreset } from "../types";
+import { defineDomainChart } from "./define-domain-chart";
 import "../generic/ranked-bar.visual";
 
 /**
@@ -20,37 +18,23 @@ import "../generic/ranked-bar.visual";
  * <pq-messages-chart src="/api/analysis/messages" limit="10"></pq-messages-chart>
  * ```
  */
-@customElement("pq-messages-chart")
-export class PqMessagesChart extends LitElement {
-  private fetcher = new DataFetchController<MessageEntry>(this);
-
-  @property({ type: Array }) data?: MessageEntry[];
-  @property() src?: string;
-  @property() theme?: ThemePreset;
-  @property({ type: Number }) limit = 20;
-
-  protected override async updated(changed: Map<string, unknown>): Promise<void> {
-    if (changed.has("src") || changed.has("data"))
-      await this.fetcher.fetch(this.src ?? "", !!this.data);
-  }
-
-  private get resolvedData(): MessageEntry[] {
-    return this.data ?? this.fetcher.data ?? [];
-  }
-
-  protected override render() {
-    return html`<pq-ranked-bar
-      .data=${mapMessagesToBar(this.resolvedData)}
-      .limit=${this.limit}
-      .theme=${this.theme}
-      sort="desc"
-      horizontal
-    ></pq-ranked-bar>`;
-  }
-}
+export const PqMessagesChart = defineDomainChart<MessageEntry>({
+  tag: "pq-messages-chart",
+  defaultVariant: "bar",
+  variants: {
+    bar: (data, theme, limit) =>
+      html`<pq-ranked-bar
+        .data=${mapMessagesToBar(data)}
+        .limit=${limit}
+        .theme=${theme}
+        sort="desc"
+        horizontal
+      ></pq-ranked-bar>`,
+  },
+});
 
 declare global {
   interface HTMLElementTagNameMap {
-    "pq-messages-chart": PqMessagesChart;
+    "pq-messages-chart": InstanceType<typeof PqMessagesChart>;
   }
 }
