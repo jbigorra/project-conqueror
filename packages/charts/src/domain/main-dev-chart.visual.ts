@@ -1,13 +1,9 @@
 import type { MainDev } from "@prj-conq/behave";
-import { html, LitElement } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { DataFetchController } from "../controllers/data-fetch.controller";
+import { html } from "lit";
 import { mapMainDevToBar, mapMainDevToTreemap } from "../mappers/main-dev.mapper";
-import type { ThemePreset } from "../types";
+import { defineDomainChart } from "./define-domain-chart";
 import "../generic/ranked-bar.visual";
 import "../generic/treemap.visual";
-
-type MainDevVariant = "bar" | "treemap";
 
 /**
  * Main developer chart showing code ownership percentage as bar or treemap.
@@ -24,45 +20,25 @@ type MainDevVariant = "bar" | "treemap";
  * <pq-main-dev-chart src="/api/analysis/main-dev" variant="bar" limit="15"></pq-main-dev-chart>
  * ```
  */
-@customElement("pq-main-dev-chart")
-export class PqMainDevChart extends LitElement {
-  private fetcher = new DataFetchController<MainDev>(this);
-
-  @property({ type: Array }) data?: MainDev[];
-  @property() src?: string;
-  @property() theme?: ThemePreset;
-  @property() variant: MainDevVariant = "bar";
-  @property({ type: Number }) limit = 20;
-
-  protected override async updated(changed: Map<string, unknown>): Promise<void> {
-    if (changed.has("src") || changed.has("data"))
-      await this.fetcher.fetch(this.src ?? "", !!this.data);
-  }
-
-  private get resolvedData(): MainDev[] {
-    return this.data ?? this.fetcher.data ?? [];
-  }
-
-  protected override render() {
-    if (this.variant === "treemap") {
-      return html`<pq-treemap
-        .data=${mapMainDevToTreemap(this.resolvedData)}
-        .theme=${this.theme}
-        show-labels
-      ></pq-treemap>`;
-    }
-    return html`<pq-ranked-bar
-      .data=${mapMainDevToBar(this.resolvedData)}
-      .limit=${this.limit}
-      .theme=${this.theme}
-      sort="desc"
-      horizontal
-    ></pq-ranked-bar>`;
-  }
-}
+export const PqMainDevChart = defineDomainChart<MainDev>({
+  tag: "pq-main-dev-chart",
+  defaultVariant: "bar",
+  variants: {
+    bar: (data, theme, limit) =>
+      html`<pq-ranked-bar
+        .data=${mapMainDevToBar(data)}
+        .limit=${limit}
+        .theme=${theme}
+        sort="desc"
+        horizontal
+      ></pq-ranked-bar>`,
+    treemap: (data, theme) =>
+      html`<pq-treemap .data=${mapMainDevToTreemap(data)} .theme=${theme} show-labels></pq-treemap>`,
+  },
+});
 
 declare global {
   interface HTMLElementTagNameMap {
-    "pq-main-dev-chart": PqMainDevChart;
+    "pq-main-dev-chart": InstanceType<typeof PqMainDevChart>;
   }
 }
