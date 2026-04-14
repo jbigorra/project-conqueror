@@ -1,13 +1,9 @@
 import type { AuthorChurn } from "@prj-conq/behave";
-import { html, LitElement } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { DataFetchController } from "../controllers/data-fetch.controller";
+import { html } from "lit";
 import { mapAuthorChurnToGrouped, mapAuthorChurnToStacked } from "../mappers/churn.mapper";
-import type { ThemePreset } from "../types";
+import { defineDomainChart } from "./define-domain-chart";
 import "../generic/grouped-bar.visual";
 import "../generic/stacked-bar.visual";
-
-type AuthorChurnVariant = "grouped" | "stacked";
 
 /**
  * Author churn chart showing added/deleted/commits per author.
@@ -23,40 +19,19 @@ type AuthorChurnVariant = "grouped" | "stacked";
  * <pq-author-churn-chart src="/api/analysis/author-churn" variant="grouped"></pq-author-churn-chart>
  * ```
  */
-@customElement("pq-author-churn-chart")
-export class PqAuthorChurnChart extends LitElement {
-  private fetcher = new DataFetchController<AuthorChurn>(this);
-
-  @property({ type: Array }) data?: AuthorChurn[];
-  @property() src?: string;
-  @property() theme?: ThemePreset;
-  @property() variant: AuthorChurnVariant = "grouped";
-
-  protected override async updated(changed: Map<string, unknown>): Promise<void> {
-    if (changed.has("src") || changed.has("data"))
-      await this.fetcher.fetch(this.src ?? "", !!this.data);
-  }
-
-  private get resolvedData(): AuthorChurn[] {
-    return this.data ?? this.fetcher.data ?? [];
-  }
-
-  protected override render() {
-    if (this.variant === "stacked") {
-      return html`<pq-stacked-bar
-        .data=${mapAuthorChurnToStacked(this.resolvedData)}
-        .theme=${this.theme}
-      ></pq-stacked-bar>`;
-    }
-    return html`<pq-grouped-bar
-      .data=${mapAuthorChurnToGrouped(this.resolvedData)}
-      .theme=${this.theme}
-    ></pq-grouped-bar>`;
-  }
-}
+export const PqAuthorChurnChart = defineDomainChart<AuthorChurn>({
+  tag: "pq-author-churn-chart",
+  defaultVariant: "grouped",
+  variants: {
+    grouped: (data, theme) =>
+      html`<pq-grouped-bar .data=${mapAuthorChurnToGrouped(data)} .theme=${theme}></pq-grouped-bar>`,
+    stacked: (data, theme) =>
+      html`<pq-stacked-bar .data=${mapAuthorChurnToStacked(data)} .theme=${theme}></pq-stacked-bar>`,
+  },
+});
 
 declare global {
   interface HTMLElementTagNameMap {
-    "pq-author-churn-chart": PqAuthorChurnChart;
+    "pq-author-churn-chart": InstanceType<typeof PqAuthorChurnChart>;
   }
 }
