@@ -1,15 +1,11 @@
 import type { ComplexityHotspot } from "@prj-conq/behave";
-import { html, LitElement } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { DataFetchController } from "../controllers/data-fetch.controller";
+import { html } from "lit";
 import { mapHotspotsToBubble, mapHotspotsToTreemap } from "../mappers/hotspots.mapper";
 import { mapHotspotsToEnclosure } from "../mappers/hotspots-enclosure.mapper";
-import type { ThemePreset } from "../types";
+import { defineDomainChart } from "./define-domain-chart";
 import "../generic/bubble.visual";
-import "../generic/treemap.visual";
 import "../generic/enclosure.visual";
-
-type HotspotsVariant = "bubble" | "treemap" | "enclosure";
+import "../generic/treemap.visual";
 
 /**
  * Complexity hotspots chart as bubble, treemap, or zoomable enclosure diagram.
@@ -25,44 +21,21 @@ type HotspotsVariant = "bubble" | "treemap" | "enclosure";
  * <pq-hotspots-chart src="/api/analysis/hotspots" variant="enclosure"></pq-hotspots-chart>
  * ```
  */
-@customElement("pq-hotspots-chart")
-export class PqHotspotsChart extends LitElement {
-  private fetcher = new DataFetchController<ComplexityHotspot>(this);
-
-  @property({ type: Array }) data?: ComplexityHotspot[];
-  @property() src?: string;
-  @property() theme?: ThemePreset;
-  @property() variant: HotspotsVariant = "bubble";
-
-  protected override async updated(changed: Map<string, unknown>): Promise<void> {
-    if (changed.has("src") || changed.has("data"))
-      await this.fetcher.fetch(this.src ?? "", !!this.data);
-  }
-
-  private get resolvedData(): ComplexityHotspot[] {
-    return this.data ?? this.fetcher.data ?? [];
-  }
-
-  protected override render() {
-    if (this.variant === "treemap") {
-      return html`<pq-treemap
-        .data=${mapHotspotsToTreemap(this.resolvedData)}
-        .theme=${this.theme}
-        show-labels
-      ></pq-treemap>`;
-    }
-    if (this.variant === "enclosure") {
-      return html`<pq-enclosure .data=${mapHotspotsToEnclosure(this.resolvedData)} .theme=${this.theme}></pq-enclosure>`;
-    }
-    return html`<pq-bubble
-      .data=${mapHotspotsToBubble(this.resolvedData)}
-      .theme=${this.theme}
-    ></pq-bubble>`;
-  }
-}
+export const PqHotspotsChart = defineDomainChart<ComplexityHotspot>({
+  tag: "pq-hotspots-chart",
+  defaultVariant: "bubble",
+  variants: {
+    bubble: (data, theme) =>
+      html`<pq-bubble .data=${mapHotspotsToBubble(data)} .theme=${theme}></pq-bubble>`,
+    enclosure: (data, theme) =>
+      html`<pq-enclosure .data=${mapHotspotsToEnclosure(data)} .theme=${theme}></pq-enclosure>`,
+    treemap: (data, theme) =>
+      html`<pq-treemap .data=${mapHotspotsToTreemap(data)} .theme=${theme} show-labels></pq-treemap>`,
+  },
+});
 
 declare global {
   interface HTMLElementTagNameMap {
-    "pq-hotspots-chart": PqHotspotsChart;
+    "pq-hotspots-chart": InstanceType<typeof PqHotspotsChart>;
   }
 }
