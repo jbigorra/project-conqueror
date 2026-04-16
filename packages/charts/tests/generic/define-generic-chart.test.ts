@@ -71,6 +71,19 @@ const RenderTestChart = defineGenericChart<{ value: number }, { label: string }>
 });
 
 describe("defineGenericChart", () => {
+  describe("F: Double-registration guard", () => {
+    it("F.1 calling defineGenericChart twice with the same tag does not throw", () => {
+      expect(() => {
+        defineGenericChart({
+          tag: "pq-test-factory-registration", // already registered at module level
+          properties: {},
+          defaults: {},
+          buildConfig: () => ({ type: "bar", data: { datasets: [] }, options: {} }),
+        });
+      }).not.toThrow();
+    });
+  });
+
   describe("1-A: Factory registration and static properties", () => {
     it("1.1 registers the custom element with the provided tag", () => {
       expect(customElements.get("pq-test-factory-registration")).toBeDefined();

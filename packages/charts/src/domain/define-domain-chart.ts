@@ -218,6 +218,8 @@ export function defineDomainChart<T, P extends Record<string, unknown> = Record<
     }
   }
 
-  customElements.define(config.tag, DomainChart);
+  if (!customElements.get(config.tag)) {
+    customElements.define(config.tag, DomainChart);
+  }
   return DomainChart;
 }
