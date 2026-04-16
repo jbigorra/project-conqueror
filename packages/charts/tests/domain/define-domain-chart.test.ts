@@ -107,7 +107,7 @@ const ExtraPropsChart = defineDomainChart<{ value: number }, { bins: number }>({
   properties: { bins: { type: Number } },
   defaults: { bins: 10 },
   variants: {
-    histogram: (data, theme, limit, extra) => {
+    histogram: (data, _theme, _limit, extra) => {
       lastExtraReceived = extra as Record<string, unknown>;
       return html`<span>${data.length}-${(extra as { bins: number }).bins}</span>`;
     },
@@ -130,6 +130,20 @@ const ExtraEntityChart = defineDomainChart<{ value: number }, { entity: string }
 });
 
 describe("defineDomainChart", () => {
+  describe("F: Double-registration guard", () => {
+    it("F.1 calling defineDomainChart twice with the same tag does not throw", () => {
+      expect(() => {
+        defineDomainChart<{ id: string }>({
+          tag: "pq-test-domain-registration", // already registered at module level
+          defaultVariant: "bar",
+          variants: {
+            bar: (_data) => html`<span>bar</span>`,
+          },
+        });
+      }).not.toThrow();
+    });
+  });
+
   describe("2-A: Factory registration and defaults", () => {
     it("2.1 registers the custom element with the provided tag", () => {
       expect(customElements.get("pq-test-domain-registration")).toBeDefined();

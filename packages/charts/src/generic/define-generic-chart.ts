@@ -237,6 +237,8 @@ export function defineGenericChart<
     }
   }
 
-  customElements.define(config.tag, GenericChart);
+  if (!customElements.get(config.tag)) {
+    customElements.define(config.tag, GenericChart);
+  }
   return GenericChart;
 }
