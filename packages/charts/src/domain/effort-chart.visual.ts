@@ -1,13 +1,9 @@
 import type { EntityEffort } from "@prj-conq/behave";
-import { html, LitElement } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { DataFetchController } from "../controllers/data-fetch.controller";
+import { html } from "lit";
 import { mapEffortToDoughnut, mapEffortToStacked } from "../mappers/effort.mapper";
-import type { ThemePreset } from "../types";
-import "../generic/stacked-bar.visual";
+import { defineDomainChart } from "./define-domain-chart";
 import "../generic/doughnut.visual";
-
-type EffortVariant = "stacked" | "doughnut";
+import "../generic/stacked-bar.visual";
 
 /**
  * Effort chart showing author contributions per entity as stacked bar or doughnut.
@@ -24,41 +20,24 @@ type EffortVariant = "stacked" | "doughnut";
  * <pq-effort-chart src="/api/analysis/effort" variant="stacked"></pq-effort-chart>
  * ```
  */
-@customElement("pq-effort-chart")
-export class PqEffortChart extends LitElement {
-  private fetcher = new DataFetchController<EntityEffort>(this);
-
-  @property({ type: Array }) data?: EntityEffort[];
-  @property() src?: string;
-  @property() theme?: ThemePreset;
-  @property() variant: EffortVariant = "stacked";
-  @property() entity = "";
-
-  protected override async updated(changed: Map<string, unknown>): Promise<void> {
-    if (changed.has("src") || changed.has("data"))
-      await this.fetcher.fetch(this.src ?? "", !!this.data);
-  }
-
-  private get resolvedData(): EntityEffort[] {
-    return this.data ?? this.fetcher.data ?? [];
-  }
-
-  protected override render() {
-    if (this.variant === "doughnut") {
-      return html`<pq-doughnut
-        .data=${mapEffortToDoughnut(this.resolvedData, this.entity)}
-        .theme=${this.theme}
-      ></pq-doughnut>`;
-    }
-    return html`<pq-stacked-bar
-      .data=${mapEffortToStacked(this.resolvedData)}
-      .theme=${this.theme}
-    ></pq-stacked-bar>`;
-  }
-}
+export const PqEffortChart = defineDomainChart<EntityEffort, { entity: string }>({
+  tag: "pq-effort-chart",
+  defaultVariant: "stacked",
+  properties: { entity: {} },
+  defaults: { entity: "" },
+  variants: {
+    doughnut: (data, theme, _limit, extra) =>
+      html`<pq-doughnut
+        .data=${mapEffortToDoughnut(data, extra?.entity ?? "")}
+        .theme=${theme}
+      ></pq-doughnut>`,
+    stacked: (data, theme) =>
+      html`<pq-stacked-bar .data=${mapEffortToStacked(data)} .theme=${theme}></pq-stacked-bar>`,
+  },
+});
 
 declare global {
   interface HTMLElementTagNameMap {
-    "pq-effort-chart": PqEffortChart;
+    "pq-effort-chart": InstanceType<typeof PqEffortChart>;
   }
 }
