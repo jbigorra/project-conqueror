@@ -1,7 +1,7 @@
 {
   "name": "@prj-conq/charts",
   "description": "Reusable chart Web Components for visualizing behavioural code analysis results.",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "type": "module",
   "private": true,
   "files": [

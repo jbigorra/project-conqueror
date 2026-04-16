@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.1.6](https://github.com/jbigorra/project-conqueror/compare/charts-v0.1.5...charts-v0.1.6) (2026-04-16)
+
+
+### Features
+
+* **charts:** add defineDomainChart factory skeleton with type system ([e3d287f](https://github.com/jbigorra/project-conqueror/commit/e3d287fb825cd6e20e7b140ebafabe99adc6dc87))
+* **charts:** add defineGenericChart factory skeleton with type system ([ed9863f](https://github.com/jbigorra/project-conqueror/commit/ed9863fb2a8a6e17a3e3d827a388460a406f948d))
+* **charts:** complete defineGenericChart factory implementation (15 tests green) ([a6b991c](https://github.com/jbigorra/project-conqueror/commit/a6b991ca9b2c3fc8dac6ddda835219a55cf5a816))
+* **charts:** export defineDomainChart from domain barrel ([c2f08f4](https://github.com/jbigorra/project-conqueror/commit/c2f08f49bd0bbe9fc2302379b914cf55a7433ee0))
+* **charts:** export defineGenericChart from generic barrel ([ea0304c](https://github.com/jbigorra/project-conqueror/commit/ea0304c56e3c465f7189b4ad8ef42021d973cb6e))
+* **charts:** extend defineDomainChart factory to support extra properties ([1ed1bea](https://github.com/jbigorra/project-conqueror/commit/1ed1bea6133cad392b9873e659ae041a67667e20))
+
+
+### Bug Fixes
+
+* **charts:** guard against double-registration in both chart factories ([f1ba808](https://github.com/jbigorra/project-conqueror/commit/f1ba808cc20a72915eb1b3785f1840eb4830cb3d))
+* **charts:** resolve SonarCloud issues in chart factories ([6817614](https://github.com/jbigorra/project-conqueror/commit/68176147c42e3d5f832038de1a416561834c382a))
+
 ## [0.1.5](https://github.com/jbigorra/project-conqueror/compare/charts-v0.1.4...charts-v0.1.5) (2026-04-09)
 
 
