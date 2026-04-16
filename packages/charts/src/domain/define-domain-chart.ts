@@ -172,7 +172,7 @@ export function defineDomainChart<T, P extends Record<string, unknown> = Record<
   config: DomainChartConfig<T, P>,
 ): typeof LitElement {
   class DomainChart extends LitElement {
-    static override properties = {
+    static override readonly properties = {
       data: { type: Array },
       src: {},
       theme: {},
@@ -181,7 +181,7 @@ export function defineDomainChart<T, P extends Record<string, unknown> = Record<
       ...config.properties,
     };
 
-    private fetcher = new DataFetchController<T>(this);
+    private readonly fetcher = new DataFetchController<T>(this);
 
     data?: T[];
     src?: string;
