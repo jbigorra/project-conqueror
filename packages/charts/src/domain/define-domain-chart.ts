@@ -6,14 +6,19 @@ import type { ThemePreset } from "../types";
 /**
  * Strategy function that renders a specific chart variant from domain data.
  *
- * Receives the resolved data array, the current theme preset, and the
- * configured item limit. Returns a Lit `TemplateResult` delegating to
- * the appropriate generic chart component.
+ * Receives the resolved data array, the current theme preset, the
+ * configured item limit, and any extra consumer-declared properties.
+ * Returns a Lit `TemplateResult` delegating to the appropriate generic chart component.
+ *
+ * The 4th parameter `extra` is required in the type signature but TypeScript
+ * callback compatibility means existing 3-param renderers remain assignable.
  *
  * @typeParam T - The domain data item type this variant renders.
+ * @typeParam P - Record of extra consumer-declared properties.
  * @param data - Resolved non-empty data array (inline prop or fetched).
  * @param theme - Current theme preset (may be undefined).
  * @param limit - Maximum number of items to display (default `20`).
+ * @param extra - Current values of all extra consumer-declared properties.
  * @returns A Lit `TemplateResult` wrapping the target generic chart.
  *
  * @example
@@ -21,13 +26,25 @@ import type { ThemePreset } from "../types";
  * const barRenderer: VariantRenderer<Revision> = (data, theme, limit) =>
  *   html`<pq-ranked-bar .data=${mapRevisionsToBar(data)} .limit=${limit} .theme=${theme}></pq-ranked-bar>`;
  * ```
+ *
+ * @example
+ * ```ts
+ * const histRenderer: VariantRenderer<CodeAge, { bins: number }> = (data, theme, limit, { bins }) =>
+ *   html`<pq-histogram .data=${mapAgeToHistogram(data).map(v => ({ value: v }))} .bins=${bins} .theme=${theme}></pq-histogram>`;
+ * ```
  */
-export type VariantRenderer<T> = (data: T[], theme?: ThemePreset, limit?: number) => TemplateResult;
+export type VariantRenderer<T, P extends Record<string, unknown> = Record<string, never>> = (
+  data: T[],
+  theme?: ThemePreset,
+  limit?: number,
+  extra?: P,
+) => TemplateResult;
 
 /**
  * Configuration object passed to {@link defineDomainChart}.
  *
  * @typeParam T - The domain data item type this chart renders.
+ * @typeParam P - Record of extra consumer-declared properties (e.g. `{ bins: number }`).
  *
  * @example
  * ```ts
@@ -40,8 +57,22 @@ export type VariantRenderer<T> = (data: T[], theme?: ThemePreset, limit?: number
  *   },
  * };
  * ```
+ *
+ * @example
+ * ```ts
+ * const config: DomainChartConfig<CodeAge, { bins: number }> = {
+ *   tag: "pq-age-chart",
+ *   defaultVariant: "histogram",
+ *   properties: { bins: { type: Number } },
+ *   defaults: { bins: 10 },
+ *   variants: {
+ *     histogram: (data, theme, limit, { bins }) =>
+ *       html`<pq-histogram .data=${mapAgeToHistogram(data).map(v => ({ value: v }))} .bins=${bins} .theme=${theme}></pq-histogram>`,
+ *   },
+ * };
+ * ```
  */
-export type DomainChartConfig<T> = {
+export type DomainChartConfig<T, P extends Record<string, unknown> = Record<string, never>> = {
   /**
    * Custom element tag name (e.g. `"pq-revisions-chart"`).
    * Must be a valid custom element name (hyphenated, lowercase).
@@ -56,16 +87,39 @@ export type DomainChartConfig<T> = {
 
   /**
    * Map of variant name to renderer function.
-   * Each renderer receives the resolved data, current theme, and limit,
+   * Each renderer receives the resolved data, current theme, limit, and extra props,
    * and returns a Lit `TemplateResult` delegating to a generic chart component.
    */
-  variants: Record<string, VariantRenderer<T>>;
+  variants: Record<string, VariantRenderer<T, P>>;
 
   /**
    * Default maximum number of items to show in ranked/bar variants.
    * Defaults to `20` when omitted.
    */
   limit?: number;
+
+  /**
+   * Extra consumer-declared reactive properties, declared using Lit's `static properties` map format.
+   * Do NOT include `data`, `src`, `theme`, `variant`, or `limit` — these are injected by the factory.
+   *
+   * @example
+   * ```ts
+   * properties: { bins: { type: Number } }
+   * ```
+   */
+  properties?: Record<string, unknown>;
+
+  /**
+   * Default values for each extra consumer-declared property.
+   * Every key in `properties` SHOULD have a corresponding default here.
+   * These values are set on the instance during construction.
+   *
+   * @example
+   * ```ts
+   * defaults: { bins: 10 }
+   * ```
+   */
+  defaults?: P;
 };
 
 /**
@@ -73,12 +127,17 @@ export type DomainChartConfig<T> = {
  *
  * All shared infrastructure (`DataFetchController`, base properties, lifecycle,
  * `resolvedData` getter) is handled by the factory. Consumers supply only
- * the data type, available variants (as renderer functions), and the default variant.
+ * the data type, available variants (as renderer functions), the default variant,
+ * and any extra consumer-declared properties.
  *
  * No class inheritance. No abstract methods. Composition only.
  *
+ * **Backward compatible**: existing calls to `defineDomainChart<T>()` with no
+ * second type parameter continue to work without any changes.
+ *
  * @typeParam T - The domain data item type this chart renders.
- * @param config - Component configuration: tag, defaultVariant, variants map, optional limit.
+ * @typeParam P - Record of extra consumer-declared properties (default: `Record<string, never>`).
+ * @param config - Component configuration: tag, defaultVariant, variants map, optional limit, optional properties/defaults.
  * @returns The generated Lit element class (use for `HTMLElementTagNameMap` augmentation).
  *
  * @example
@@ -94,8 +153,24 @@ export type DomainChartConfig<T> = {
  *   },
  * });
  * ```
+ *
+ * @example
+ * ```ts
+ * export const PqAgeChart = defineDomainChart<CodeAge, { bins: number }>({
+ *   tag: "pq-age-chart",
+ *   defaultVariant: "histogram",
+ *   properties: { bins: { type: Number } },
+ *   defaults: { bins: 10 },
+ *   variants: {
+ *     histogram: (data, theme, limit, { bins }) =>
+ *       html`<pq-histogram .data=${mapAgeToHistogram(data).map(v => ({ value: v }))} .bins=${bins} .theme=${theme}></pq-histogram>`,
+ *   },
+ * });
+ * ```
  */
-export function defineDomainChart<T>(config: DomainChartConfig<T>): typeof LitElement {
+export function defineDomainChart<T, P extends Record<string, unknown> = Record<string, never>>(
+  config: DomainChartConfig<T, P>,
+): typeof LitElement {
   class DomainChart extends LitElement {
     static override properties = {
       data: { type: Array },
@@ -103,6 +178,7 @@ export function defineDomainChart<T>(config: DomainChartConfig<T>): typeof LitEl
       theme: {},
       variant: {},
       limit: { type: Number },
+      ...config.properties,
     };
 
     private fetcher = new DataFetchController<T>(this);
@@ -112,6 +188,13 @@ export function defineDomainChart<T>(config: DomainChartConfig<T>): typeof LitEl
     theme?: ThemePreset;
     variant: string = config.defaultVariant;
     limit: number = config.limit ?? 20;
+
+    constructor() {
+      super();
+      for (const [key, value] of Object.entries(config.defaults ?? {})) {
+        (this as unknown as Record<string, unknown>)[key] = value;
+      }
+    }
 
     protected override async updated(changed: Map<string, unknown>): Promise<void> {
       if (changed.has("src") || changed.has("data"))
@@ -125,7 +208,13 @@ export function defineDomainChart<T>(config: DomainChartConfig<T>): typeof LitEl
     protected override render(): TemplateResult | undefined {
       const renderer = config.variants[this.variant];
       if (!renderer) return undefined;
-      return renderer(this.resolvedData, this.theme, this.limit);
+
+      const extra = {} as P;
+      for (const key of Object.keys(config.defaults ?? {})) {
+        (extra as Record<string, unknown>)[key] = (this as unknown as Record<string, unknown>)[key];
+      }
+
+      return renderer(this.resolvedData, this.theme, this.limit, extra);
     }
   }
 

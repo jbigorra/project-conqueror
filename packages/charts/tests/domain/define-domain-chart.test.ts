@@ -96,6 +96,39 @@ const UnknownVariantChart = defineDomainChart<{ value: number }>({
   },
 });
 
+// ─── Task A: extra props support ─────────────────────────────────────────────
+
+// Chart with extra `bins` property (mimics age-chart)
+let lastExtraReceived: Record<string, unknown> | undefined;
+
+const ExtraPropsChart = defineDomainChart<{ value: number }, { bins: number }>({
+  tag: "pq-test-domain-extra-props",
+  defaultVariant: "histogram",
+  properties: { bins: { type: Number } },
+  defaults: { bins: 10 },
+  variants: {
+    histogram: (data, theme, limit, extra) => {
+      lastExtraReceived = extra as Record<string, unknown>;
+      return html`<span>${data.length}-${(extra as { bins: number }).bins}</span>`;
+    },
+  },
+});
+
+// Chart with extra `entity` property (mimics effort-chart and ownership-chart)
+const ExtraEntityChart = defineDomainChart<{ value: number }, { entity: string }>({
+  tag: "pq-test-domain-extra-entity",
+  defaultVariant: "stacked",
+  properties: { entity: {} },
+  defaults: { entity: "" },
+  variants: {
+    stacked: (_data, _theme, _limit, _extra) => html`<span>stacked</span>`,
+    doughnut: (data, _theme, _limit, extra) => {
+      lastExtraReceived = extra as Record<string, unknown>;
+      return html`<span>${data.length}-${(extra as { entity: string }).entity}</span>`;
+    },
+  },
+});
+
 describe("defineDomainChart", () => {
   describe("2-A: Factory registration and defaults", () => {
     it("2.1 registers the custom element with the provided tag", () => {
@@ -189,6 +222,53 @@ describe("defineDomainChart", () => {
       const el = new ResolvedDataChart();
       const resolved = (el as unknown as { resolvedData: Array<{ value: number }> }).resolvedData;
       expect(resolved).toEqual([]);
+    });
+  });
+
+  describe("A: Extra props support", () => {
+    it("A.1 extra prop has its default value when instantiated", () => {
+      const el = new ExtraPropsChart() as InstanceType<typeof ExtraPropsChart> & { bins: number };
+      expect(el.bins).toBe(10);
+    });
+
+    it("A.2 static properties includes extra prop key from config.properties", () => {
+      const props = (
+        ExtraPropsChart as typeof ExtraPropsChart & { properties: Record<string, unknown> }
+      ).properties;
+      expect(props).toHaveProperty("bins");
+    });
+
+    it("A.3 render() passes extra props as 4th argument to variant renderer", () => {
+      lastExtraReceived = undefined;
+      const el = new ExtraPropsChart() as InstanceType<typeof ExtraPropsChart> & {
+        data?: Array<{ value: number }>;
+        bins: number;
+      };
+      el.data = [{ value: 1 }];
+      el.bins = 7;
+      (el as unknown as RenderEl).render();
+      expect(lastExtraReceived).toEqual({ bins: 7 });
+    });
+
+    it("A.4 extra string prop defaults to empty string when instantiated", () => {
+      const el = new ExtraEntityChart() as InstanceType<typeof ExtraEntityChart> & {
+        entity: string;
+      };
+      expect(el.entity).toBe("");
+    });
+
+    it("A.5 extra entity prop is passed to variant renderer as 4th argument", () => {
+      lastExtraReceived = undefined;
+      const el = new ExtraEntityChart() as InstanceType<typeof ExtraEntityChart> & {
+        data?: Array<{ value: number }>;
+        entity: string;
+        variant: string;
+      };
+      el.data = [{ value: 42 }];
+      el.entity = "src/main.ts";
+      el.variant = "doughnut";
+      (el as unknown as RenderEl).render();
+      expect(lastExtraReceived).toEqual({ entity: "src/main.ts" });
     });
   });
 
