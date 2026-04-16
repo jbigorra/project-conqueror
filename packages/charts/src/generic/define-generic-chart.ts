@@ -170,9 +170,9 @@ export function defineGenericChart<
   `;
 
   class GenericChart extends LitElement {
-    static override styles = sharedStyles;
+    static override readonly styles = sharedStyles;
 
-    static override properties = {
+    static override readonly properties = {
       data: { type: Array },
       src: {},
       theme: {},
@@ -180,9 +180,9 @@ export function defineGenericChart<
       ...config.properties,
     };
 
-    private fetcher = new DataFetchController<T>(this);
-    private chartCtrl = new ChartController(this);
-    private themeCtrl = new ThemeController(this);
+    private readonly fetcher = new DataFetchController<T>(this);
+    private readonly chartCtrl = new ChartController(this);
+    private readonly themeCtrl = new ThemeController(this);
 
     data?: T[];
     src?: string;
@@ -231,7 +231,7 @@ export function defineGenericChart<
       if (this.fetcher.state === "error")
         return html`<div class="state-message"><slot name="error">Failed to load data.</slot></div>`;
       const resolved = this.data ?? this.fetcher.data;
-      if (resolved && resolved.length === 0)
+      if (resolved?.length === 0)
         return html`<div class="state-message"><slot name="empty">No data.</slot></div>`;
       return html`<canvas ${ref(this.chartCtrl.canvasRef)}></canvas>`;
     }

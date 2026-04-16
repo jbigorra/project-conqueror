@@ -77,7 +77,7 @@ export const PqTreemap = defineGenericChart<
               color: themeCtrl.theme.text,
               font: {
                 family: themeCtrl.theme.fontFamily,
-                size: parseInt(themeCtrl.theme.fontSize, 10),
+                size: Number.parseInt(themeCtrl.theme.fontSize, 10),
               },
               formatter: (ctx: ScriptableContext<"treemap">) =>
                 (ctx.raw as TreemapDataPoint | undefined)?.g ?? "",
