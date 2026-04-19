@@ -35,7 +35,8 @@
     "overrides": {
       "picomatch@>=4.0.0 <4.0.4": "4.0.4",
       "vite": ">=6.4.2",
-      "esbuild": ">=0.25.0"
+      "esbuild": ">=0.25.0",
+      "protobufjs": ">=7.5.5"
     }
   }
 }
