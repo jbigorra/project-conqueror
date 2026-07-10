@@ -43,3 +43,5 @@ packages/code-maat-port/tmp/
 
 # Worktrees
 .worktrees/
+
+openspec/

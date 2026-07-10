@@ -1,180 +1,163 @@
-# CLAUDE.md
+# Project Conqueror — Agent Guide
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Multi-package monorepo: behavioural code analysis tool. pnpm workspace + Turbo + Biome + Bun.
 
 ## Commands
 
-### Root (all packages via Turbo)
+### Root (turbo delegates to all packages)
 
 ```bash
-pnpm run build          # Build all packages
-pnpm run dev            # Watch mode for all packages
-pnpm run test           # Run all tests
-pnpm run test:coverage  # Run tests with coverage
-pnpm run tdd            # Watch mode tests (TDD)
-pnpm run lint           # Lint all code
-pnpm run format         # Prettier format
+pnpm run validate      # Single source of truth: build → test → lint → storybook
+pnpm run build         # turbo build
+pnpm run dev           # turbo dev (watch)
+pnpm run test          # turbo test
+pnpm run test:coverage # turbo test:coverage
+pnpm run lint          # turbo lint
+pnpm run check         # turbo check (biome --write)
 ```
 
-### Webapp (apps/webapp)
+Husky pre-commit always runs `pnpm run validate`. Pre-push runs validate on master only.
+
+### Per package — use `bun` directly (NOT `pnpm`)
 
 ```bash
-bun run dev             # Start dev server with watch
-bun test                # Run all tests
-bun test --watch        # TDD watch mode
-bun test path/to/file   # Run a single test file
-bun run typecheck       # Type-check without emitting
-bun run db:generate     # Generate Drizzle migrations
-bun run db:migrate      # Run migrations
+bun test path/to/file    # single test file
+bun test                 # all tests
+bun test --watch         # TDD
+bun run typecheck        # tsc --noEmit
+bun run validate         # typecheck + test + biome check
+bun run check            # biome check --write .
+bun run lint             # biome check .       (CI mode, no write)
+bun run check:changed    # biome --changed     (VCS-aware)
+bun run check:staged     # biome --staged
+bun run build            # bunup, sometimes + tsc
 ```
 
-## Worktree Setup
+### Linting caveat
 
-After creating a worktree with `git worktree add` or `wt add`, run the setup script:
+Root `pnpm run lint` → turbo delegates to each package, where some use `biome check .` (CI mode) and others use `biome check --changed || true`. The webapp uses `--changed` — it will NOT notice lint issues in unchanged files. Use `bun run check:all` inside a package for a full scan.
+
+### Desktop app (`apps/td-radar-electrobun`)
+
+No standard repo scripts — it's an Electrobun project, not a library package. Uses `bun` directly:
 
 ```bash
-scripts/setup-worktree.sh /path/to/worktree
+bun run dev          # electrobun dev --watch (no HMR)
+bun run dev:hmr      # Vite HMR + electrobun concurrently (recommended)
+bun run hmr          # Vite dev server only on port 5173
+bun run start        # vite build + electrobun dev
+bun run build:canary # vite build + electrobun build --env=canary
 ```
 
-This initializes submodules, creates the Python venv for lizard-ts, installs dependencies, and builds all packages. Without this, tests will fail due to missing submodule content and unbuilt cross-package dependencies.
+No tests, no Biome, no Turbo integration yet.
 
-If using Worktrunk (`wt add`), the setup runs automatically via `.config/wt.toml` post-add hook.
+### Root biome organizes imports on save (`assist.actions.source.organizeImports: "on"`)
+
+## Engine & Tooling
+
+- **Bun** ≥1.3.11 (pinned in `.bun-version` and `mise.toml`). Not Node — do NOT assume Node APIs.
+- **pnpm** 10.32.1 — `--frozen-lockfile` in CI.
+- **Biome** strict: `noExplicitAny`, `noUnusedVariables`, `noNonNullAssertion` = errors.
+- **VCS** default branch: `master`. Biome uses `--changed` to preserve git blame.
+- **TypeScript** strict via `@tsconfig/bun` + `noUnusedLocals`, `noUnusedParameters`, `noPropertyAccessFromIndexSignature`.
 
 ## Architecture
 
-### Monorepo Structure
+### Packages
 
-- `apps/webapp` — Main web application (Elysia.js + Bun runtime)
-- `packages/behave` — Behavioural code analysis facade over code-maat-port + lizard-ts
-- `packages/code-maat-port` — TypeScript port of Clojure code-maat
-- `packages/charts` — Lit Web Components for visualizing analysis results (Chart.js + D3)
-- `packages/lizard-ts` — TypeScript wrapper around Python lizard (complexity analysis)
-- `packages/lib` — Shared patterns: EventBus, Result type, `spawnAsync`, CLIResult
-- `packages/config` — Shared `tsconfig.json` base
+| Package | What | Entry / Export |
+|---------|------|----------------|
+| `apps/webapp` | Elysia.js server (port 8080), KitaJS JSX, HTMX, Drizzle/SQLite — **on hold** | `src/main.ts` (private app) |
+| `apps/td-radar-electrobun` | **Active.** Desktop app — Electrobun + Svelte 5 + Vite HMR. Bundles @prj-conq/charts for visualization | `src/bun/index.ts` (main process) |
+| `packages/lib` | Result monad, EventBus, spawnAsync, CLIResult | Sub-path exports: `./generics`, `./patterns`, `./processes` |
+| `packages/behave` | Code analysis facade — combines code-maat-port + lizard-ts | Single `.` export. Effect-based pipeline. |
+| `packages/code-maat-port` | Pure TS port of Clojure code-maat (git log analysis) | Single `.` export |
+| `packages/charts` | Lit Web Components + Chart.js + D3 | Sub-path exports: `.`, `./generic`, `./domain` |
+| `packages/lizard-ts` | Python subprocess wrapper for cyclomatic complexity | Single `.` export |
+| `packages/config` | Shared tsconfig base (extends `@tsconfig/bun`) | No build — config only |
 
-### Feature Structure (DDD)
-
-Each feature in `apps/webapp/src/features/` follows this layering:
+### Webapp DDD layers (`apps/webapp/src/features/{name}/`)
 
 ```
-feature/
-├── core/              # Entities, aggregates, value objects (pure domain logic)
-├── application/       # Use cases and event subscribers (orchestration)
-├── infrastructure/    # Repository implementations, DB, external services
-└── presentation/      # Controllers, JSX UI components
+core/           # Entities, value objects (pure domain)
+application/    # Use cases, event subscribers (orchestration)
+infrastructure/ # Repository impls, DB, external services
+presentation/   # Controllers, JSX components
 ```
 
-### Key Patterns
+### Webapp path aliases
 
-**Result/Either (Railway-Oriented)**
-All use cases and repositories return `Result<T>` from `@prj-conq/lib`. Use `.isSuccess()`, `.isError()`, `.getValue()`, `.getError()`. Supports `.map()` and `.flatMap()`.
+Use `#` imports mapped in `apps/webapp/package.json` `imports` — NOT `tsconfig paths`:
+`#shared/database/*`, `#shared/event/*`, `#shared/fs/*`, `#shared/ui/components/*`, `#upload/*`, `#analyses/*`
 
-**Event-Driven Architecture**
-Domain events (`FileUploadedEvent`) are published to the `EventBusInstance` singleton. Subscribers react asynchronously. Register subscribers in `main.ts` during bootstrap.
+### Key wiring
 
-**Dependency Injection via Static Factories**
-Classes expose a static `create()` method with optional dependency overrides, enabling test mocking without a DI container:
+- `src/main.ts` → `bootstrapServer()` → registers event handlers → `app.listen(8080)`
+- Events flow: `EventBusInstance` → subscribers registered in `bootstrap.ts` per feature
+- Analysis runner: subscribed to `FileUploadedEvent`, invokes `Behave.runAnalysis()` via `@prj-conq/behave`
+- DI: Classes expose `static create({ overrides })` — no DI container
 
-```typescript
-UploadFile.create({ fileStorage: mockStorage, eventBus: mockBus });
+## Critical Gotchas
+
+### Python venv for lizard-ts
+
+`packages/lizard-ts` spawns `python -m lizard` via `.venv/bin/python`. The venv uses `uv` (not system Python). After clone/worktree:
+
+```bash
+uv venv --python 3.10 packages/lizard-ts/.venv
+VIRTUAL_ENV=packages/lizard-ts/.venv uv pip install -r packages/lizard-ts/requirements.txt
 ```
 
-**Repository Pattern**
-Repositories implement `IBaseRepository<T extends DomainEntity>` with methods: `insertOne`, `updateOne`, `findById`, `findOne`, `deleteOne`. Database is Drizzle ORM over SQLite.
+This runs automatically in `scripts/setup-worktree.sh`. Tests fail without it.
 
-### Data Flow: Upload → Analysis
+### Worktree setup
 
-1. User POSTs a `.log` git log file to `/upload`
-2. `UploadFile` use case: validates → saves to S3 → inserts DB record → publishes `FileUploadedEvent`
-3. `AnalysisRunnerSubscriber` handles the event asynchronously:
-   - Saves file locally (temp dir via `LocalFileStorage`)
-   - Runs `Behave.runAnalysis()` which spawns Code-Maat (Java JAR) as subprocess
-   - Parses CSV results
-4. UI is rendered server-side as HTML using KitaJS JSX + HTMX for dynamic updates
+```bash
+scripts/setup-worktree.sh /path/to/worktree
+# or use `wt add` which auto-runs via .config/wt.toml post_add hook
+```
 
-### Shared Infrastructure
+### Barrel files: named exports only
 
-- `src/shared/infrastructure/event/` — `EventBusInstance` singleton
-- `src/shared/infrastructure/fs/` — `S3FileStorage` and `LocalFileStorage`
-- `src/shared/infrastructure/database/db.ts` — Drizzle factories for dev/prod/test (test uses in-memory SQLite)
-- `src/shared/generics-types/` — `IUseCase`, `IBaseRepository`, `DomainEntity` base class
+`export { X } from` or `export * from` — NEVER `export * as namespace from` (bun fails to emit DTS with `noExternal` + namespace re-exports, breaking downstream builds).
 
-### Technology Stack
+### `package.json` `imports` over `tsconfig paths`
 
-- **Runtime**: Bun 1.2.21+
-- **Web framework**: Elysia.js with `@elysiajs/html`, swagger, opentelemetry, static plugins
-- **UI**: KitaJS JSX (server-rendered HTML) + HTMX + Pico CSS + SASS
-- **Database**: SQLite via Drizzle ORM; `drizzle-kit` for migrations
-- **Analysis engine**: Code-Maat (Java JAR spawned as subprocess via `spawnAsync`)
-- **Testing**: Bun test runner + `bun-automock` + `fishery` factories + Playwright (E2E)
-- **Build orchestration**: Turbo + `bunup` for library packages
+All path aliasing must be in `package.json` `imports` field — NOT in `tsconfig.json` `paths`.
 
-## Standards
+### Release-please convention
 
-- **Biome strict mode**: `noExplicitAny`, `noUnusedVariables`, `noNonNullAssertion` enforced as errors in all packages
-- **VCS-aware formatting**: Biome uses `--changed` flag; only changed files are linted/formatted, preserving git blame
-- **JSDoc required**: All public API exports MUST have JSDoc with `@param`, `@returns`, `@example`
-- **Tests mirror src/**: Test files live under `tests/` mirroring the `src/` directory structure
-- **Package documentation**: Every package must have a `CLAUDE.md` (source of truth) and an `AGENTS.md` symlink (`ln -s CLAUDE.md AGENTS.md`) for OpenCode compatibility
-- **Dual-tool parity**: When adding MCP servers, hooks, or configuration, ALWAYS apply to both Claude Code (`.claude.json`) and OpenCode (`opencode.json`). The user uses both tools — they must have identical capabilities.
-- **Named exports only**: Barrel files use `export { X } from` or `export * from` — never `export * as namespace from` (bun DTS limitation)
-- **Conventional commits**: No Co-Authored-By trailers. Prefix choice determines automated version bumps via release-please:
-  - `feat:` — new feature → **patch** bump (minor once past 1.0)
-  - `fix:` — bug fix → **patch** bump
-  - `feat!:` / `fix!:` / `BREAKING CHANGE` in body — breaking change → **minor** bump (major once past 1.0)
-  - `refactor:`, `chore:`, `test:`, `docs:`, `style:`, `ci:` — no version bump, no release
-  - Choose the prefix that matches the **impact on consumers**, not the type of work. A refactor that changes a public API is a `feat!:`, not a `refactor:`.
-- **Conventional commits**: `feat:`, `fix:`, `refactor:`, `chore:`, `test:`, `docs:` — no Co-Authored-By trailers
+| Prefix | Bump |
+|--------|------|
+| `feat:` | patch (minor post-1.0) |
+| `fix:` | patch |
+| `feat!: / fix!: / BREAKING CHANGE` | minor (major post-1.0) |
+| `refactor: / chore: / test: / docs: / style: / ci:` | no release |
 
-## New Package/App Readiness Checklist
+## Per-package AGENTS.md (read for deep context)
 
-Every package or app in the monorepo MUST have all of the following before it is considered ready. Use this checklist when creating a new package or onboarding an existing one.
+- `apps/webapp/AGENTS.md` — webapp commands, DDD, DB config, path aliases, Elysia specifics
+- `apps/td-radar-electrobun/AGENTS.md` — Electrobun config, Svelte 5 setup, HMR workflow (no standard scripts)
+- `packages/lib/AGENTS.md` — Result, EventBus, spawnAsync export paths
+- `packages/behave/AGENTS.md` — Effect pipeline, legacy vs new API, service layers
+- `packages/code-maat-port/AGENTS.md` — parsers, end-to-end tests, export restrictions
+- `packages/charts/AGENTS.md` — Lit components, Storybook, `.visual.ts` convention
+- `packages/lizard-ts/AGENTS.md` — Python venv setup, singleton pattern, integration tests
+- `packages/config/AGENTS.md` — tsconfig base, minimal
 
-### Configuration
-- [ ] `package.json` with name `@prj-conq/{name}`, `private: true`, and correct workspace dependencies
-- [ ] `tsconfig.json` extending `@prj-conq/config/tsconfig.base.json`
-- [ ] `biome.json` extending root config: `{ "extends": ["../../biome.json"] }` — add overrides only if needed
+## New Package Checklist
 
-### Scripts (in package.json)
-- [ ] `build` — compile/bundle (e.g., `bunup`)
-- [ ] `dev` — watch mode (e.g., `bunup --watch`)
-- [ ] `typecheck` — `tsc --noEmit`
-- [ ] `test` — `bun test`
-- [ ] `check` — `biome check --write .` (auto-fix)
-- [ ] `lint` — `biome check .` (CI mode, no auto-fix)
-- [ ] `validate` — `bun run typecheck && bun test && biome check --write .`
+Every new package needs:
+- `package.json`: `@prj-conq/{name}`, workspace deps, standard scripts (build, dev, test, typecheck, check, lint, validate)
+- `tsconfig.json` extending `@prj-conq/config/tsconfig.base.json`
+- `biome.json` extending root with `{ "extends": ["../../biome.json"] }`
+- `sonar-project.properties` with key `jbsoft_project-conqueror_{name}`
+- Added to `.github/workflows/quality.yml` matrix and `release-please-config.json`
+- `README.md`, `CLAUDE.md`, `AGENTS.md` → symlink `ln -s CLAUDE.md AGENTS.md`
+- Test dir `tests/` mirroring `src/`
+- Barrel (`src/index.ts`) with named exports only
+- `.visual.ts` suffix for chart components (excluded from coverage, verified in Storybook)
 
-### CI / Quality
-- [ ] `sonar-project.properties` with project key `jbsoft_project-conqueror_{name}`
-- [ ] Added to `.github/workflows/quality.yml` SonarQube matrix
-- [ ] Added to `release-please-config.json` and `.release-please-manifest.json` (skip for config-only packages like `@prj-conq/config`)
+## JSDoc Required
 
-### Documentation
-- [ ] `README.md` — purpose, installation, usage, API overview, development
-- [ ] `CLAUDE.md` — AI agent context: what the package does, key files, commands, architecture, testing conventions, export rules, standards
-- [ ] `AGENTS.md` — symlink to CLAUDE.md (`ln -s CLAUDE.md AGENTS.md`)
-- [ ] All public exports have JSDoc with `@param`, `@returns`, `@example`
-
-### Testing
-- [ ] Test files under `tests/` mirroring `src/` structure
-- [ ] Unit tests for all non-trivial logic
-- [ ] Barrel file (`src/index.ts`) using named exports only
-- [ ] Chart/graph rendering components use `.visual.ts` suffix (excluded from coverage, verified in Storybook)
-
-## JSDoc Enforcement (Automatic)
-
-When you modify or create a file under `src/` in any package:
-
-1. **Check**: Does the file contain `export` statements?
-2. **For each exported symbol** (function, class, type, interface, const):
-   - If JSDoc is missing → add it
-   - If JSDoc exists but is incomplete (missing @param, @returns, @example) → complete it
-3. **JSDoc standard**:
-   - Functions: `@param`, `@returns`, `@throws` (if applicable), `@example`
-   - Classes: class description, constructor `@param`, all public methods documented
-   - Types/interfaces: description, field-level comments for non-obvious fields
-   - Lit Web Components: `@element`, `@attr`, `@fires`, `@example`
-4. **Do NOT** add JSDoc to:
-   - Non-exported (internal) symbols
-   - Test files
-   - Re-export barrels (the source file has the docs)
+Every `export`ed symbol needs `@param`, `@returns`, `@example`. Exceptions: non-exported symbols, test files, re-export barrels.

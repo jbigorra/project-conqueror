@@ -152,8 +152,8 @@ bun run validate            # test + biome check
 bun run check               # Biome lint + format
 bun run build               # Build with bunup + tsc declarations
 bun run dev                 # Watch mode build
-pnpm run storybook          # Start Storybook dev server (port 6006)
-pnpm run build-storybook    # Build static Storybook
+bun run storybook           # Start Storybook dev server (port 6006)
+bun run build-storybook     # Build static Storybook
 ```
 
 ### Project Structure

@@ -2,6 +2,8 @@
 
 Modulithic web application for behavioural code analysis, built with Elysia.js + Bun + KitaJS JSX + HTMX + Pico CSS + SQLite/Drizzle.
 
+> **Status**: This app is **on hold**. The desktop app (`apps/td-radar-electrobun`) is the active focus.
+
 ## Setup
 
 ```bash
@@ -100,7 +102,7 @@ src/shared/
 
 | Layer | Technology |
 |-------|-----------|
-| Runtime | Bun 1.2.21+ |
+| Runtime | Bun ≥1.3.11 |
 | Web framework | Elysia.js (swagger, opentelemetry, static, html plugins) |
 | UI | KitaJS JSX (server-rendered) + HTMX + Pico CSS + SASS |
 | Database | SQLite via Drizzle ORM (`drizzle-kit` for migrations) |

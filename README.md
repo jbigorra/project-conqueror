@@ -1,5 +1,11 @@
 # Project Conqueror
 
+Behavioural code analysis tool. Analyse git repositories locally and get back visual analysis of coupling, churn, authorship, code age, complexity hotspots, and more.
+
+> **Status**: The desktop app (`apps/td-radar-electrobun`) is the active focus. The webapp (`apps/webapp`) is on hold.
+
+Multi-package pnpm monorepo. Turbo orchestration. Bun runtime. Biome formatting.
+
 ## Metrics
 
 ### SonarCloud
@@ -20,158 +26,158 @@
 | behave | Average Code Health | [![CodeScene Average Code Health](https://codescene.io/projects/69982/status-badges/average-code-health)](https://codescene.io/projects/69982) |
 | behave | Hotspot Code Health | [![CodeScene Hotspot Code Health](https://codescene.io/projects/69982/status-badges/hotspot-code-health)](https://codescene.io/projects/69982) |
 
+## Prerequisites
 
-## Packages
+| Tool | Version | Notes |
+|------|---------|-------|
+| **Bun** | ≥1.3.11 | Runtime. Pinned in `.bun-version`. Install via `mise` or `curl -fsSL https://bun.sh/install \| bash` |
+| **pnpm** | 10.32.1 | Package manager. Enable with `corepack enable && corepack install` |
+| **Python 3.10** + **uv** | — | Required only for `packages/lizard-ts`. `uv` is auto-installed by CI and `scripts/setup-worktree.sh`. No system Python needed. |
 
-This project is a monorepo that uses pnpm as the package manager and uses the `turbo` as build tool.
+## Quick Start
 
-- The packages are located in the `packages` folder.
-- The apps are located in the `apps` folder.
-
-### Apps list
-
-- [`webapp`](apps/webapp/README.md): Contains the fullstack web application modulith for Project Conqueror.
-
-### Packages list
-
-- [`behave`](packages/behave/README.md): Contains library that can analyse repositories to generate different kind of analyses.
-- [`lib`](packages/lib/README.md): Contains very generic pieces of code that are used across the project.
-- [`config`](packages/config/README.md): Contains the shared configuration (TypeScript, Biome) for all the packages/apps.
-
-# Package/App Configuration (`package.json`)
-
-- The `package.json` `name` field is used to identify the package/app, it should be unique across the project and contain the prefix `@prj-conq/<package-or-app-name>`.
-- The `package.json` "type" field is not required to be set to "module".
-- The `imports` section in the `package.json` is used to import the packages from the correct paths. DO NOT use the tsconfig.json `paths` option for aliasing paths.
-- The `exports` section in the `package.json` is used to explicitly define the exports of the package. These exports are the paths used by other packages or apps to import the package with the package name. Example: `@project-name/package-name/alias1` will import the `alias1` contents from the package.
-
-Example `package.json`:
-
-```json
-{
-  "imports": {
-    "#alias1": "./dist/alias1.js",
-    "#alias2": "./dist/alias2.js",
-    "#alias3": "./dist/alias3.js"
-  }, 
-  "exports": {
-    "./alias1": {
-      "types": "./dist/alias1/index.d.ts",
-      "default": "./dist/alias1/index.js"
-    },
-    "./alias2": {
-      "types": "./dist/alias2/index.d.ts",
-      "default": "./dist/alias2/index.js"
-    },
-    "./alias3": {
-      "types": "./dist/alias3/index.d.ts",
-      "default": "./dist/alias3/index.js"
-    }
-  }
-}
-```
-
-When scaffolding a new package, use the `example.package.json` file as a template, modify the new package.json file according to the needs. For example: as you can see in the [`@prj-conq/config`](packages/config/README.md) package, a thinned down version of the `package.json` file is used.
-
-### TypeScript Configuration
-
-Every package has a `tsconfig.json` file that is used to configure the TypeScript compiler, it inherits from a base `tsconfig.json` file from the `@prj-conq/config` package.
-
-The config file should bekept to a minimum for simplicity and compatibility between the packages/apps.
-
-# Unit Testing Packages
-
-Each package is being tested with Vitest.
-
-## Requirements
-
-### Test File Naming
-
-The test files are expected to be named like `*.test.ts` and be placed in the `tests` folder.
-
-### Vitest Configuration
-
-Every package has a `vitest.config.mjs` file that is used to configure the tests.
-
-Inside the `vitest.config.mjs` file, the `resolve.alias` is used to alias the packages to the correct paths.
-
-Example `vitest.config.mjs`:
-```js
-import path from "node:path";
-import { defineConfig } from "vitest/config";
-
-export default defineConfig({
-  resolve: {
-    alias: {
-      "#alias1": path.resolve(__dirname, "./src"),
-      "#alias2": path.resolve(__dirname, "./src/folder1"),
-      "#alias3": path.resolve(__dirname, "./src/folder2"),
-    },
-  },
-  test: {
-    name: "package-name",
-    typecheck: {
-      tsconfig: "./tsconfig.json",
-      checker: "tsc",
-      enabled: true,
-    },
-  },
-});
-```
-
-### Mocking
-
-To ensure the tests look simpler and less convoluted the mocks are expected to be created using the `vitest-mock-extended` package as much as possible. For more information, see the [vitest-mock-extended](https://www.npmjs.com/package/vitest-mock-extended) npm package.
-
-
-## Executing tests
-
-
-### From inside the package or app
-
-To execute the tests once, run the following command:
 ```bash
-pnpm run test
+# Install dependencies
+pnpm install
+
+# Build all packages (cross-package deps need dist/)
+pnpm run build
+
+# Run everything: build → test → lint → storybook
+pnpm run validate
 ```
 
-To execute the tests with watcher for a TDD workflow, run the following command:
+### Worktree Setup
+
 ```bash
+scripts/setup-worktree.sh
+# Installs deps, creates Python venv for lizard-ts via uv, builds all packages.
+# Auto-runs when using `wt add` (see .config/wt.toml).
+```
+
+## Project Structure
+
+### Apps
+
+| App | Description | Entry |
+|-----|-------------|-------|
+| [`td-radar-electrobun`](apps/td-radar-electrobun/README.md) | **Active.** Desktop app — Electrobun + Svelte 5 + Vite HMR. Analyses local repos and displays charts. | `src/bun/index.ts` (main process) |
+| [`webapp`](apps/webapp/README.md) | **On hold.** Fullstack web app — Elysia.js server (port 8080), KitaJS JSX, HTMX, Drizzle/SQLite | `apps/webapp/src/main.ts` |
+
+### Packages
+
+| Package | Description | Export |
+|---------|-------------|--------|
+| [`lib`](packages/lib/README.md) | Result monad, EventBus, spawnAsync, CLIResult | Sub-path: `./generics`, `./patterns`, `./processes` |
+| [`code-maat-port`](packages/code-maat-port/README.md) | Pure TS port of Clojure code-maat (git log analysis) | Single `.` |
+| [`lizard-ts`](packages/lizard-ts/README.md) | Python subprocess wrapper for cyclomatic complexity (lizard) | Single `.` |
+| [`behave`](packages/behave/README.md) | Analysis facade — combines code-maat-port + lizard-ts | Single `.` |
+| [`charts`](packages/charts/README.md) | Lit Web Components + Chart.js + D3 for visualization | Sub-path: `.`, `./generic`, `./domain` |
+| [`config`](packages/config/README.md) | Shared TypeScript base config (extends `@tsconfig/bun`) | No build |
+
+## Commands
+
+### Root (turbo delegates to all packages)
+
+```bash
+pnpm run validate      # build → test → lint → storybook (single source of truth)
+pnpm run build         # turbo build
+pnpm run dev           # turbo dev (watch)
+pnpm run test          # turbo test
+pnpm run test:coverage # turbo test:coverage
+pnpm run lint          # turbo lint
+pnpm run check         # turbo check (biome check --write .)
+```
+
+### Per package (use `bun` directly)
+
+```bash
+bun test                     # all tests
+bun test path/to/file        # single test file
+bun test --watch             # TDD
+bun test --coverage          # with coverage
+bun run typecheck            # tsc --noEmit
+bun run validate             # typecheck + test + biome check
+bun run check                # biome check --write .
+bun run lint                 # biome check . (CI mode)
+bun run check:changed        # biome --changed (VCS-aware)
+bun run build                # bunup, sometimes + tsc declaration emit
+```
+
+## Architecture
+
+### Webapp DDD Layers (`apps/webapp/src/features/{name}/`)
+
+```
+core/           # Entities, value objects — pure domain
+application/    # Use cases, event subscribers — orchestration
+infrastructure/ # Repository impls, DB, external services
+presentation/   # Controllers, JSX components
+```
+
+### Key Wiring
+
+- **Entry**: `apps/webapp/src/main.ts` → `bootstrapServer()` → registers event handlers → listens on port 8080
+- **Events**: Domain events (e.g. `FileUploadedEvent`) → `EventBusInstance` singleton → async subscribers
+- **DI**: Classes expose `static create({ overrides })` — no DI container
+- **Build**: Turbo orchestrates inter-package builds (`^build` dependency graph). Library packages use `bunup`. Webapp compiles to a single binary with `bun build --compile`.
+- **Testing**: Bun test runner with `bun-automock` for mocks and `fishery` for test data factories.
+
+### Package Conventions
+
+- **Path aliases**: Defined in `package.json` `imports` field, NOT `tsconfig.json` `paths`
+- **Barrel exports**: Named exports only (`export { X } from` / `export * from`). Never `export * as namespace` (breaks bun DTS with `noExternal`)
+- **JSDoc**: Required on all exported symbols (`@param`, `@returns`, `@example`)
+- **Visual components**: Chart/SVG rendering files use `.visual.ts` suffix (excluded from coverage, verified in Storybook)
+- **Linting**: Root biome uses `--changed` flag — only changed files linted, preserving git blame
+
+## Development
+
+### TDD
+
+```bash
+# Root (all packages):
 pnpm run tdd
+
+# Single package:
+cd packages/lib && bun test --watch
 ```
 
-### From the root of the project
+### DB (webapp only)
 
-To execute ALL the packages/apps tests once, run the following command:
 ```bash
-turbo test
+bun run db:generate     # Generate Drizzle migrations
+bun run db:migrate      # Run migrations
+bun run db:push         # Push schema directly
+bun run db:pull         # Pull schema from DB
 ```
 
-To execute ALL the packages/apps tests with watcher for a TDD workflow, run the following command:
+### Desktop App (td-radar-electrobun)
+
 ```bash
-turbo tdd
+cd apps/td-radar-electrobun
+bun run dev:hmr    # Vite HMR + electrobun concurrently (recommended)
+bun run dev        # electrobun dev --watch (no HMR)
+bun run build:canary # vite build + electrobun build --env=canary
 ```
 
-# Building the project
+### Storybook (charts)
 
-The packages/apps are being built with the `turbo` build tool. The build process is defined in the `turbo.json` file.
-
-The output of each package/app is placed in the `dist` folder for the ones that require building.
-
-To build the project, run the following command:
 ```bash
-turbo build
+cd packages/charts && bun run storybook        # Dev on port 6006
+cd packages/charts && bun run build-storybook  # Static build
 ```
 
-To build the project with watcher for a TDD/Dev workflow, run the following command:
-```bash
-turbo dev
-```
+## Code Quality
 
-To teardown the project, run the following command:
-```bash
-turbo dev:teardown
-```
+| Tool | Purpose |
+|------|---------|
+| **Biome** | Lint + format. Strict: noExplicitAny, noUnusedVariables, noNonNullAssertion = errors |
+| **TypeScript** | `tsc --noEmit` strict mode (`@tsconfig/bun` + `noUnusedLocals`, `noUnusedParameters`, `noPropertyAccessFromIndexSignature`) |
+| **SonarCloud** | Per-package quality gates + coverage tracking |
+| **CodeScene** | Code Health monitoring for `behave` |
+| **Husky** | Pre-commit runs `pnpm run validate`; pre-push runs it only on master |
 
-## Turbo configuration
+## New Package Checklist
 
-<TODO: add content>
+See [`AGENTS.md`](AGENTS.md#new-package-checklist) for the full checklist.

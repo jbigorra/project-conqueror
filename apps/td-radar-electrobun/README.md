@@ -1,69 +1,78 @@
-# Svelte Electrobun Template
+# @prj-conq/td-radar-electrobun
 
-A fast Electrobun desktop app template with Svelte 5 and Vite for hot module replacement (HMR).
+Desktop app for Project Conqueror — analyses git repositories locally and displays behavioural code analysis results as interactive charts.
 
-## Getting Started
+Built with [Electrobun](https://electrobun.dev) (Bun + system WebView), Svelte 5 with Vite HMR, and `@prj-conq/charts` for visualization.
+
+> **Status**: This is the **active** app. The webapp (`apps/webapp`) is on hold.
+
+## Prerequisites
+
+- **Bun** ≥1.3.11
+- **Python 3.10** + **uv** (for `packages/lizard-ts` — see [worktree setup](../..//scripts/setup-worktree.sh))
+
+## Quick Start
 
 ```bash
 # Install dependencies
 bun install
 
-# Development without HMR (uses bundled assets)
-bun run dev
-
 # Development with HMR (recommended)
 bun run dev:hmr
 
-# Build for production
-bun run build
+# Development without HMR
+bun run dev
 
-# Build for production release
-bun run build:prod
+# Build canary release
+bun run build:canary
 ```
 
 ## How HMR Works
 
-When you run `bun run dev:hmr`:
+`bun run dev:hmr` runs two processes concurrently:
 
-1. **Vite dev server** starts on `http://localhost:5173` with HMR enabled
-2. **Electrobun** starts and detects the running Vite server
-3. The app loads from the Vite dev server instead of bundled assets
-4. Changes to Svelte components update instantly without full page reload
+1. **Vite dev server** on port 5173 with Svelte HMR
+2. **Electrobun** launches the native window pointed at the Vite dev server
 
-When you run `bun run dev` (without HMR):
+Changes to Svelte components update instantly without full reload.
 
-1. Electrobun starts and loads from `views://mainview/index.html`
-2. You need to rebuild (`bun run build`) to see changes
+## Scripts
+
+| Script | Description |
+|--------|-------------|
+| `bun run dev` | Electrobun dev (watch bundled assets, no HMR) |
+| `bun run dev:hmr` | Vite HMR + Electrobun concurrently (recommended) |
+| `bun run hmr` | Vite dev server only on port 5173 |
+| `bun run start` | Vite build + Electrobun dev |
+| `bun run build:canary` | Vite build + Electrobun build (canary env) |
+
+No tests, Biome, or Turbo integration yet.
 
 ## Project Structure
 
 ```
-├── src/
-│   ├── bun/
-│   │   └── index.ts        # Main process (Electrobun/Bun)
-│   └── mainview/
-│       ├── App.svelte      # Svelte app component
-│       ├── main.ts         # Svelte entry point
-│       ├── index.html      # HTML template
-│       └── app.css         # Global styles
-├── electrobun.config.ts    # Electrobun configuration
-├── vite.config.ts          # Vite configuration
-├── svelte.config.js        # Svelte configuration
-└── package.json
+src/
+  bun/
+    index.ts              # Main process (Electrobun/Bun)
+  mainview/
+    App.svelte            # Root Svelte component
+    main.ts               # Svelte entry point
+    index.html            # HTML template
+    app.css               # Global styles
+electrobun.config.ts       # Electrobun config (app metadata, build, copy)
+vite.config.ts             # Vite config (Svelte plugin, root: src/mainview)
+svelte.config.js           # Svelte config (vitePreprocess)
 ```
 
-## Svelte 5 Features
+## Architecture
 
-This template uses Svelte 5 with the new runes syntax:
-
-- `$state()` - reactive state
-- `$derived()` - computed values
-- `$effect()` - side effects
+- **Main process** (`src/bun/index.ts`): Run git log generation and behavioural analysis via `@prj-conq/behave`. Serves analysis data to the renderer.
+- **Renderer** (`src/mainview/`): Svelte 5 UI using runes (`$state`, `$derived`, `$effect`). Charts rendered by `@prj-conq/charts` Web Components.
 
 ## Customizing
 
 - **Svelte components**: Edit files in `src/mainview/`
 - **Global styles**: Edit `src/mainview/app.css`
 - **Vite settings**: Edit `vite.config.ts`
-- **Window settings**: Edit `src/bun/index.ts`
+- **Window / main process**: Edit `src/bun/index.ts`
 - **App metadata**: Edit `electrobun.config.ts`
