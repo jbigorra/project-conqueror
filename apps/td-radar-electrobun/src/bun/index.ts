@@ -20,10 +20,11 @@ async function getMainViewUrl(): Promise<string> {
 	return "views://mainview/index.html";
 }
 
+// Create the main application window
 const url = await getMainViewUrl();
 
 const mainWindow = new BrowserWindow({
-	title: "Solid App",
+	title: "Svelte App",
 	url,
 	frame: {
 		width: 900,
@@ -33,4 +34,4 @@ const mainWindow = new BrowserWindow({
 	},
 });
 
-console.log("Solid app started!");
+console.log("Svelte app started!");

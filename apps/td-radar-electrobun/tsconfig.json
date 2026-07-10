@@ -5,6 +5,7 @@
 		"module": "ESNext",
 		"resolveJsonModule": true,
 		"allowJs": true,
+		"checkJs": true,
 		"isolatedModules": true,
 		"moduleDetection": "force",
 		"noEmit": true,
@@ -12,9 +13,7 @@
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"noFallthroughCasesInSwitch": true,
-		"moduleResolution": "bundler",
-		"jsx": "preserve",
-		"jsxImportSource": "solid-js"
+		"moduleResolution": "bundler"
 	},
 	"include": ["src"],
 	"exclude": ["node_modules", "dist", "build", "../../package/dist"]

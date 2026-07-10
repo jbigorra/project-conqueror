@@ -1,8 +1,8 @@
 import { defineConfig } from "vite";
-import solid from "vite-plugin-solid";
+import { svelte } from "@sveltejs/vite-plugin-svelte";
 
 export default defineConfig({
-	plugins: [solid()],
+	plugins: [svelte()],
 	root: "src/mainview",
 	build: {
 		outDir: "../../dist",
