@@ -8,9 +8,9 @@ TypeScript wrapper around the Python [lizard](https://github.com/terryyin/lizard
 
 - `src/index.ts` — Public API: `LizardInstance` singleton factory + `Lizard` class
 - `src/ts-lizard/wrapper.ts` — `Lizard` class: calls executor with `--csv` flag, prepends CSV headers
-- `src/ts-lizard/infrastructure/lizard-executor.ts` — `LizardExecutor`: resolves python-lizard path, spawns Python subprocess via `spawnAsync`
+- `src/ts-lizard/infrastructure/lizard-executor.ts` — `LizardExecutor`: runs `python -m lizard` via `.venv/bin/python`, spawns subprocess via `spawnAsync`
 - `src/ts-lizard/infrastructure/interfaces.ts` — `ICLIExecutor` interface
-- `src/python-lizard/` — Vendored Python lizard source (lizard.py + venv)
+- `requirements.txt` — Python dependency: pinned `lizard` version installed into `.venv`
 - `biome.json` — Biome linter/formatter config
 
 ## Commands
@@ -31,7 +31,7 @@ bun run check           # biome check --write
 
 **Dependency Injection** — `Lizard` accepts an `ICLIExecutor` interface. `LizardExecutor` accepts a `TSpawnAsyncFn`. Both injectable for testing.
 
-**Python Resolution** — `LizardExecutor` resolves the python-lizard directory at construction time by walking from the package's `package.json` location. Searches `dist/python-lizard` then `src/python-lizard`. Uses a vendored `.venv/bin/python` to avoid system Python conflicts.
+**Python Resolution** — `LizardExecutor` resolves `.venv/bin/python` from the package root (via `import.meta.resolve` of `package.json`). The `.venv` is managed by `uv` (portable Python manager from Astral), which downloads a relocatable Python — no system Python required. Run `uv venv --python 3.10 .venv && uv pip install -r requirements.txt` to set up.
 
 **Result Pattern** — `LizardExecutor.execute()` returns `Result<TCLIResult>` from `@prj-conq/lib`. Errors are wrapped, not thrown.
 

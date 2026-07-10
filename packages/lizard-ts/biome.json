@@ -5,7 +5,6 @@
     "includes": [
       "src/**",
       "tests/**",
-      "!src/python-lizard",
       "!tests/ts-lizard/sample-folder-for-integration-test/sample-file-for-integration-test.ts"
     ]
   }

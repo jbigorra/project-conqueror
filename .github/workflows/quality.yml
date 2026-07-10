@@ -53,8 +53,9 @@ jobs:
 
       - name: Setup Python venv for lizard
         run: |
-          python3 -m venv packages/lizard-ts/src/python-lizard/.venv
-          packages/lizard-ts/src/python-lizard/.venv/bin/pip install pygments pathspec
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          uv venv --python 3.10 packages/lizard-ts/.venv
+          VIRTUAL_ENV=packages/lizard-ts/.venv uv pip install -r packages/lizard-ts/requirements.txt
 
       # Fallback: install if cache miss
       - name: Install dependencies (if needed)

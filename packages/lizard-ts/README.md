@@ -49,7 +49,7 @@ const csvOrError = await lizard.analyze("/path/to/source");
 
 ### Infrastructure
 
-- **`LizardExecutor`** -- Implements `ICLIExecutor`. Locates the bundled Python lizard installation (`src/python-lizard/` or `dist/python-lizard/`) and its virtualenv Python binary. Spawns the subprocess via `spawnAsync` from `@prj-conq/lib`.
+- **`LizardExecutor`** -- Implements `ICLIExecutor`. Runs `python -m lizard` via the package's `.venv` and spawns the subprocess via `spawnAsync` from `@prj-conq/lib`.
 - **`ICLIExecutor`** -- Interface: `execute(args: string[]) => Promise<Result<TCLIResult>>`.
 
 ### CSV Output Columns
@@ -70,7 +70,7 @@ const csvOrError = await lizard.analyze("/path/to/source");
 
 ### Dependencies
 
-- **Runtime**: Python 3 with lizard installed (bundled in `src/python-lizard/` with its own `.venv`)
+- **Runtime**: Python 3 with `lizard` installed from PyPI into a local `.venv`
 - **`@prj-conq/lib/processes`** -- `spawnAsync` for subprocess execution
 - **`@prj-conq/lib/patterns`** -- `Result<T>` for error handling
 
@@ -96,7 +96,7 @@ src/
     infrastructure/
       interfaces.ts               # ICLIExecutor interface
       lizard-executor.ts          # LizardExecutor (Python subprocess)
-  python-lizard/                  # Bundled Python lizard + virtualenv
+  requirements.txt                # Pinned Python dependency (lizard)
 ```
 
 ## Contributing
