@@ -69,9 +69,9 @@ scripts/setup-worktree.sh
 | Package | Description | Export |
 |---------|-------------|--------|
 | [`lib`](packages/lib/README.md) | Result monad, EventBus, spawnAsync, CLIResult | Sub-path: `./generics`, `./patterns`, `./processes` |
-| [`code-maat-port`](packages/code-maat-port/README.md) | Pure TS port of Clojure code-maat (git log analysis) | Single `.` |
+| [`code-maat-ts`](packages/code-maat-ts/README.md) | Pure TS port of Clojure code-maat (git log analysis) | Single `.` |
 | [`lizard-ts`](packages/lizard-ts/README.md) | Python subprocess wrapper for cyclomatic complexity (lizard) | Single `.` |
-| [`behave`](packages/behave/README.md) | Analysis facade — combines code-maat-port + lizard-ts | Single `.` |
+| [`behave`](packages/behave/README.md) | Analysis facade — combines code-maat-ts + lizard-ts | Single `.` |
 | [`charts`](packages/charts/README.md) | Lit Web Components + Chart.js + D3 for visualization | Sub-path: `.`, `./generic`, `./domain` |
 | [`config`](packages/config/README.md) | Shared TypeScript base config (extends `@tsconfig/bun`) | No build |
 

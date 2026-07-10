@@ -1,6 +1,6 @@
 # @prj-conq/behave
 
-Code analysis engine that orchestrates `@prj-conq/code-maat-port` + `@prj-conq/lizard-ts` to run behavioural code analysis. Pipeline: parse -> analyse -> format.
+Code analysis engine that orchestrates `@prj-conq/code-maat-ts` + `@prj-conq/lizard-ts` to run behavioural code analysis. Pipeline: parse -> analyse -> format.
 
 ## Installation
 
@@ -105,7 +105,7 @@ All methods accept optional `SimpleAnalysisInput` (or `ComplexityHotspotsInput` 
 
 ### Error Types (Effect tagged errors)
 
-- **`CodeMaatError`** -- Failure from code-maat-port execution
+- **`CodeMaatError`** -- Failure from code-maat-ts execution
 - **`LizardError`** -- Failure from lizard subprocess
 - **`FormatError`** -- Failure during CSV formatting
 
@@ -136,7 +136,7 @@ src/
   errors.ts                     # Tagged error types (CodeMaatError, LizardError, FormatError)
   index.ts                      # Public barrel
   analyses/
-    simple/                     # 18 simple analyses (each wraps code-maat-port via Effect)
+    simple/                     # 18 simple analyses (each wraps code-maat-ts via Effect)
     aggregated/
       complexity-hotspots.ts    # Parallel: code-maat revisions + lizard complexity -> merge
   pipeline/

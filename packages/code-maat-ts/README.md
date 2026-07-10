@@ -1,4 +1,4 @@
-# @prj-conq/code-maat-port
+# @prj-conq/code-maat-ts
 
 TypeScript port of [code-maat](https://github.com/adamtornhill/code-maat) -- VCS log analysis for computing coupling, churn, authorship, code age, and other software evolution metrics.
 
@@ -7,7 +7,7 @@ TypeScript port of [code-maat](https://github.com/adamtornhill/code-maat) -- VCS
 Monorepo-internal package:
 
 ```bash
-pnpm add @prj-conq/code-maat-port@workspace:^
+pnpm add @prj-conq/code-maat-ts@workspace:^
 ```
 
 ## Usage
@@ -15,7 +15,7 @@ pnpm add @prj-conq/code-maat-port@workspace:^
 ### High-level: `runAnalysis` (full pipeline)
 
 ```typescript
-import { runAnalysis } from "@prj-conq/code-maat-port";
+import { runAnalysis } from "@prj-conq/code-maat-ts";
 
 const results = await runAnalysis("/path/to/git.log", {
   versionControl: "git",
@@ -32,7 +32,7 @@ const results = await runAnalysis("/path/to/git.log", {
 ### Low-level: individual parsers and analyses
 
 ```typescript
-import { parseGitReadLog, byCount } from "@prj-conq/code-maat-port";
+import { parseGitReadLog, byCount } from "@prj-conq/code-maat-ts";
 
 // Parse a git log from a string
 const entries = parseGitReadLog(logText, {});
@@ -50,7 +50,7 @@ const authorCounts = byCount(entries, {
 ### With grouping and team mapping
 
 ```typescript
-import { runAnalysis } from "@prj-conq/code-maat-port";
+import { runAnalysis } from "@prj-conq/code-maat-ts";
 
 const results = await runAnalysis("/path/to/git.log", {
   versionControl: "git",

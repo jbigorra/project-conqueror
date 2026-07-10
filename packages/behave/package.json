@@ -47,7 +47,7 @@
   "dependencies": {
     "@prj-conq/lib": "workspace:^",
     "@prj-conq/lizard-ts": "workspace:^",
-    "@prj-conq/code-maat-port": "workspace:^",
+    "@prj-conq/code-maat-ts": "workspace:^",
     "csv-parse": "6.1.0",
     "csv-stringify": "^6.7.0",
     "effect": "^3.21.0"

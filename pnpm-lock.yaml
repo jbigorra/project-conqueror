@@ -151,9 +151,9 @@ importers:
 
   packages/behave:
     dependencies:
-      '@prj-conq/code-maat-port':
+      '@prj-conq/code-maat-ts':
         specifier: workspace:^
-        version: link:../code-maat-port
+        version: link:../code-maat-ts
       '@prj-conq/lib':
         specifier: workspace:^
         version: link:../lib
@@ -271,7 +271,7 @@ importers:
         specifier: '>=6.4.3'
         version: 8.1.4(@types/node@25.5.0)(esbuild@0.28.1)(sass@1.97.3)(tsx@4.21.0)(yaml@2.9.0)
 
-  packages/code-maat-port:
+  packages/code-maat-ts:
     dependencies:
       csv-parse:
         specifier: 6.1.0
@@ -285,7 +285,7 @@ importers:
         version: link:../config
       '@types/bun':
         specifier: ^1.3.11
-        version: 1.3.11
+        version: 1.3.14
       bun-automock:
         specifier: ^0.2.5
         version: 0.2.5(typescript@5.9.3)

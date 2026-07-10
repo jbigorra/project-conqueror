@@ -13,8 +13,8 @@
     "packages/charts": {
       "component": "charts"
     },
-    "packages/code-maat-port": {
-      "component": "code-maat-port"
+    "packages/code-maat-ts": {
+      "component": "code-maat-ts"
     },
     "packages/lib": {
       "component": "lib"

@@ -1,4 +1,4 @@
-import { type AppOptions, runAnalysis } from "@prj-conq/code-maat-port";
+import { type AppOptions, runAnalysis } from "@prj-conq/code-maat-ts";
 import { Context, Effect, Layer } from "effect";
 import { CodeMaatError } from "../errors";
 

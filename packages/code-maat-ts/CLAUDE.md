@@ -1,4 +1,4 @@
-# code-mat-port — Claude Context
+# @prj-conq/code-maat-ts — Claude Context
 
 TypeScript port of the Clojure [code-maat](https://github.com/adamtornhill/code-maat) library. Runs on Bun.
 

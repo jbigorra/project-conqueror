@@ -33,7 +33,7 @@ yarn-error.log*
 .manual-test-scripts/*
 **/coverage
 
-packages/code-maat-port/tmp/
+packages/code-maat-ts/tmp/
 
 .superpowers/
 

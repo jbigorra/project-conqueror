@@ -1,5 +1,5 @@
 /**
- * @module code-maat-port
+ * @module code-maat-ts
  *
  * TypeScript port of [code-maat](https://github.com/adamtornhill/code-maat).
  *
@@ -7,7 +7,7 @@
  * for computing coupling, churn, authorship, and other software evolution metrics.
  *
  * @example
- * import { runAnalysis } from "@prj-conq/code-maat-port";
+ * import { runAnalysis } from "@prj-conq/code-maat-ts";
  *
  * const results = await runAnalysis("git.log", {
  *   versionControl: "git",

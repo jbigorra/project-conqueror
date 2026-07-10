@@ -2,7 +2,7 @@
 
 ## What This Package Does
 
-Behavioural code analysis facade. Orchestrates `@prj-conq/code-maat-port` (git log analysis) and `@prj-conq/lizard-ts` (cyclomatic complexity) to produce analysis results. Consumed by `@prj-conq/webapp` and `@prj-conq/charts`. Provides both a `Behave` class API and direct function imports for individual analyses.
+Behavioural code analysis facade. Orchestrates `@prj-conq/code-maat-ts` (git log analysis) and `@prj-conq/lizard-ts` (cyclomatic complexity) to produce analysis results. Consumed by `@prj-conq/webapp` and `@prj-conq/charts`. Provides both a `Behave` class API and direct function imports for individual analyses.
 
 ## Key Files
 
@@ -41,7 +41,7 @@ bun run check           # biome check --write
 
 **Aggregated Analyses** — `complexityHotspots` combines revisions (code-maat) + complexity (lizard), merging results by entity path.
 
-**Legacy vs New** — `src/legacy/` contains the old Java-subprocess-based `Behave` (spawns code-maat JAR). New API under `src/analyses/` uses `@prj-conq/code-maat-port` (pure TypeScript). Both coexist during migration.
+**Legacy vs New** — `src/legacy/` contains the old Java-subprocess-based `Behave` (spawns code-maat JAR). New API under `src/analyses/` uses `@prj-conq/code-maat-ts` (pure TypeScript). Both coexist during migration.
 
 ## Testing Conventions
 
@@ -49,7 +49,7 @@ bun run check           # biome check --write
 - **File layout**: `tests/` mirrors `src/` — `tests/analyses/simple/`, `tests/pipeline/`, `tests/services/`
 - **Mocking**: `bun-automock` for service isolation
 - **Factories**: `fishery` for building test data (`tests/fixtures/factories/`)
-- **Integration tests**: `tests/integration/` — run real code-maat-port + lizard against fixture git logs
+- **Integration tests**: `tests/integration/` — run real code-maat-ts + lizard against fixture git logs
 - **Fixtures**: `tests/fixtures/` — git log text, sample source files, analysis record factories
 
 ## Export Rules

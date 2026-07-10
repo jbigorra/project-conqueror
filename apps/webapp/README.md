@@ -106,7 +106,7 @@ src/shared/
 | Web framework | Elysia.js (swagger, opentelemetry, static, html plugins) |
 | UI | KitaJS JSX (server-rendered) + HTMX + Pico CSS + SASS |
 | Database | SQLite via Drizzle ORM (`drizzle-kit` for migrations) |
-| Analysis | `@prj-conq/behave` (code-maat-port + lizard-ts) |
+| Analysis | `@prj-conq/behave` (code-maat-ts + lizard-ts) |
 | Testing | Bun test runner + `bun-automock` + `fishery` factories + Playwright (E2E) |
 
 ## Contributing

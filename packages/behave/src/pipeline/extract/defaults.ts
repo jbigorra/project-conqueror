@@ -1,4 +1,4 @@
-import type { AnalysisOptions } from "@prj-conq/code-maat-port";
+import type { AnalysisOptions } from "@prj-conq/code-maat-ts";
 
 export const DEFAULT_OPTIONS: AnalysisOptions = {
   minRevs: 5,

@@ -2,7 +2,7 @@
 
 ## What This Package Does
 
-Shared utility library providing foundational patterns used across all packages: Result monad, EventBus, process spawning, and generic types. Consumed by `@prj-conq/behave`, `@prj-conq/lizard-ts`, `@prj-conq/code-maat-port`, and `@prj-conq/webapp`.
+Shared utility library providing foundational patterns used across all packages: Result monad, EventBus, process spawning, and generic types. Consumed by `@prj-conq/behave`, `@prj-conq/lizard-ts`, `@prj-conq/code-maat-ts`, and `@prj-conq/webapp`.
 
 ## Key Files
 

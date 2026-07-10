@@ -6,7 +6,7 @@ export default defineConfig({
   entry: "src/index.ts",
   outDir: "dist",
   dts: false,
-  noExternal: ["@prj-conq/code-maat-port", "@prj-conq/lizard-ts", "@prj-conq/lib"],
+  noExternal: ["@prj-conq/code-maat-ts", "@prj-conq/lizard-ts", "@prj-conq/lib"],
   format: "esm",
   sourcemap: "linked",
   // preferredTsconfig: "tsconfig.build.json",

@@ -70,8 +70,8 @@ No tests, no Biome, no Turbo integration yet.
 | `apps/webapp` | Elysia.js server (port 8080), KitaJS JSX, HTMX, Drizzle/SQLite — **on hold** | `src/main.ts` (private app) |
 | `apps/td-radar-electrobun` | **Active.** Desktop app — Electrobun + Svelte 5 + Vite HMR. Bundles @prj-conq/charts for visualization | `src/bun/index.ts` (main process) |
 | `packages/lib` | Result monad, EventBus, spawnAsync, CLIResult | Sub-path exports: `./generics`, `./patterns`, `./processes` |
-| `packages/behave` | Code analysis facade — combines code-maat-port + lizard-ts | Single `.` export. Effect-based pipeline. |
-| `packages/code-maat-port` | Pure TS port of Clojure code-maat (git log analysis) | Single `.` export |
+| `packages/behave` | Code analysis facade — combines code-maat-ts + lizard-ts | Single `.` export. Effect-based pipeline. |
+| `packages/code-maat-ts` | Pure TS port of Clojure code-maat (git log analysis) | Single `.` export |
 | `packages/charts` | Lit Web Components + Chart.js + D3 | Sub-path exports: `.`, `./generic`, `./domain` |
 | `packages/lizard-ts` | Python subprocess wrapper for cyclomatic complexity | Single `.` export |
 | `packages/config` | Shared tsconfig base (extends `@tsconfig/bun`) | No build — config only |
@@ -140,7 +140,7 @@ All path aliasing must be in `package.json` `imports` field — NOT in `tsconfig
 - `apps/td-radar-electrobun/AGENTS.md` — Electrobun config, Svelte 5 setup, HMR workflow (no standard scripts)
 - `packages/lib/AGENTS.md` — Result, EventBus, spawnAsync export paths
 - `packages/behave/AGENTS.md` — Effect pipeline, legacy vs new API, service layers
-- `packages/code-maat-port/AGENTS.md` — parsers, end-to-end tests, export restrictions
+- `packages/code-maat-ts/AGENTS.md` — parsers, end-to-end tests, export restrictions
 - `packages/charts/AGENTS.md` — Lit components, Storybook, `.visual.ts` convention
 - `packages/lizard-ts/AGENTS.md` — Python venv setup, singleton pattern, integration tests
 - `packages/config/AGENTS.md` — tsconfig base, minimal
