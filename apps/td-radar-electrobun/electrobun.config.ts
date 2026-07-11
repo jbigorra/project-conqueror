@@ -2,18 +2,16 @@ import type { ElectrobunConfig } from "electrobun";
 
 export default {
 	app: {
-		name: "svelte-app",
-		identifier: "svelteapp.electrobun.dev",
+		name: "td-radar",
+		identifier: "td-radar.electrobun.dev",
 		version: "0.0.1",
 	},
 	build: {
 		// Vite builds to dist/, we copy from there
 		copy: {
 			"dist/index.html": "views/mainview/index.html",
-			"dist/assets": "views/mainview/assets",
+			"dist/_app": "views/mainview/_app",
 		},
-		// Ignore Vite output in watch mode — HMR handles view rebuilds separately
-		watchIgnore: ["dist/**"],
 		mac: {
 			bundleCEF: false,
 		},

@@ -4,20 +4,26 @@
 	"type": "module",
 	"description": "Electrobun app with Svelte and Vite HMR",
 	"scripts": {
-		"start": "vite build && electrobun dev",
-		"dev": "electrobun dev --watch",
-		"dev:hmr": "concurrently \"bun run hmr\" \"bun run start\"",
-		"hmr": "vite --port 5173",
-		"build:canary": "vite build && electrobun build --env=canary"
+  	"dev": "bun run build && electrobun dev",
+  	"dev:hmr": "concurrently \"bun run hmr\" \"bun run dev\"",
+  	"hmr": "bunx --bun vite dev --port 5173",
+  	"preview": "bunx --bun vite preview",
+  	"build": "bunx --bun vite build && electrobun build",
+		"build:canary": "bunx --bun vite build && electrobun build --env=canary",
+  	"build:prod": "bunx --bun vite build && electrobun build --channel prod",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
 	},
 	"dependencies": {
 		"electrobun": "1.16.0"
 	},
 	"devDependencies": {
-		"@sveltejs/vite-plugin-svelte": "^7.0.0",
+		"@sveltejs/adapter-static": "^3.0.10",
+		"@sveltejs/kit": "^2.69.2",
+		"@sveltejs/vite-plugin-svelte": "^7.2.0",
 		"@types/bun": "latest",
 		"concurrently": "^9.1.0",
 		"svelte": "^5.55.5",
+		"svelte-check": "^4.7.2",
 		"typescript": "^5.7.2",
 		"vite": "^8.0.10"
 	}
