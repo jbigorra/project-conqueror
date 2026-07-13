@@ -1,23 +1,29 @@
 <script lang="ts">
-  // import { bunRpc } from "../hooks.client";
+  import { onMount } from "svelte";
+  import { useRpc } from "$lib/main";
 
 	let selectedPath = $state<string | null>(null);
 	let loading = $state(false);
 	let error = $state<string | null>(null);
+	let bunRpc: Awaited<ReturnType<typeof useRpc>> | null = null;
+
+	onMount(async () => {
+      bunRpc = await useRpc();
+	});
 
 	async function openRepoFolder() {
-		// loading = true;
-		// error = null;
-		// try {
-		// 	const path = await bunRpc.request.openFolderDialog({});
-		// 	if (path) {
-		// 		selectedPath = path;
-		// 	}
-		// } catch (e) {
-		// 	error = e instanceof Error ? e.message : String(e);
-		// } finally {
-		// 	loading = false;
-		// }
+		loading = true;
+		error = null;
+		try {
+			const path = await bunRpc?.request.openFolderDialog({});
+			if (path) {
+				selectedPath = path;
+			}
+		} catch (e) {
+			error = e instanceof Error ? e.message : String(e);
+		} finally {
+			loading = false;
+		}
 	}
 </script>
 

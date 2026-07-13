@@ -1,13 +1,3 @@
-  import { Electroview } from "electrobun/view";
-  import type { AppRPC } from "./shared/types";
-
-  const rpc = Electroview.defineRPC<AppRPC>({
-	maxRequestTime: 30_000,
-	handlers: {
-		requests: {},
-		messages: {},
-	},
-  });
-
-  export const electroview = new Electroview({ rpc });
-  export const bunRpc = electroview.rpc!;
+// RPC initialization moved to $lib/rpc.svelte.ts
+// This file intentionally left empty — kept for SvelteKit hooks slot.
+// No side-effect exports here: they'd trigger SSR evaluation of electrobun/view.
