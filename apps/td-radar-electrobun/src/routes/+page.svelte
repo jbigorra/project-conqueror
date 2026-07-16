@@ -1,14 +1,12 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { getBunRpc } from "$lib/views/hooks/webview-rpc";
+  import { type BunRpcClient, getBunRpc } from "$lib/views/hooks/webview-rpc";
   import { storedProjectsRepository } from "$lib/views/repositories/stored-projects.repo";
-  import type { AppRPC } from "../shared/types";
 
   let storedProjects = $state<string[]>([]);
-  let selectedPath = $state<string>("");
   let loading = $state(false);
   let error = $state<string | null>(null);
-  let bunRpc: AppRPC["bun"] | null = null;
+  let bunRpc: BunRpcClient | null = null;
 
   onMount(async () => {
     bunRpc = await getBunRpc();
@@ -16,12 +14,14 @@
   });
 
   async function openRepoFolder() {
+    if (!bunRpc) return;
     loading = true;
     error = null;
     try {
-      selectedPath = await bunRpc?.request.openFolderDialog({});
-      await storedProjectsRepository.addProject(selectedPath);
-      storedProjects.push(selectedPath);
+      const path = await bunRpc.request.openFolderDialog();
+      if (!path) return; // user cancelled the dialog
+      await storedProjectsRepository.addProject(path);
+      storedProjects.push(path);
     } catch (e) {
       error = e instanceof Error ? e.message : String(e);
     } finally {
@@ -36,7 +36,12 @@
     <p class="subtitle">Select a repository folder to analyse</p>
 
     <div class="card picker">
-      <button class="primary" onclick={openRepoFolder} disabled={loading}>
+      <button
+        class="primary"
+        onclick={openRepoFolder}
+        disabled={loading}
+        aria-busy={loading}
+      >
         {loading ? "Selecting…" : "Open Repository Folder"}
       </button>
 
