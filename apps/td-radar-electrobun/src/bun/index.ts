@@ -1,4 +1,10 @@
-import { BrowserView, BrowserWindow, Updater, Utils } from "electrobun/bun";
+import {
+  BrowserView,
+  BrowserWindow,
+  Session,
+  Updater,
+  Utils,
+} from "electrobun/bun";
 import type { AppRPC } from "../shared/types";
 
 const DEV_SERVER_PORT = 5173;
@@ -39,12 +45,12 @@ const rpc = BrowserView.defineRPC<AppRPC>({
 // Create the main application window
 const url = await getMainViewUrl();
 
-const mainWindow = new BrowserWindow({
-  title: "SvelteKit + Electrobun",
+const window = new BrowserWindow({
+  title: "TD Radar",
   url,
   frame: {
-    width: 900,
-    height: 700,
+    width: 1260,
+    height: 980,
     x: 200,
     y: 200,
   },
@@ -52,7 +58,7 @@ const mainWindow = new BrowserWindow({
 });
 
 // Quit the app when the main window is closed
-mainWindow.on("close", () => {
+window.on("close", () => {
   Utils.quit();
 });
 
