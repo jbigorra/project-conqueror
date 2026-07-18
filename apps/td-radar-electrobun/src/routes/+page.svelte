@@ -1,5 +1,11 @@
 <script lang="ts">
-  import { Button, ClickableTile, Column, Row } from "carbon-components-svelte";
+  import {
+    Button,
+    ClickableTile,
+    Column,
+    InlineNotification,
+    Row,
+  } from "carbon-components-svelte";
   import { onMount } from "svelte";
   import { type BunRpcClient, getBunRpc } from "$lib/views/hooks/webview-rpc";
   import { storedProjectsRepository } from "$lib/views/repositories/stored-projects.repo";
@@ -17,7 +23,6 @@
   async function openRepoFolder() {
     if (!bunRpc) return;
     loading = true;
-    error = null;
     try {
       const path = await bunRpc.request.openFolderDialog();
       if (!path) return; // user cancelled the dialog
@@ -37,7 +42,11 @@
       {loading ? "Selecting…" : "Select Repository Folder"}
     </Button>
     {#if error}
-      <p class="error">{error}</p>
+      <InlineNotification
+        title="Error:"
+        subtitle={error}
+        on:close={() => (error = null)}
+      />
     {/if}
   </Column>
   <Column sm={16} max={16}>
