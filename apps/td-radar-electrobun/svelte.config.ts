@@ -1,16 +1,18 @@
-import adapter from '@sveltejs/adapter-static';
-import type { Config } from '@sveltejs/kit';
+import adapter from "@sveltejs/adapter-auto";
+import type { Config } from "@sveltejs/kit";
 
 const config: Config = {
-	kit: {
-		adapter: adapter({
-			pages: 'dist',
-			assets: 'dist'
-		}),
-	},
-	compilerOptions: {
-		runes: true
-	}
+  kit: {
+    adapter: adapter(),
+  },
+  compilerOptions: {
+    runes: true,
+  },
+  vitePlugin: {
+    dynamicCompileOptions: ({ filename }) => {
+      return { runes: !filename.includes("node_modules") };
+    },
+  },
 };
 
 export default config;
