@@ -1,10 +1,4 @@
-import {
-  BrowserView,
-  BrowserWindow,
-  Session,
-  Updater,
-  Utils,
-} from "electrobun/bun";
+import { BrowserView, BrowserWindow, Updater, Utils } from "electrobun/bun";
 import type { AppRPC } from "../shared/types";
 
 const DEV_SERVER_PORT = 5173;
@@ -35,7 +29,7 @@ const rpc = BrowserView.defineRPC<AppRPC>({
           canChooseDirectory: true,
           allowsMultipleSelection: false,
         });
-        return paths?.[0] ?? null;
+        return paths?.[0]?.trim() ?? null;
       },
     },
     messages: {},
