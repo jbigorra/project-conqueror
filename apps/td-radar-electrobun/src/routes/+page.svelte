@@ -4,6 +4,7 @@
     ClickableTile,
     Column,
     InlineNotification,
+    Loading,
     Row,
   } from "carbon-components-svelte";
   import { onMount } from "svelte";
@@ -39,7 +40,11 @@
 <Row padding>
   <Column sm={16} max={16}>
     <Button onclick={openRepoFolder} disabled={loading} aria-busy={loading}>
-      {loading ? "Selecting…" : "Select Repository Folder"}
+      {#if loading}
+        <Loading small withOverlay={false} active={loading} /> &nbsp; Selecting...
+      {:else}
+        Select Repository
+      {/if}
     </Button>
     {#if error}
       <InlineNotification
