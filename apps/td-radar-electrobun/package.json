@@ -14,7 +14,8 @@
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
   },
   "dependencies": {
-    "electrobun": "1.16.0"
+    "electrobun": "1.16.0",
+    "@prj-conq/lib": "workspace:^"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^7.0.1",

@@ -1,5 +1,5 @@
-import { BrowserView, BrowserWindow, Updater, Utils } from "electrobun/bun";
-import type { AppRPC } from "../shared/types";
+import { BrowserWindow, Updater, Utils } from "electrobun/bun";
+import { rpc } from "./rpc/bun-rpc";
 
 const DEV_SERVER_PORT = 5173;
 const DEV_SERVER_URL = `http://localhost:${DEV_SERVER_PORT}`;
@@ -19,22 +19,6 @@ async function getMainViewUrl(): Promise<string> {
   }
   return "views://mainview/index.html";
 }
-
-const rpc = BrowserView.defineRPC<AppRPC>({
-  handlers: {
-    requests: {
-      openFolderDialog: async () => {
-        const paths = await Utils.openFileDialog({
-          canChooseFiles: false,
-          canChooseDirectory: true,
-          allowsMultipleSelection: false,
-        });
-        return paths?.[0]?.trim() ?? null;
-      },
-    },
-    messages: {},
-  },
-});
 
 // Create the main application window
 const url = await getMainViewUrl();

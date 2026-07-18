@@ -47,6 +47,9 @@ importers:
 
   apps/td-radar-electrobun:
     dependencies:
+      '@prj-conq/lib':
+        specifier: workspace:^
+        version: link:../../packages/lib
       electrobun:
         specifier: 1.16.0
         version: 1.16.0
