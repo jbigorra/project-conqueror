@@ -4,7 +4,7 @@
   "type": "module",
   "description": "Electrobun app with Svelte and Vite HMR",
   "scripts": {
-    "dev": "bun run build && electrobun dev",
+    "dev": "bun run build && electrobun dev --watch",
     "dev:hmr": "concurrently \"bun run hmr\" \"bun run dev\"",
     "hmr": "bunx --bun vite dev --port 5173",
     "preview": "bunx --bun vite preview",

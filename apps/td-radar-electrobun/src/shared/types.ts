@@ -3,12 +3,15 @@ import type { RPCSchema } from "electrobun/bun";
 export type AppRPC = {
   bun: RPCSchema<{
     requests: {
-      openFolderDialog: { params: void; response: string | null };
+      openFolderDialog: { params: undefined; response: string | null };
     };
+    // biome-ignore lint/complexity/noBannedTypes: Temporary ignore
     messages: {};
   }>;
   webview: RPCSchema<{
+    // biome-ignore lint/complexity/noBannedTypes: Temporary ignore
     requests: {};
+    // biome-ignore lint/complexity/noBannedTypes: Temporary ignore
     messages: {};
   }>;
 };
