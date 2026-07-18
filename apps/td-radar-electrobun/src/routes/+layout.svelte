@@ -13,7 +13,6 @@
 
   let { children } = $props();
 
-  let isSideNavOpen = $state(false);
   let getSanitizedPaths = () => {
     const isHomePage = page.url.pathname === "/";
     if (isHomePage) return [""];
@@ -33,7 +32,7 @@
   );
 </script>
 
-<Header companyName="" platformName="TD Radar" bind:isSideNavOpen>
+<Header companyName="" platformName="TD Radar">
   <Breadcrumb>
     {#each breadcrumbItems as item}
       <BreadcrumbItem href={item.href} isCurrentPage={item.active}>
