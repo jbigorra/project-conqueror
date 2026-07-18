@@ -2,6 +2,7 @@
   import {
     Breadcrumb,
     BreadcrumbItem,
+    Column,
     Content,
     Grid,
     Header,
@@ -44,7 +45,9 @@
 <Content>
   <Grid>
     <Row>
-      {@render children()}
+      <Column>
+        {@render children()}
+      </Column>
     </Row>
   </Grid>
 </Content>

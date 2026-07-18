@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Button, Column } from "carbon-components-svelte";
+  import { Button, ClickableTile, Column, Row } from "carbon-components-svelte";
   import { onMount } from "svelte";
   import { type BunRpcClient, getBunRpc } from "$lib/views/hooks/webview-rpc";
   import { storedProjectsRepository } from "$lib/views/repositories/stored-projects.repo";
@@ -31,31 +31,39 @@
   }
 </script>
 
-<Column>
-  <div class="container">
-    <h1>TD Radar</h1>
-    <p class="subtitle">Select a repository folder to analyse</p>
-
-    <div class="card picker">
-      <Button onclick={openRepoFolder} disabled={loading} aria-busy={loading}>
-        {loading ? "Selecting…" : "Open Repository Folder"}
-      </Button>
-    </div>
-    <div class="projects-container">
+<Row padding>
+  <Column sm={16} max={16}>
+    <Button onclick={openRepoFolder} disabled={loading} aria-busy={loading}>
+      {loading ? "Selecting…" : "Select Repository Folder"}
+    </Button>
+    {#if error}
+      <p class="error">{error}</p>
+    {/if}
+  </Column>
+  <Column sm={16} max={16}>
+    <Row>
       {#if storedProjects.length > 0}
         {#each storedProjects as project}
-          <a href="/project/{project.split('/').pop()}">
-            <div class="card picker flexbox">📁 {project.split("/").pop()}</div>
-          </a>
+          <Column sm={16} md={4} lg={4} xlg={4} max={4}>
+            <ClickableTile
+              class="clickable-tile"
+              href="/project/{project.split('/').pop()}"
+            >
+              {project.split("/").pop()}
+            </ClickableTile>
+          </Column>
         {/each}
       {/if}
-
-      {#if error}
-        <p class="error">Error: {error}</p>
-      {/if}
-    </div>
-  </div>
-</Column>
+    </Row>
+  </Column>
+</Row>
 
 <style>
+  :global(.clickable-tile) {
+    min-height: 150px;
+    box-shadow: 1px 1px 1px #000;
+    &:hover {
+      box-shadow: inset 1px 1px 1px #000;
+    }
+  }
 </style>
