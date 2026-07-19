@@ -11,7 +11,8 @@
     "build": "bunx --bun vite build && electrobun build",
     "build:canary": "bunx --bun vite build && electrobun build --env=canary",
     "build:prod": "bunx --bun vite build && electrobun build --channel prod",
-    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "test:unit": "bun test --watch"
   },
   "dependencies": {
     "electrobun": "1.16.0",

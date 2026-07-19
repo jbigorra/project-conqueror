@@ -8,6 +8,7 @@ export default {
   },
   build: {
     watch: ["src/shared"],
+    watchIgnore: ["src/**/*.test.ts"],
     // Vite builds to dist/, we copy from there
     copy: {
       "dist/index.html": "views/mainview/index.html",
