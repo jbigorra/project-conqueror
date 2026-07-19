@@ -3,7 +3,7 @@ import type { RPCSchema } from "electrobun/bun";
 export type AppRPC = {
   bun: RPCSchema<{
     requests: {
-      openFolderDialog: { params: undefined; response: string | null };
+      openFolderDialog: { params: undefined; response: Promise<string | null> };
     };
     // biome-ignore lint/complexity/noBannedTypes: Temporary ignore
     messages: {};
