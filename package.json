@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "description": "Monorepo for 'Project Conqueror' a behavioural code analysis tool.",
   "engines": {
-    "bun": ">=1.3.11"
+    "bun": ">=1.3.14"
   },
   "scripts": {
     "build": "turbo build",

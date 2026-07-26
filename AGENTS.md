@@ -55,7 +55,7 @@ No tests, no Biome, no Turbo integration yet.
 
 ## Engine & Tooling
 
-- **Bun** ≥1.3.11 (pinned in `.bun-version` and `mise.toml`). Not Node — do NOT assume Node APIs.
+- **Bun** ≥1.3.14 (pinned in `.bun-version` and `mise.toml`). Not Node — do NOT assume Node APIs.
 - **pnpm** 10.32.1 — `--frozen-lockfile` in CI.
 - **Biome** strict: `noExplicitAny`, `noUnusedVariables`, `noNonNullAssertion` = errors.
 - **VCS** default branch: `master`. Biome uses `--changed` to preserve git blame.

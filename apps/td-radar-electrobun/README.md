@@ -8,7 +8,7 @@ Built with [Electrobun](https://electrobun.dev) (Bun + system WebView), Svelte 5
 
 ## Prerequisites
 
-- **Bun** ≥1.3.11
+- **Bun** ≥1.3.14
 - **Python 3.10** + **uv** (for `packages/lizard-ts` — see [worktree setup](../..//scripts/setup-worktree.sh))
 
 ## Quick Start

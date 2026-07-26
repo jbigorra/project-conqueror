@@ -88,7 +88,7 @@ RUN brew install pnpm
 
 RUN curl https://mise.run/zsh | MISE_INSTALL_PATH=/home/node/.local/bin/mise sh
 ENV PATH=/home/node/.local/bin:/home/node/.local/share/mise/shims:$PATH
-RUN mise use --global bun@1.3.11
+RUN mise use --global bun@1.3.14
 
 RUN bun add -g @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}
 

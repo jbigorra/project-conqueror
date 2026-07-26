@@ -30,7 +30,7 @@ Multi-package pnpm monorepo. Turbo orchestration. Bun runtime. Biome formatting.
 
 | Tool | Version | Notes |
 |------|---------|-------|
-| **Bun** | ≥1.3.11 | Runtime. Pinned in `.bun-version`. Install via `mise` or `curl -fsSL https://bun.sh/install \| bash` |
+| **Bun** | ≥1.3.14 | Runtime. Pinned in `.bun-version`. Install via `mise` or `curl -fsSL https://bun.sh/install \| bash` |
 | **pnpm** | 10.32.1 | Package manager. Enable with `corepack enable && corepack install` |
 | **Python 3.10** + **uv** | — | Required only for `packages/lizard-ts`. `uv` is auto-installed by CI and `scripts/setup-worktree.sh`. No system Python needed. |
 
